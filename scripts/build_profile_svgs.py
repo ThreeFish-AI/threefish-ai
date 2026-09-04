@@ -1,21 +1,28 @@
 #!/usr/bin/env python3
-"""Regenerate profile figures and refresh DATA blocks in both READMEs.
+"""v4 profile figure generator + DATA refresher for both READMEs.
 
 Caliber rule (structural, do not weaken): every number a visitor could check is
 collected at the anonymous / public caliber — the contributions page as a
 logged-out visitor sees it, `is:public` search, public REST endpoints. The
-GITHUB_TOKEN is used only for API quota, never to widen the caliber, so the
-monthly bot run and a human's browser see the same numbers.
+GITHUB_TOKEN is used only for API quota, never to widen the caliber.
 
-Private-limited figures (public/private splits, private review counts) are
-hand-written in the READMEs with as-of dates and are never touched here.
+Private-limited figures (public/private splits) are hand-written in the READMEs
+with as-of dates and are never touched here.
+
+Motion rule (see .context/v4-motion-constraints.md): animations are one-shot
+entrances only. Default state == final state (`animation … both` with explicit
+0%/100% opacity:0 keyframes; base rules carry opacity:0), wrapped in
+`@media (prefers-reduced-motion:no-preference)` — static is the default, motion
+is the progressive enhancement. No loops, ever.
 
 Stdlib only. On any inconsistency: exit 1 WITHOUT writing anything —
 stale-but-true beats fresh-but-wrong.
 """
 
 import json
+import html
 import math
+import pathlib
 import re
 import ssl
 import statistics
@@ -39,8 +46,6 @@ ACC_REPO = "analysis_claude_code"
 RELEASE_REPOS = ["coding-proxy", "give-me-a-break", "hyper-git", "negentropy"]
 MIN_SOURCE_COMMITS = 10  # "source repository" = non-fork repo with >= N commits authored by USER
 FIRST_YEAR = 2016
-FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif"
-
 CONVENTIONAL = re.compile(
     r"^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([^)]*\))?!?:\s*\S"
 )
@@ -109,13 +114,9 @@ for y in range(FIRST_YEAR, now.year + 1):
     years.append(y)
     values.append(sum(counts))
     print(f"  {y}: {values[-1]:,}")
-rolling = anon_contribution_counts(f"https://github.com/users/{USER}/contributions")
-active_days = len(rolling)
 
 if sum(values) <= 0:
     die("yearly contribution totals are all zero — page parse broken")
-if active_days <= 0:
-    die("rolling active days is zero — page parse broken")
 
 print("collecting: repositories …")
 repos = [r for r in gh_paginate(f"users/{USER}/repos?per_page=100") if not r["fork"]]
@@ -146,30 +147,16 @@ if commits_total < 100:
 
 hours = Counter()
 days = set()
-weekend = 0
 conv = 0
-scoped = 0
-types = Counter()
 for c in all_commits:
     a = c["commit"]["author"]
-    dt = datetime.strptime(a["date"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).astimezone(TZ)
+    dt = datetime.strptime(a["date"], "%Y-%m-%dT%H:%M:%SZ").replace(
+        tzinfo=timezone.utc
+    ).astimezone(TZ)
     hours[dt.hour] += 1
     days.add(dt.date())
-    if dt.weekday() >= 5:
-        weekend += 1
-    msg = c["commit"]["message"].split("\n")[0]
-    m = CONVENTIONAL.match(msg)
-    if m:
+    if CONVENTIONAL.match(c["commit"]["message"].split("\n")[0]):
         conv += 1
-        if m.group(2):
-            scoped += 1
-        types[m.group(1)] += 1
-
-flat = commits_total / 24
-peak_h = max(hours, key=lambda h: hours[h])
-peak_n = hours[peak_h]
-peak_x = peak_n / flat
-weekend_pct = weekend / commits_total * 100
 
 sorted_days = sorted(days)
 streak = best = 1
@@ -180,16 +167,14 @@ streak = best
 
 zero_hours = [h for h in range(24) if hours[h] == 0]
 
-
-def zero_ranges(hs):
-    out = []
-    for h in hs:
-        if out and h == out[-1][1] + 1:
-            out[-1][1] = h
-        else:
-            out.append([h, h])
-    return out
-
+# Pipeline-closure guard: every authored commit must land in exactly one hour
+# bucket. A mismatch means the hour histogram and the repository table below
+# would silently disagree with each other.
+if sum(hours.values()) != commits_total:
+    die(
+        f"hour histogram {sum(hours.values())} != repo total {commits_total} — "
+        "caliber split, refusing"
+    )
 
 print("collecting: negentropy pull requests …")
 pulls = gh_paginate(f"repos/{USER}/negentropy/pulls?state=closed&per_page=100")
@@ -202,12 +187,10 @@ for p in merged:
     lifetimes.append((merged_at - created).total_seconds() / 60)
 neg_median = statistics.median(lifetimes)
 pct_hour = sum(1 for m in lifetimes if m <= 60) / len(lifetimes) * 100
-neg_commits = len(repo_commits.get("negentropy", []))
 
 print("collecting: releases …")
 rel_counts = {r: len(gh(f"repos/{USER}/{r}/releases?per_page=100")) for r in RELEASE_REPOS}
 rel_total = sum(rel_counts.values())
-rel_repos = sum(1 for v in rel_counts.values() if v)
 
 print("collecting: public PR totals (is:public caliber) …")
 pub_prs = gh(
@@ -225,176 +208,384 @@ if own_stars != total_stars - acc_stars:
 if len(years) != len(values) or any(v < 0 for v in values):
     die("year series malformed")
 
-# ----------------------------------------------------------- SVG: arc ----
-def render_arc(values, years, asof):
+# ----------------------------------------------------------- rendering ----
+# Design tokens (Primer palette, WCAG-verified: text >= 4.5:1, graphics >= 3:1
+# on both GitHub canvases). No opacity layering — solid inks only.
+FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif"
+LIGHT = dict(bg="#ffffff", ink="#1f2328", lbl="#6e7781", val="#57606a",
+             bar="#8c959f", acc="#0969da", rule="#d1d9e0")
+DARK = dict(bg="#0d1117", ink="#f0f6fc", lbl="#9198a1", val="#8b949e",
+            bar="#6e7681", acc="#58a6ff", rule="#30363d")
+
+
+def style_sheet(extra=""):
+    """Base tokens + dark override (always AFTER base rules) + extras."""
+    base = "  .bg{fill:%(bg)s}.ink{fill:%(ink)s}.lbl{fill:%(lbl)s}.val{fill:%(val)s}" \
+           ".bar{fill:%(bar)s}.acc{fill:%(acc)s}.accv{fill:%(acc)s;font-weight:600}" \
+           ".zero{fill:none;stroke:%(bar)s;stroke-width:1.2}.rule{stroke:%(rule)s}" % LIGHT
+    dark = "    .bg{fill:%(bg)s}.ink{fill:%(ink)s}.lbl{fill:%(lbl)s}.val{fill:%(val)s}" \
+           ".bar{fill:%(bar)s}.acc{fill:%(acc)s}.accv{fill:%(acc)s;font-weight:600}" \
+           ".zero{stroke:%(bar)s}.rule{stroke:%(rule)s}" % DARK
+    return ("<style>\n"
+            "  text{font-family:%s;font-variant-numeric:tabular-nums}\n"
+            "  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}\n"
+            "%s\n"
+            "  @media (prefers-color-scheme:dark){\n%s\n  }\n%s"
+            "</style>") % (FONT, base, dark, extra)
+
+
+def svg_open(w, h, aria):
+    return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" '
+            'viewBox="0 0 %d %d" role="img" aria-label="%s">' % (w, h, w, h, aria))
+
+
+def render_growth(values, years, asof):
+    """Returns (svg, aria). The aria doubles as the README <img> alt text —
+    under <img>, the SVG's internal aria-label is ignored and alt is the
+    screen-reader channel, so it must refresh with the data."""
+    W, H = 700, 168
+    L, R, BASE = 42.0, 686.0, 126.0
+    SPAN, MIN_BAR, ZH = 88.0, 2.5, 4.0          # plot height / bar floor / zero-slot h
+    # Anti-inversion invariant: zero slots live strictly BELOW the axis (zero
+    # pixels of height above baseline) while every non-zero bar is >= MIN_BAR
+    # above it — "nothing" can never render taller than "something".
+    ZERO_Y = BASE + 2
+    assert ZERO_Y > BASE
     n = len(values)
-    x0, x1, y_base, y_top = 56.0, 716.0, 118.0, 30.0
-    pitch = (x1 - x0) / (n - 1)
+    pitch = (R - L) / n
+    bw = round(pitch * 0.52, 1)
     vmax = max(values) or 1
-    pts = [
-        (x0 + i * pitch, y_base - (y_base - y_top) * math.sqrt(v) / math.sqrt(vmax))
-        for i, v in enumerate(values)
-    ]
-    pts_str = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
-    area = pts_str + f" {x1:.1f},{y_base} {x0:.1f},{y_base}"
-    dots = "\n".join(
-        f'  <circle cx="{x:.1f}" cy="{y:.1f}" r="{4 if i == n - 1 else 2.6}"/>'
-        for i, (x, y) in enumerate(pts)
-    )
-    labels = []
-    label_years = {2020: 129, 2022: 676, 2023: 589, 2024: 1181, 2025: 3193}
-    for i, (x, y) in enumerate(pts):
-        y_ = years[i]
-        v = values[i]
-        if y_ == years[-1]:
-            labels.append(
-                f'  <text x="{x - 4:.0f}" y="{y - 8:.0f}" font-size="14" font-weight="600" class="hi">{v:,}</text>'
-            )
-        elif y_ in label_years:
-            mark = " ↓" if y_ == 2023 and i > 0 and values[i] < values[i - 1] else ""
-            labels.append(
-                f'  <text x="{x:.0f}" y="{y - 10:.0f}" font-size="13" class="lbl">{v:,}{mark}</text>'
-            )
-    ticks = "\n".join(
-        f'  <text x="{x:.0f}" y="137" font-size="11" class="lbl">{y}</text>'
-        for (x, _), y in zip(pts, years)
-        if (y - FIRST_YEAR) % 2 == 0
-    )
-    vals_txt = ", ".join(f"{v:,}" for v in values)
-    dip = ""
-    if n >= 8 and values[-4] < values[-5]:
-        dip = f" {years[-4]} is lower than {years[-5]}."
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="760" height="150" viewBox="0 0 760 150" role="img"
-     aria-label="Contributions per year {years[0]} to {years[-1]}: {vals_txt}. Equal spacing, square-root scale.{dip}">
-<style>
-  .rule{{stroke:#d1d9e0}}.lbl{{fill:#59636e}}.ln{{stroke:#0969da;fill:none}}.dot{{fill:#0969da}}.hi{{fill:#0969da}}.area{{fill:#0969da;opacity:.08}}
-  @media (prefers-color-scheme:dark){{
-    .rule{{stroke:#30363d}}.lbl{{fill:#8b949e}}.ln{{stroke:#58a6ff}}.dot{{fill:#58a6ff}}.hi{{fill:#58a6ff}}.area{{fill:#58a6ff;opacity:.10}}
-  }}
-</style>
-<line class="rule" x1="36" y1="118" x2="736" y2="118" stroke-width="1"/>
-<polygon class="area" points="{area}"/>
-<polyline class="ln" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="{pts_str}"/>
-<g class="dot">
-{dots}
-</g>
-<g font-family="{FONT}" text-anchor="middle">
-{chr(10).join(labels)}
-{ticks}
-</g>
-<text x="736" y="148" text-anchor="end" font-family="{FONT}" font-size="9" class="lbl">as of {asof}</text>
-</svg>
-'''
+    bars, labels = [], []
+    for i, v in enumerate(values):
+        cx = L + pitch * (i + 0.5)
+        x = cx - bw / 2
+        if v == 0:                               # true zero -> hollow slot BELOW axis
+            bars.append('<rect class="zero" x="%.1f" y="%.1f" width="%.1f" height="%.1f"/>'
+                        % (x, ZERO_Y, bw, ZH))
+            labels.append('<text x="%.1f" y="%.1f" font-size="11.5" class="val tm">0</text>'
+                          % (cx, BASE - 8))
+            continue
+        h = max(math.sqrt(v) / math.sqrt(vmax) * SPAN, MIN_BAR)
+        last = i == n - 1
+        cls = "acc" if last else "bar"
+        bars.append('<rect class="%s" x="%.1f" y="%.2f" width="%.1f" height="%.2f" rx="2"/>'
+                    % (cls, x, BASE - h, bw, h))
+        dip = " ↓" if (0 < i and v < values[i - 1]) else ""
+        labels.append('<text x="%.1f" y="%.1f" font-size="%s" class="%s tm">%s%s</text>'
+                      % (cx, BASE - h - (7 if last else 5.5),
+                         "15" if last else "11.5", "accv" if last else "val",
+                         format(v, ","), dip))
+    ticks = "".join('<text x="%.1f" y="142" font-size="10.5" class="lbl tm">%d</text>'
+                    % (L + pitch * (i + 0.5), y) for i, y in enumerate(years))
+    sweep_x = R - L
+    motion = ("\n  .sweep{fill:%s;opacity:0}\n"
+              "  @media (prefers-color-scheme:dark){.sweep{fill:%s}}\n"
+              "  @media (prefers-reduced-motion:no-preference){\n"
+              "    .sweep{animation:swg 1.9s cubic-bezier(.22,1,.36,1) .15s 1 both}\n"
+              "    @keyframes swg{0%%{opacity:0;transform:translateX(0)}\n"
+              "      10%%{opacity:.7}80%%{opacity:.7;transform:translateX(%dpx)}\n"
+              "      100%%{opacity:0;transform:translateX(%dpx)}}\n  }\n"
+              ) % (LIGHT["acc"], DARK["acc"], sweep_x, sweep_x)
+    vals_txt = ", ".join(format(v, ",") for v in values)
+    dip_txt = (" %d (%s) is lower than %d (%s)." % (years[-4], format(values[-4], ","),
+               years[-5], format(values[-5], ","))) if values[-4] < values[-5] else ""
+    aria = ("Column chart, contributions per year %d to %d on a square-root "
+            "scale: %s. %d and %d are exactly zero, drawn as open slots below the axis."
+            "%s Data: GitHub." % (years[0], years[-1], vals_txt,
+                                  years[1], years[2] if n > 2 else years[1], dip_txt))
+    s = "\n".join([
+        svg_open(W, H, aria),
+        style_sheet(motion),
+        '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
+        '<line class="rule" x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke-width="1"/>' % (L, BASE, R, BASE),
+        "\n".join(bars),
+        '<text x="%.0f" y="22" font-size="11" class="lbl ts">contributions per year · square-root scale</text>' % L,
+        "\n".join(labels),
+        ticks,
+        '<text x="%.0f" y="160" font-size="9.5" class="lbl te">as of %s</text>' % (R, asof),
+        '<rect class="sweep" x="%.0f" y="30" width="2.5" height="%.0f" rx="1.25"/>' % (L, BASE - 30),
+        "</svg>", ""])
+    return s, aria
 
 
-# ---------------------------------------------------------- SVG: clock ----
-def render_clock(hours, commits_total, src_repos, peak_h, peak_n, zero_hours, asof):
-    x0, pitch, bw = 60.0, 27.5, 19.0
-    y_base, h_max = 112.0, 76.0
+def render_rhythm(hours, asof):
+    W, H = 700, 168
+    L, R, BASE = 42.0, 686.0, 126.0
+    SPAN, MIN_BAR, ZH, ORIGIN = 80.0, 2.5, 4.0, 4
+    ZERO_Y = BASE + 2
+    assert ZERO_Y > BASE                          # zero slots strictly below the axis
+    order = [(ORIGIN + k) % 24 for k in range(24)]  # axis 04→03: night block contiguous
+    pitch = (R - L) / 24
+    bw = round(pitch * 0.6, 1)
     cmax = max(hours.values()) or 1
-
-    def cls(h):
-        if h == peak_h:
-            return "peak"
-        if hours[h] == 0:
-            return "zero"
-        if 19 <= h or h <= 3:
-            return "night"
-        return "day"
-
+    peak_h = max(hours, key=lambda h: hours[h])
+    peak_i = order.index(peak_h)
     bars = []
-    for h in range(24):
-        hgt = max(hours[h] / cmax * h_max, 1.5 if hours[h] == 0 else 0)
-        y = y_base - hgt
-        bars.append(
-            f'<rect class="{cls(h)}" x="{x0 + h * pitch - bw / 2 + 1.5:.1f}" y="{y:.1f}" width="{bw}" height="{hgt:.1f}" rx="2"/>'
-        )
-    zero_txt = ""
-    if zero_hours:
-        spans = " and ".join(
-            f"{a:02d}:00–{b:02d}:59" for a, b in zero_ranges(zero_hours)
-        )
-        # Centre the annotation over the zero band and lift it above the bars,
-        # so it never collides with the hour ticks on the baseline row.
-        zx = x0 + (zero_hours[0] + zero_hours[-1]) / 2 * pitch
-        zero_txt = (
-            f'  <text x="{zx:.0f}" y="96" font-size="10" class="lbl">{spans}</text>\n'
-            f'  <text x="{zx:.0f}" y="107" font-size="10" class="lbl">zero commits</text>'
-        )
-    ticks = "\n".join(
-        f'  <text x="{x0 + h * pitch:.0f}" y="130" font-size="9" class="lbl">{h:02d}</text>'
-        for h in (0, 6, 12, 18, 23)
-    )
-    pct = peak_n / commits_total * 100
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="760" height="150" viewBox="0 0 760 150" role="img"
-     aria-label="Commits by hour of day, Asia/Shanghai. {commits_total:,} open-source commits across {src_repos} source repositories. Peak {peak_h:02d}:00 with {peak_n} commits, {pct:.1f} percent. {len(zero_hours)} hours have zero commits.">
-<style>
-  .peak{{fill:#0969da}}.night{{fill:#0969da;opacity:.55}}.day{{fill:#59636e;opacity:.38}}.zero{{fill:#59636e;opacity:.22}}.lbl{{fill:#59636e}}.base{{stroke:#d1d9e0}}
-  @media (prefers-color-scheme:dark){{
-    .peak{{fill:#58a6ff}}.night{{fill:#58a6ff;opacity:.55}}.day{{fill:#8b949e;opacity:.38}}.zero{{fill:#8b949e;opacity:.22}}.lbl{{fill:#8b949e}}.base{{stroke:#30363d}}
-  }}
-</style>
-<line class="base" x1="40" y1="112" x2="730" y2="112" stroke-width="1"/>
-{chr(10).join(bars)}
-<g font-family="{FONT}" text-anchor="middle">
-  <text x="{x0 + peak_h * pitch:.0f}" y="28" font-size="13" font-weight="600" class="lbl">{peak_n}</text>
-{zero_txt}
-  <text x="730" y="20" text-anchor="end" font-size="10" class="lbl">{commits_total:,} commits · Asia/Shanghai</text>
-{ticks}
-</g>
-<text x="736" y="148" text-anchor="end" font-family="{FONT}" font-size="9" class="lbl">as of {asof}</text>
-</svg>
-'''
+    for i, h in enumerate(order):
+        v = hours[h]
+        x = L + pitch * (i + 0.5) - bw / 2
+        if v == 0:
+            bars.append('<rect class="zero" x="%.1f" y="%.1f" width="%.1f" height="%.1f"/>' % (x, ZERO_Y, bw, ZH))
+        else:
+            hgt = max(v / cmax * SPAN, MIN_BAR)
+            cls = "acc" if h == peak_h else "bar"
+            bars.append('<rect class="%s" x="%.1f" y="%.2f" width="%.1f" height="%.2f" rx="2"/>'
+                        % (cls, x, BASE - hgt, bw, hgt))
+    peak_cx = L + pitch * (peak_i + 0.5)
+    peak_v = hours[peak_h]
+    ticks = "".join('<text x="%.1f" y="142" font-size="10.5" class="lbl tm">%02d</text>'
+                    % (L + pitch * (i + 0.5), h) for i, h in enumerate(order) if i % 4 == 0)
+    sweep_dx = round(peak_cx - L, 1)
+    motion = ("\n  .sweep{fill:%s;opacity:0}\n"
+              "  @media (prefers-color-scheme:dark){.sweep{fill:%s}}\n"
+              "  @media (prefers-reduced-motion:no-preference){\n"
+              "    .sweep{animation:swr 2.1s cubic-bezier(.22,1,.36,1) .6s 1 both}\n"
+              "    @keyframes swr{0%%{opacity:0;transform:translateX(0)}\n"
+              "      12%%{opacity:.7}68%%{opacity:.7;transform:translateX(%spx)}\n"
+              "      100%%{opacity:0;transform:translateX(%spx)}}\n  }\n"
+              ) % (LIGHT["acc"], DARK["acc"], sweep_dx, sweep_dx)
+    total = sum(hours.values())
+    seq = ", ".join(str(hours[h]) for h in order)
+    flat = total / 24
+    aria = ("Histogram of %s open-source commits by hour of day, Asia/Shanghai, "
+            "axis running %02d:00 through %02d:00 so the night block stays contiguous. "
+            "Values by hour from %02d:00: %s. %02d:00 to %02d:59 are exactly zero, drawn "
+            "as open slots below the axis. Peak %02d:00 with %d commits, %.1f percent of "
+            "all commits, %.2f times a flat baseline. Bars below the %.1f-pixel minimum "
+            "height are drawn at that minimum." % (format(total, ","), ORIGIN, (ORIGIN + 23) % 24,
+            ORIGIN, seq, ORIGIN, ORIGIN + 2, peak_h, peak_v, peak_v / total * 100,
+            peak_v / flat, MIN_BAR))
+    s = "\n".join([
+        svg_open(W, H, aria),
+        style_sheet(motion),
+        '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
+        '<line class="rule" x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke-width="1"/>' % (L, BASE, R, BASE),
+        "\n".join(bars),
+        '<text x="%.0f" y="22" font-size="11" class="lbl ts">open-source commits by hour · Asia/Shanghai · axis %02d→%02d</text>' % (L, ORIGIN, (ORIGIN + 23) % 24),
+        '<text x="%.1f" y="%.1f" font-size="13" class="accv tm">%d</text>' % (peak_cx, BASE - SPAN - 7, peak_v),
+        ticks,
+        '<text x="%.0f" y="160" font-size="9.5" class="lbl te">as of %s</text>' % (R, asof),
+        '<rect class="sweep" x="%.0f" y="38" width="2.5" height="%.0f" rx="1.25"/>' % (L, BASE - 38),
+        "</svg>", ""])
+    return s, aria
 
 
-# -------------------------------------------------------------- write ----
+def render_ground(repo_commits, rel, asof):
+    W, H = 700, 224
+    X_NAME, X_BAR, X_REL, MAXW = 150.0, 160.0, 660.0, 420.0
+    rows = sorted(repo_commits.items(), key=lambda kv: -kv[1])
+    total = sum(repo_commits.values())
+    vmax = max(repo_commits.values()) or 1
+    top_share = rows[0][1] / total * 100
+    body, i = [], 0
+    for name, v in rows:
+        y = 36 + i * 24
+        w = v / vmax * MAXW
+        focus = i == 0
+        body.append('<text x="%.0f" y="%.0f" font-size="11.5" class="lbl te">%s</text>' % (X_NAME, y + 9, name))
+        body.append('<rect class="%s" x="%.0f" y="%.0f" width="%.1f" height="11" rx="2"/>' % ("acc" if focus else "bar", X_BAR, y, w))
+        body.append('<text x="%.1f" y="%.0f" font-size="11.5" class="%s ts">%s</text>' % (X_BAR + w + 8, y + 9, "accv" if focus else "val", format(v, ",")))
+        body.append('<text x="%.0f" y="%.0f" font-size="11.5" class="val te">%d</text>' % (X_REL, y + 9, rel.get(name, 0)))
+        i += 1
+    head = "\n".join([
+        '<text x="%.0f" y="20" font-size="10.5" class="lbl te">repository</text>' % X_NAME,
+        '<text x="%.0f" y="20" font-size="10.5" class="lbl ts">commits</text>' % X_BAR,
+        '<text x="%.0f" y="20" font-size="10.5" class="lbl te">releases</text>' % X_REL,
+        '<line class="rule" x1="42" y1="27" x2="686" y2="27" stroke-width="1"/>'])
+    rel_total = sum(rel.values())
+    footer = ('<text x="%.0f" y="212" font-size="11" class="lbl ts">%s commits · %d '
+              'releases · %d source repositories · %s %.1f%%</text>'
+              % (X_BAR, format(total, ","), rel_total, len(repo_commits), rows[0][0], top_share))
+    aria = ("Horizontal bar chart, commits per source repository, sorted: %s. "
+            "Total %s commits and %d releases across %d source repositories; %s is %.1f "
+            "percent of commits. Releases: %s. negentropy-perceives is archived — it "
+            "graduated into the negentropy trunk." % ("; ".join("%s %s" % (n, format(v, ",")) for n, v in rows),
+            format(total, ","), rel_total, len(repo_commits), rows[0][0], top_share,
+            ", ".join("%s %d" % (n, c) for n, c in sorted(rel.items(), key=lambda kv: -kv[1]))))
+    s = "\n".join([
+        svg_open(W, H, aria),
+        style_sheet(),                              # static figure: no motion rules
+        '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
+        head, "\n".join(body), footer,
+        '<text x="%.0f" y="212" font-size="9.5" class="lbl te">as of %s</text>' % (686, asof),
+        "</svg>", ""])
+    return s, aria
+
+
+def render_mark():
+    """Three-fish signature mark. The only 'figure' with no data — it IS the name."""
+    W, H = 256, 62
+    pos = [(24, 34, ".3s"), (110, 26, ".85s"), (196, 35, "1.35s")]
+    fish, rip = [], []
+    for x0, cy, d in pos:
+        fish.append('<path class="fi" d="M %g,%g C %g,%g %g,%g %g,%g C %g,%g %g,%g %g,%g Z"/>'
+                    % (x0, cy, x0+11, cy-10.5, x0+33, cy-10.5, x0+44, cy,
+                       x0+33, cy+10.5, x0+11, cy+10.5, x0, cy))
+        fish.append('<path class="fi" d="M %g,%g L %g,%g L %g,%g L %g,%g Z"/>'
+                    % (x0+3, cy, x0-12, cy-7.5, x0-8.5, cy, x0-12, cy+7.5))
+        fish.append('<circle class="eye" cx="%.1f" cy="%.1f" r="1.6"/>' % (x0+35.5, cy-3))
+        rip.append('<ellipse class="rip" style="--d:%s" cx="%g" cy="%g" rx="28" ry="12"/>' % (d, x0+22, cy))
+    aria = ("Three fish, drawn as a signature mark. In Mandarin the three surpluses of "
+            "Dong Yu — winter, night, and rainy days (三余, sān yú) — sound "
+            "nearly the same as three fish (三鱼). Hence the handle ThreeFish. "
+            "Purely decorative; no data encoded.")
+    st = ("<style>\n"
+          "  .fi{fill:none;stroke:%s;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}\n"
+          "  .eye{fill:%s}\n"
+          "  @media (prefers-color-scheme:dark){.fi{stroke:%s}.eye{fill:%s}}\n"
+          "  .rip{fill:none;stroke:%s;stroke-width:1.2;opacity:0;"
+          "transform-box:fill-box;transform-origin:center}\n"
+          "  @media (prefers-color-scheme:dark){.rip{stroke:%s}}\n"
+          "  @media (prefers-reduced-motion:no-preference){\n"
+          "    .rip{animation:rip 2s ease-out 1 both;animation-delay:var(--d)}\n"
+          "    @keyframes rip{0%%{opacity:0;transform:scale(.45)}\n"
+          "      45%%{opacity:.5}100%%{opacity:0;transform:scale(1.35)}}\n  }\n</style>") % (
+          LIGHT["lbl"], LIGHT["lbl"], DARK["lbl"], DARK["lbl"], LIGHT["acc"], DARK["acc"])
+    return "\n".join([
+        '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s">' % (W, H, W, H, aria),
+        st,
+        "\n".join(rip), "\n".join(fish), "</svg>", ""])
+
+
+# ------------------------------------------------------------ sanitizer ----
+BANNED = re.compile(r'infinite|repeatCount\s*=\s*["\']indefinite')
+KEYFRAME = re.compile(r'@keyframes\s+(\w+)\s*\{', re.S)
+
+
+def assert_svg_sane(src: str, name: str, max_bytes=8192):
+    """Write-gate: no loops, a11y metadata, size budget, no external resources,
+    additive-only motion (base opacity:0 + explicit 0%/100% opacity:0), dark
+    override strictly after base rules."""
+    assert not BANNED.search(src), f"{name}: infinite/indefinite loop found"
+    assert 'role="img"' in src and "aria-label" in src, f"{name}: a11y metadata missing"
+    n = len(src.encode("utf-8"))
+    assert n <= max_bytes, f"{name}: {n}B over budget"
+    assert "@import" not in src and 'href="http' not in src, f"{name}: external resource"
+    if "animation:" in src:
+        assert "prefers-reduced-motion:no-preference" in src, f"{name}: motion not opt-in"
+        for kname in KEYFRAME.findall(src):
+            body = re.search(r'@keyframes\s+' + kname + r'\s*\{(.*?)\n\s*\}', src, re.S).group(1)
+            assert re.search(r'0%\{[^}]*opacity:\s*0', body), f"{name}: {kname} missing 0%{{opacity:0}}"
+            assert re.search(r'100%\{[^}]*opacity:\s*0', body), f"{name}: {kname} missing 100%{{opacity:0}}"
+        for cls in set(re.findall(r'\.([\w-]+)\{[^}]*animation:', src)):
+            base = re.search(r'\.' + cls + r'\{([^}]*)\}', src)
+            assert base and "opacity:0" in base.group(1).replace(" ", ""), \
+                f"{name}: .{cls} animates but base state is not opacity:0 (additive rule)"
+    dark = src.find("prefers-color-scheme:dark")
+    for cls in ("bar", "lbl", "val", "acc"):
+        i = src.find(".%s{" % cls)
+        if i != -1:
+            assert i < dark, f"{name}: .{cls} base rule must precede dark override"
+    return n
+
+
+# ---------------------------------------------------------------- write ----
 asof = now.strftime("%Y-%m-%d")
 current_year = years[-1]
-c2026_value = values[-1]
 
+# DATA values are language-neutral (bare numbers / dates) so one refresh serves
+# both README files; link and sentence framing live in the markdown itself.
 DATA = {
-    "c2026": f'[{c2026_value:,} contributions in {current_year}](https://github.com/ThreeFish-AI?tab=overview&from={current_year}-01-01&to={current_year}-12-31)',
-    "pub_prs": f'[{pub_prs:,} public pull requests](https://github.com/search?q=is%3Apr+author%3AThreeFish-AI+is%3Apublic&type=pullrequests)',
-    "rel_total": f'[{rel_total} releases](https://github.com/ThreeFish-AI?tab=repositories&type=source)',
-    "rel_repos": rel_repos,
-    "rel_cp": rel_counts["coding-proxy"],
-    "rel_gmab": rel_counts["give-me-a-break"],
-    "rel_hg": rel_counts["hyper-git"],
-    "rel_neg": rel_counts["negentropy"],
-    "neg_pr": f'[{neg_pr:,} merged pull requests](https://github.com/ThreeFish-AI/negentropy/pulls?q=is%3Apr+is%3Amerged)',
-    "neg_commits": f"{neg_commits:,}",
-    "own_stars": own_stars,
-    "acc_stars": acc_stars,
-    "src_repos": src_repos,
-    "commits_total": f"{commits_total:,}",
+    "c2026": f"{values[-1]:,}",
+    "cur_year": current_year,
+    "pub_prs": f"{pub_prs:,}",
+    "neg_pr": f"{neg_pr:,}",
     "neg_median": f"{neg_median:.0f}",
     "pct_hour": f"{pct_hour:.0f}%",
-    "conv_pct": f"{conv / commits_total * 100:.1f}%",
-    "scoped_pct": f"{scoped / conv * 100:.1f}%" if conv else "0%",
-    "mix_fix": f"{types['fix'] / conv * 100:.1f}%" if conv else "0%",
-    "mix_docs": f"{types['docs'] / conv * 100:.1f}%" if conv else "0%",
-    "mix_feat": f"{types['feat'] / conv * 100:.1f}%" if conv else "0%",
     "streak": streak,
-    "active_days": active_days,
-    "peak_h": f"{peak_h:02d}:00",
-    "peak_n": peak_n,
-    "peak_x": f"{peak_x:.2f}×",
-    "weekend_pct": f"{weekend_pct:.1f}%",
-    "asof": f"last refreshed {asof}",
+    "conv_pct": f"{conv / commits_total * 100:.1f}%",
+    "commits_total": f"{commits_total:,}",
+    "src_repos": src_repos,
+    "own_stars": own_stars,
+    "acc_stars": acc_stars,
+    "rel_total": rel_total,
+    "peak_h": f"{max(hours, key=lambda h: hours[h]):02d}:00",
+    "peak_x": f"{max(hours.values()) / (commits_total / 24):.2f}×",
+    "asof": asof,
+}
+
+growth_svg, growth_aria = render_growth(values, years, asof)
+rhythm_svg, rhythm_aria = render_rhythm(hours, asof)
+ground_svg, ground_aria = render_ground(
+    {k: len(v) for k, v in repo_commits.items()}, rel_counts, asof
+)
+figures = {
+    "growth.svg": growth_svg,
+    "rhythm.svg": rhythm_svg,
+    "ground.svg": ground_svg,
+    "mark.svg": render_mark(),
+}
+
+# The README <img> alt is the ONLY channel screen readers get (an SVG loaded
+# via <img> has its internal aria-label ignored), so alt carries the full data
+# series and must refresh with it. HTML comments cannot live inside attributes,
+# so the READMEs carry [GROWTH-ALT]-style tokens replaced here per language.
+def aria_zh_growth():
+    vals = ", ".join(format(v, ",") for v in values)
+    dip = ("%d（%s）低于 %d（%s）。" % (years[-4], format(values[-4], ","),
+           years[-5], format(values[-5], ","))) if values[-4] < values[-5] else ""
+    return ("%d–%d 逐年贡献柱状图，平方根标度：%s。%d 与 %d 为真实零值，"
+            "画作基线下方的空槽。%s数据：GitHub。" % (
+                years[0], years[-1], vals, years[1],
+                years[2] if len(values) > 2 else years[1], dip))
+
+def aria_zh_rhythm():
+    order = [(4 + k) % 24 for k in range(24)]
+    seq = ", ".join(str(hours[h]) for h in order)
+    peak_hh = max(hours, key=lambda h: hours[h])
+    peak_v = hours[peak_hh]
+    total = sum(hours.values())
+    return ("开源提交按小时分布直方图（共 %s 条，Asia/Shanghai，横轴自 04:00 起至 03:00，"
+            "使夜间块连续）。自 04:00 起逐小时数值：%s。04:00–06:59 为真实零值"
+            "（基线下方空槽）。峰值 %02d:00 共 %d 条——占全部提交 %.1f%%，"
+            "为平坦基线的 %.2f 倍。低于最小可见高度的柱按最小高度绘制。" % (
+                format(total, ","), seq, peak_hh, peak_v,
+                peak_v / total * 100, peak_v / (total / 24)))
+
+def aria_zh_ground(repo_counts, rel):
+    rows = sorted(repo_counts.items(), key=lambda kv: -kv[1])
+    total = sum(repo_counts.values())
+    rel_total = sum(rel.values())
+    share = rows[0][1] / total * 100
+    listing = "；".join("%s %s" % (n, format(v, ",")) for n, v in rows)
+    rels = "、".join("%s %d" % (n, c) for n, c in sorted(rel.items(), key=lambda kv: -kv[1]))
+    return ("各源仓库提交量水平条形图（降序）：%s。共 %s 条提交、%d 个 release、"
+            "%d 个源仓库；%s 占 %.1f%%。Release 分布：%s。negentropy-perceives 已归档"
+            "——毕业并入 negentropy 主干。" % (
+                listing, format(total, ","), rel_total, len(repo_counts),
+                rows[0][0], share, rels))
+
+ALT_TOKENS = {
+    "README.md": {
+        "[GROWTH-ALT]": growth_aria,
+        "[RHYTHM-ALT]": rhythm_aria,
+        "[GROUND-ALT]": ground_aria,
+    },
+    "docs/i18n/zh-CN/README.md": {
+        "[GROWTH-ALT]": aria_zh_growth(),
+        "[RHYTHM-ALT]": aria_zh_rhythm(),
+        "[GROUND-ALT]": aria_zh_ground({k: len(v) for k, v in repo_commits.items()}, rel_counts),
+    },
 }
 
 outputs = {}
 for f in README_FILES:
+    pathlib.Path(f).read_text(encoding="utf-8")  # existence probe
     with open(f, encoding="utf-8") as fh:
         text = fh.read()
-    m = re.search(r"<!-- DATA:c2026 -->(.*?)<!-- /DATA:c2026 -->", text, re.S)
-    if m:
-        nums = re.findall(r"\d[\d,]*", m.group(1))
-        if nums and int(nums[0].replace(",", "")) > c2026_value:
-            die(
-                f"current-year total decreased ({nums[0]} -> {c2026_value}) — "
-                "parse likely broken"
-            )
+    # Monotonicity guard, year-flip aware: the annual total can only decrease
+    # when the README still refers to the *current* year. In January the
+    # headline legitimately resets to a small partial-year number.
+    mc = re.search(r"<!-- DATA:cur_year -->(\d{4})<!-- /DATA:cur_year -->", text)
+    if mc and int(mc.group(1)) == current_year:
+        m = re.search(r"<!-- DATA:c2026 -->(.*?)<!-- /DATA:c2026 -->", text, re.S)
+        if m:
+            nums = re.findall(r"\d[\d,]*", m.group(1))
+            if nums and int(nums[0].replace(",", "")) > values[-1]:
+                die(
+                    f"current-year total decreased ({nums[0]} -> {values[-1]}) — "
+                    "parse likely broken"
+                )
     for key, val in DATA.items():
         pat = re.compile(
             r"(<!-- DATA:" + key + r" -->).*?(<!-- /DATA:" + key + r" -->)", re.S
@@ -404,21 +595,28 @@ for f in README_FILES:
         text = pat.sub(lambda mm: f"{mm.group(1)}{val}{mm.group(2)}", text)
     if re.search(r"<!-- DATA:[a-z0-9_]+ -->\s*$", text, re.M):
         die(f"{f}: unfilled DATA placeholder remains")
+    for token, alt in ALT_TOKENS[f].items():
+        if token not in text:
+            die(f"{f}: alt token {token} not found")
+        text = text.replace(token, html.escape(alt, quote=True))
     outputs[f] = text
 
-arc_svg = render_arc(values, years, asof)
-clock_svg = render_clock(hours, commits_total, src_repos, peak_h, peak_n, zero_hours, asof)
+# Validate every rendered figure BEFORE anything is written to disk.
+for name, src in figures.items():
+    n = assert_svg_sane(src, name)
+    print(f"  {name}: {n}B PASS")
 
 # All guards passed — write everything.
-with open("assets/contribution-arc.svg", "w", encoding="utf-8") as fh:
-    fh.write(arc_svg)
-with open("assets/commit-clock.svg", "w", encoding="utf-8") as fh:
-    fh.write(clock_svg)
+pathlib.Path("assets").mkdir(exist_ok=True)
+for name, src in figures.items():
+    with open(pathlib.Path("assets") / name, "w", encoding="utf-8") as fh:
+        fh.write(src)
 for f, text in outputs.items():
     with open(f, "w", encoding="utf-8") as fh:
         fh.write(text)
 
 print(
-    f"OK  arc({len(values)}y, latest {c2026_value:,})  clock({commits_total:,} commits/{src_repos} repos, peak {peak_h:02d}:00×{peak_n})  "
-    f"pub_prs={pub_prs:,}  ext={ext_prs}  own_stars={own_stars}  streak={streak}d  median={neg_median:.0f}min"
+    f"OK  growth(latest {values[-1]:,})  rhythm({commits_total:,} commits/{src_repos} repos, "
+    f"peak {DATA['peak_h']})  ground({rel_total} releases)  pub_prs={pub_prs:,}  "
+    f"ext={ext_prs}  own_stars={own_stars}  streak={streak}d  median={neg_median:.0f}min"
 )

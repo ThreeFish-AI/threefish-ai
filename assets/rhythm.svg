@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="168" viewBox="0 0 700 168" role="img" aria-label="Histogram of 4,349 open-source commits by hour of day, Asia/Shanghai, axis running 04:00 through 03:00 so the night block stays contiguous. Values by hour from 04:00: 0, 0, 0, 11, 44, 232, 338, 319, 186, 184, 265, 285, 262, 292, 242, 206, 214, 348, 460, 329, 91, 36, 3, 2. 04:00 to 06:59 are exactly zero, drawn as open slots below the axis. Peak 22:00 with 460 commits, 10.6 percent of all commits, 2.54 times a flat baseline. Bars below the 2.5-pixel minimum height are drawn at that minimum.">
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+  }
+
+  .sweep{fill:#0969da;opacity:0}
+  @media (prefers-color-scheme:dark){.sweep{fill:#58a6ff}}
+  @media (prefers-reduced-motion:no-preference){
+    .sweep{animation:swr 2.1s cubic-bezier(.22,1,.36,1) .6s 1 both}
+    @keyframes swr{0%{opacity:0;transform:translateX(0)}
+      12%{opacity:.7}68%{opacity:.7;transform:translateX(496.4px)}
+      100%{opacity:0;transform:translateX(496.4px)}}
+  }
+</style>
+<rect class="bg" width="700" height="168" rx="6"/>
+<line class="rule" x1="42" y1="126" x2="686" y2="126" stroke-width="1"/>
+<rect class="zero" x="47.4" y="128.0" width="16.1" height="4.0"/>
+<rect class="zero" x="74.2" y="128.0" width="16.1" height="4.0"/>
+<rect class="zero" x="101.0" y="128.0" width="16.1" height="4.0"/>
+<rect class="bar" x="127.9" y="123.50" width="16.1" height="2.50" rx="2"/>
+<rect class="bar" x="154.7" y="118.35" width="16.1" height="7.65" rx="2"/>
+<rect class="bar" x="181.5" y="85.65" width="16.1" height="40.35" rx="2"/>
+<rect class="bar" x="208.4" y="67.22" width="16.1" height="58.78" rx="2"/>
+<rect class="bar" x="235.2" y="70.52" width="16.1" height="55.48" rx="2"/>
+<rect class="bar" x="262.0" y="93.65" width="16.1" height="32.35" rx="2"/>
+<rect class="bar" x="288.9" y="94.00" width="16.1" height="32.00" rx="2"/>
+<rect class="bar" x="315.7" y="79.91" width="16.1" height="46.09" rx="2"/>
+<rect class="bar" x="342.5" y="76.43" width="16.1" height="49.57" rx="2"/>
+<rect class="bar" x="369.4" y="80.43" width="16.1" height="45.57" rx="2"/>
+<rect class="bar" x="396.2" y="75.22" width="16.1" height="50.78" rx="2"/>
+<rect class="bar" x="423.0" y="83.91" width="16.1" height="42.09" rx="2"/>
+<rect class="bar" x="449.9" y="90.17" width="16.1" height="35.83" rx="2"/>
+<rect class="bar" x="476.7" y="88.78" width="16.1" height="37.22" rx="2"/>
+<rect class="bar" x="503.5" y="65.48" width="16.1" height="60.52" rx="2"/>
+<rect class="acc" x="530.4" y="46.00" width="16.1" height="80.00" rx="2"/>
+<rect class="bar" x="557.2" y="68.78" width="16.1" height="57.22" rx="2"/>
+<rect class="bar" x="584.0" y="110.17" width="16.1" height="15.83" rx="2"/>
+<rect class="bar" x="610.9" y="119.74" width="16.1" height="6.26" rx="2"/>
+<rect class="bar" x="637.7" y="123.50" width="16.1" height="2.50" rx="2"/>
+<rect class="bar" x="664.5" y="123.50" width="16.1" height="2.50" rx="2"/>
+<text x="42" y="22" font-size="11" class="lbl ts">open-source commits by hour · Asia/Shanghai · axis 04→03</text>
+<text x="538.4" y="39.0" font-size="13" class="accv tm">460</text>
+<text x="55.4" y="142" font-size="10.5" class="lbl tm">04</text><text x="162.8" y="142" font-size="10.5" class="lbl tm">08</text><text x="270.1" y="142" font-size="10.5" class="lbl tm">12</text><text x="377.4" y="142" font-size="10.5" class="lbl tm">16</text><text x="484.8" y="142" font-size="10.5" class="lbl tm">20</text><text x="592.1" y="142" font-size="10.5" class="lbl tm">00</text>
+<text x="686" y="160" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+<rect class="sweep" x="42" y="38" width="2.5" height="88" rx="1.25"/>
+</svg>
