@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="62" viewBox="0 0 256 62" role="img" aria-label="Three fish, drawn as a signature mark. In Mandarin the three surpluses of Dong Yu — winter, night, and rainy days (三余, sān yú) — sound nearly the same as three fish (三鱼). Hence the handle ThreeFish. Purely decorative; no data encoded.">
+<style>
+  .fi{fill:none;stroke:#6e7781;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+  .eye{fill:#6e7781}
+  @media (prefers-color-scheme:dark){.fi{stroke:#9198a1}.eye{fill:#9198a1}}
+  .rip{fill:none;stroke:#0969da;stroke-width:1.2;opacity:0;transform-box:fill-box;transform-origin:center}
+  @media (prefers-color-scheme:dark){.rip{stroke:#58a6ff}}
+  @media (prefers-reduced-motion:no-preference){
+    .rip{animation:rip 2s ease-out 1 both;animation-delay:var(--d)}
+    @keyframes rip{0%{opacity:0;transform:scale(.45)}
+      45%{opacity:.5}100%{opacity:0;transform:scale(1.35)}}
+  }
+</style>
+<ellipse class="rip" style="--d:.3s" cx="46" cy="34" rx="28" ry="12"/>
+<ellipse class="rip" style="--d:.85s" cx="132" cy="26" rx="28" ry="12"/>
+<ellipse class="rip" style="--d:1.35s" cx="218" cy="35" rx="28" ry="12"/>
+<path class="fi" d="M 24,34 C 35,23.5 57,23.5 68,34 C 57,44.5 35,44.5 24,34 Z"/>
+<path class="fi" d="M 27,34 L 12,26.5 L 15.5,34 L 12,41.5 Z"/>
+<circle class="eye" cx="59.5" cy="31.0" r="1.6"/>
+<path class="fi" d="M 110,26 C 121,15.5 143,15.5 154,26 C 143,36.5 121,36.5 110,26 Z"/>
+<path class="fi" d="M 113,26 L 98,18.5 L 101.5,26 L 98,33.5 Z"/>
+<circle class="eye" cx="145.5" cy="23.0" r="1.6"/>
+<path class="fi" d="M 196,35 C 207,24.5 229,24.5 240,35 C 229,45.5 207,45.5 196,35 Z"/>
+<path class="fi" d="M 199,35 L 184,27.5 L 187.5,35 L 184,42.5 Z"/>
+<circle class="eye" cx="231.5" cy="32.0" r="1.6"/>
+</svg>

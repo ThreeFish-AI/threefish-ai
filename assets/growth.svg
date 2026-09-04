@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="168" viewBox="0 0 700 168" role="img" aria-label="Column chart, contributions per year 2016 to 2026 on a square-root scale: 1, 0, 0, 13, 129, 198, 676, 589, 1,181, 3,193, 9,308. 2017 and 2018 are exactly zero, drawn as open slots below the axis. 2023 (589) is lower than 2022 (676). Data: GitHub.">
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+  }
+
+  .sweep{fill:#0969da;opacity:0}
+  @media (prefers-color-scheme:dark){.sweep{fill:#58a6ff}}
+  @media (prefers-reduced-motion:no-preference){
+    .sweep{animation:swg 1.9s cubic-bezier(.22,1,.36,1) .15s 1 both}
+    @keyframes swg{0%{opacity:0;transform:translateX(0)}
+      10%{opacity:.7}80%{opacity:.7;transform:translateX(644px)}
+      100%{opacity:0;transform:translateX(644px)}}
+  }
+</style>
+<rect class="bg" width="700" height="168" rx="6"/>
+<line class="rule" x1="42" y1="126" x2="686" y2="126" stroke-width="1"/>
+<rect class="bar" x="56.1" y="123.50" width="30.4" height="2.50" rx="2"/>
+<rect class="zero" x="114.6" y="128.0" width="30.4" height="4.0"/>
+<rect class="zero" x="173.2" y="128.0" width="30.4" height="4.0"/>
+<rect class="bar" x="231.7" y="122.71" width="30.4" height="3.29" rx="2"/>
+<rect class="bar" x="290.3" y="115.64" width="30.4" height="10.36" rx="2"/>
+<rect class="bar" x="348.8" y="113.17" width="30.4" height="12.83" rx="2"/>
+<rect class="bar" x="407.3" y="102.28" width="30.4" height="23.72" rx="2"/>
+<rect class="bar" x="465.9" y="103.86" width="30.4" height="22.14" rx="2"/>
+<rect class="bar" x="524.4" y="94.65" width="30.4" height="31.35" rx="2"/>
+<rect class="bar" x="583.0" y="74.46" width="30.4" height="51.54" rx="2"/>
+<rect class="acc" x="641.5" y="38.00" width="30.4" height="88.00" rx="2"/>
+<text x="42" y="22" font-size="11" class="lbl ts">contributions per year · square-root scale</text>
+<text x="71.3" y="118.0" font-size="11.5" class="val tm">1</text>
+<text x="129.8" y="118.0" font-size="11.5" class="val tm">0</text>
+<text x="188.4" y="118.0" font-size="11.5" class="val tm">0</text>
+<text x="246.9" y="117.2" font-size="11.5" class="val tm">13</text>
+<text x="305.5" y="110.1" font-size="11.5" class="val tm">129</text>
+<text x="364.0" y="107.7" font-size="11.5" class="val tm">198</text>
+<text x="422.5" y="96.8" font-size="11.5" class="val tm">676</text>
+<text x="481.1" y="98.4" font-size="11.5" class="val tm">589 ↓</text>
+<text x="539.6" y="89.2" font-size="11.5" class="val tm">1,181</text>
+<text x="598.2" y="69.0" font-size="11.5" class="val tm">3,193</text>
+<text x="656.7" y="31.0" font-size="15" class="accv tm">9,308</text>
+<text x="71.3" y="142" font-size="10.5" class="lbl tm">2016</text><text x="129.8" y="142" font-size="10.5" class="lbl tm">2017</text><text x="188.4" y="142" font-size="10.5" class="lbl tm">2018</text><text x="246.9" y="142" font-size="10.5" class="lbl tm">2019</text><text x="305.5" y="142" font-size="10.5" class="lbl tm">2020</text><text x="364.0" y="142" font-size="10.5" class="lbl tm">2021</text><text x="422.5" y="142" font-size="10.5" class="lbl tm">2022</text><text x="481.1" y="142" font-size="10.5" class="lbl tm">2023</text><text x="539.6" y="142" font-size="10.5" class="lbl tm">2024</text><text x="598.2" y="142" font-size="10.5" class="lbl tm">2025</text><text x="656.7" y="142" font-size="10.5" class="lbl tm">2026</text>
+<text x="686" y="160" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+<rect class="sweep" x="42" y="30" width="2.5" height="96" rx="1.25"/>
+</svg>

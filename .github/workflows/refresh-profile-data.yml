@@ -28,6 +28,6 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/contribution-arc.svg assets/commit-clock.svg README.md docs/i18n/zh-CN/README.md
-          git diff --staged --quiet || git commit -m "chore(profile): 刷新贡献曲线与提交时钟数据;"
+          git add assets/growth.svg assets/rhythm.svg assets/ground.svg assets/mark.svg README.md docs/i18n/zh-CN/README.md
+          git diff --staged --quiet || git commit -m "chore(profile): 刷新 v4 图表与数据;"
           git push
