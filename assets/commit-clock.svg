@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="150" viewBox="0 0 760 150" role="img"
+     aria-label="Commits by hour of day, Asia/Shanghai. 4,349 open-source commits across 7 source repositories. Peak 22:00 with 460 commits, 10.6 percent. 3 hours have zero commits.">
+<style>
+  .peak{fill:#0969da}.night{fill:#0969da;opacity:.55}.day{fill:#59636e;opacity:.38}.zero{fill:#59636e;opacity:.22}.lbl{fill:#59636e}.base{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .peak{fill:#58a6ff}.night{fill:#58a6ff;opacity:.55}.day{fill:#8b949e;opacity:.38}.zero{fill:#8b949e;opacity:.22}.lbl{fill:#8b949e}.base{stroke:#30363d}
+  }
+</style>
+<line class="base" x1="40" y1="112" x2="730" y2="112" stroke-width="1"/>
+<rect class="night" x="52.0" y="97.0" width="19.0" height="15.0" rx="2"/>
+<rect class="night" x="79.5" y="106.1" width="19.0" height="5.9" rx="2"/>
+<rect class="night" x="107.0" y="111.5" width="19.0" height="0.5" rx="2"/>
+<rect class="night" x="134.5" y="111.7" width="19.0" height="0.3" rx="2"/>
+<rect class="zero" x="162.0" y="110.5" width="19.0" height="1.5" rx="2"/>
+<rect class="zero" x="189.5" y="110.5" width="19.0" height="1.5" rx="2"/>
+<rect class="zero" x="217.0" y="110.5" width="19.0" height="1.5" rx="2"/>
+<rect class="day" x="244.5" y="110.2" width="19.0" height="1.8" rx="2"/>
+<rect class="day" x="272.0" y="104.7" width="19.0" height="7.3" rx="2"/>
+<rect class="day" x="299.5" y="73.7" width="19.0" height="38.3" rx="2"/>
+<rect class="day" x="327.0" y="56.2" width="19.0" height="55.8" rx="2"/>
+<rect class="day" x="354.5" y="59.3" width="19.0" height="52.7" rx="2"/>
+<rect class="day" x="382.0" y="81.3" width="19.0" height="30.7" rx="2"/>
+<rect class="day" x="409.5" y="81.6" width="19.0" height="30.4" rx="2"/>
+<rect class="day" x="437.0" y="68.2" width="19.0" height="43.8" rx="2"/>
+<rect class="day" x="464.5" y="64.9" width="19.0" height="47.1" rx="2"/>
+<rect class="day" x="492.0" y="68.7" width="19.0" height="43.3" rx="2"/>
+<rect class="day" x="519.5" y="63.8" width="19.0" height="48.2" rx="2"/>
+<rect class="day" x="547.0" y="72.0" width="19.0" height="40.0" rx="2"/>
+<rect class="night" x="574.5" y="78.0" width="19.0" height="34.0" rx="2"/>
+<rect class="night" x="602.0" y="76.6" width="19.0" height="35.4" rx="2"/>
+<rect class="night" x="629.5" y="54.5" width="19.0" height="57.5" rx="2"/>
+<rect class="peak" x="657.0" y="36.0" width="19.0" height="76.0" rx="2"/>
+<rect class="night" x="684.5" y="57.6" width="19.0" height="54.4" rx="2"/>
+<g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" text-anchor="middle">
+  <text x="665" y="28" font-size="13" font-weight="600" class="lbl">460</text>
+  <text x="198" y="96" font-size="10" class="lbl">04:00–06:59</text>
+  <text x="198" y="107" font-size="10" class="lbl">zero commits</text>
+  <text x="730" y="20" text-anchor="end" font-size="10" class="lbl">4,349 commits · Asia/Shanghai</text>
+  <text x="60" y="130" font-size="9" class="lbl">00</text>
+  <text x="225" y="130" font-size="9" class="lbl">06</text>
+  <text x="390" y="130" font-size="9" class="lbl">12</text>
+  <text x="555" y="130" font-size="9" class="lbl">18</text>
+  <text x="692" y="130" font-size="9" class="lbl">23</text>
+</g>
+<text x="736" y="148" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="9" class="lbl">as of 2026-09-05</text>
+</svg>
