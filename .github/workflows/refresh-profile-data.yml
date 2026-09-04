@@ -1,0 +1,33 @@
+name: Refresh Profile Data
+
+on:
+  schedule:
+    - cron: "23 2 1 * *" # monthly, 10:23 Asia/Shanghai, off the hour to dodge scheduler congestion
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Regenerate figures
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/build_profile_svgs.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/contribution-arc.svg assets/commit-clock.svg README.md docs/i18n/zh-CN/README.md
+          git diff --staged --quiet || git commit -m "chore(profile): 刷新贡献曲线与提交时钟数据;"
+          git push
