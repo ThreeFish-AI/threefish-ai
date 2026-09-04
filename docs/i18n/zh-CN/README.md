@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/mark.svg" width="256" alt="三条鱼——ThreeFish 的签名图形。汉语里，董遇的「三余」——冬天、夜晚、雨天（sān yú）——与「三鱼」几乎同音，ID 由此而来。" />
+<img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/mark.svg" width="256" alt="三只鱼——ThreeFish 的签名图形。汉语里，董遇的「三余」——冬天、夜晚、雨天（sān yú）——与「三鱼」几乎同音，ID 由此而来。" />
 
-### Aurelius Huang · 阿浩
+### Aurelius Huang · 三余
 
 **熵减——代码库的，与日子的。**
 

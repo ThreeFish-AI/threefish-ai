@@ -2,7 +2,7 @@
 
 <img src="assets/mark.svg" width="256" alt="Three fish — the signature of ThreeFish. In Mandarin, the three surpluses of Dong Yu — winter, night, rainy days (三余, sān yú) — sound nearly the same as three fish (三鱼). Hence the handle." />
 
-### Aurelius Huang · 阿浩
+### Aurelius Huang · 三余
 
 **Entropy reduction — of codebases, and of days.**
 
