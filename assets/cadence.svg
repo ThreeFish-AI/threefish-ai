@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="206" viewBox="0 0 700 206" role="img" aria-label="Dot timeline of 29 public releases across 5 repositories on one shared date axis, 2024-06-22 to 2026-09-01. coding-proxy: 12 releases, v0.1.1 on 2026-04-05 through v0.5.2a8 on 2026-07-06; give-me-a-break: 7 releases, v0.1.0 on 2026-06-27 through v0.1.6 on 2026-09-04; hyper-git: 7 releases, v0.0.6 on 2026-06-30 through v0.0.16 on 2026-09-01; negentropy: 2 releases, negentropy-v0.0.1-rc.1 on 2026-06-19 through negentropy-v0.0.1-rc.2 on 2026-06-19, all pre-releases; negentropy-perceives: 1 releases, v0.2.0a3 on 2026-04-20 through v0.2.0a3 on 2026-04-20. Hollow dots are pre-releases. negentropy shows only its 2 release candidates against 2,048 commits because it is a deployed service, not a distributed package — its shipping unit is the merged pull request, not the tag. Data: GitHub.">
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.bars{fill:none;stroke:#8c959f}.accs{fill:none;stroke:#0969da}.inks{fill:none;stroke:#1f2328}.vals{fill:none;stroke:#57606a}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.bars{stroke:#6e7681}.accs{stroke:#58a6ff}.inks{stroke:#f0f6fc}.vals{stroke:#8b949e}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+  }
+
+  .sweep{fill:#0969da;opacity:0}
+  @media (prefers-color-scheme:dark){.sweep{fill:#58a6ff}}
+  @media (prefers-reduced-motion:no-preference){
+    .sweep{animation:csw 1.8s cubic-bezier(.22,1,.36,1) .5s 1 both}
+    @keyframes csw{0%{opacity:0;transform:translateY(0)}
+      12%{opacity:.6}72%{opacity:.6;transform:translateY(134px)}
+      100%{opacity:0;transform:translateY(134px)}}
+  }
+</style>
+<rect class="bg" width="700" height="206" rx="6"/>
+<line class="rule" x1="152" y1="46" x2="686" y2="46" stroke-width="1"/>
+<circle class="bar" cx="586.7" cy="41.0" r="3.4"/>
+<circle class="bar" cx="587.3" cy="46.0" r="3.4"/>
+<circle class="bar" cx="588.0" cy="51.0" r="3.4"/>
+<circle class="bar" cx="590.0" cy="41.0" r="3.4"/>
+<circle class="bar" cx="590.7" cy="46.0" r="3.4"/>
+<circle class="bar" cx="592.0" cy="51.0" r="3.4"/>
+<circle class="bar" cx="594.0" cy="41.0" r="3.4"/>
+<circle class="bar" cx="596.7" cy="46.0" r="3.4"/>
+<circle class="bar" cx="604.0" cy="51.0" r="3.4"/>
+<circle class="bar" cx="621.3" cy="41.0" r="3.4"/>
+<circle class="bar" cx="636.0" cy="46.0" r="3.4"/>
+<circle class="bar" cx="648.0" cy="51.0" r="3.4"/>
+<text x="589.7" y="61.0" font-size="8.5" class="lbl ts">v0.1.1</text>
+<text x="146" y="49.0" font-size="9.5" class="lbl te">coding-proxy · 12</text>
+<line class="rule" x1="152" y1="70" x2="686" y2="70" stroke-width="1"/>
+<circle class="bar" cx="642.0" cy="65.0" r="3.4"/>
+<circle class="bar" cx="644.0" cy="70.0" r="3.4"/>
+<circle class="bar" cx="646.0" cy="75.0" r="3.4"/>
+<circle class="bar" cx="686.0" cy="65.0" r="3.4"/>
+<circle class="bar" cx="686.0" cy="70.0" r="3.4"/>
+<circle class="bar" cx="686.0" cy="75.0" r="3.4"/>
+<circle class="bar" cx="686.0" cy="65.0" r="3.4"/>
+<text x="645.0" y="85.0" font-size="8.5" class="lbl ts">v0.1.0</text>
+<text x="146" y="73.0" font-size="9.5" class="lbl te">give-me-a-break · 7</text>
+<line class="rule" x1="152" y1="94" x2="686" y2="94" stroke-width="1"/>
+<circle class="bar" cx="644.0" cy="89.0" r="3.4"/>
+<circle class="bar" cx="646.7" cy="94.0" r="3.4"/>
+<circle class="bar" cx="646.7" cy="99.0" r="3.4"/>
+<circle class="bar" cx="646.7" cy="89.0" r="3.4"/>
+<circle class="bar" cx="647.3" cy="94.0" r="3.4"/>
+<circle class="bar" cx="648.0" cy="99.0" r="3.4"/>
+<circle class="bar" cx="686.0" cy="89.0" r="3.4"/>
+<text x="647.0" y="109.0" font-size="8.5" class="lbl ts">v0.0.6</text>
+<text x="146" y="97.0" font-size="9.5" class="lbl te">hyper-git · 7</text>
+<line class="rule" x1="152" y1="118" x2="686" y2="118" stroke-width="1"/>
+<circle class="zero" cx="636.7" cy="113.0" r="3.4"/>
+<circle class="zero" cx="636.7" cy="118.0" r="3.4"/>
+<text x="594.5" y="133.0" font-size="8.5" class="lbl ts">negentropy-v0.0.1-rc.1</text>
+<text x="146" y="121.0" font-size="9.5" class="lbl te">negentropy · 2</text>
+<line class="rule" x1="152" y1="142" x2="686" y2="142" stroke-width="1"/>
+<circle class="bar" cx="596.7" cy="137.0" r="3.4"/>
+<text x="599.7" y="157.0" font-size="8.5" class="lbl ts">v0.2.0a3</text>
+<text x="146" y="145.0" font-size="9.5" class="lbl te">negentropy-perceives · 1</text>
+<rect class="sweep" x="42" y="30" width="644" height="2.2" rx="1.1"/>
+<text x="199" y="174" font-size="10" class="lbl tm">2024-09</text>
+<text x="260" y="174" font-size="10" class="lbl tm">2024-12</text>
+<text x="320" y="174" font-size="10" class="lbl tm">2025-03</text>
+<text x="381" y="174" font-size="10" class="lbl tm">2025-06</text>
+<text x="443" y="174" font-size="10" class="lbl tm">2025-09</text>
+<text x="503" y="174" font-size="10" class="lbl tm">2025-12</text>
+<text x="563" y="174" font-size="10" class="lbl tm">2026-03</text>
+<text x="625" y="174" font-size="10" class="lbl tm">2026-06</text>
+<text x="677" y="174" font-size="10" class="lbl tm">2026-09</text>
+<text x="42" y="20" font-size="11" class="lbl ts">releases on the commit timeline · hollow = pre-release · counts at left</text>
+<text x="42" y="34" font-size="9.5" class="lbl ts">negentropy ships as merged PRs, not tags — it is a deployed service, not a distributed package</text>
+<text x="686" y="198" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+</svg>

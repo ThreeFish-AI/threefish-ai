@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="700" height="224" viewBox="0 0 700 224" role="img" aria-label="Horizontal bar chart, commits per source repository, sorted: negentropy 2,048; agentic-ai-cognizes 945; coding-proxy 638; negentropy-perceives 433; hyper-git 125; threefish-ai.github.io 117; give-me-a-break 43. Total 4,349 commits and 28 releases across 7 source repositories; negentropy is 47.1 percent of commits. Releases: coding-proxy 12, give-me-a-break 7, hyper-git 7, negentropy 2. negentropy-perceives is archived — it graduated into the negentropy trunk.">
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="224" viewBox="0 0 700 224" role="img" aria-label="Horizontal bar chart, commits per source repository, sorted: negentropy 2,048; agentic-ai-cognizes 945; coding-proxy 638; negentropy-perceives 433; hyper-git 125; threefish-ai.github.io 117; give-me-a-break 43. Total 4,349 commits and 29 releases across 7 source repositories; negentropy is 47.1 percent of commits. Releases: coding-proxy 12, give-me-a-break 7, hyper-git 7, negentropy 2, negentropy-perceives 1. agentic-ai-cognizes and negentropy-perceives are archived — they graduated into the negentropy trunk.">
 <style>
   text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
   .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
-  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.bars{fill:none;stroke:#8c959f}.accs{fill:none;stroke:#0969da}.inks{fill:none;stroke:#1f2328}.vals{fill:none;stroke:#57606a}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
   @media (prefers-color-scheme:dark){
-    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.bars{stroke:#6e7681}.accs{stroke:#58a6ff}.inks{stroke:#f0f6fc}.vals{stroke:#8b949e}.zero{stroke:#6e7681}.rule{stroke:#30363d}
   }
 </style>
 <rect class="bg" width="700" height="224" rx="6"/>
@@ -27,7 +27,7 @@
 <text x="150" y="117" font-size="11.5" class="lbl te">negentropy-perceives</text>
 <rect class="bar" x="160" y="108" width="88.8" height="11" rx="2"/>
 <text x="256.8" y="117" font-size="11.5" class="val ts">433</text>
-<text x="660" y="117" font-size="11.5" class="val te">0</text>
+<text x="660" y="117" font-size="11.5" class="val te">1</text>
 <text x="150" y="141" font-size="11.5" class="lbl te">hyper-git</text>
 <rect class="bar" x="160" y="132" width="25.6" height="11" rx="2"/>
 <text x="193.6" y="141" font-size="11.5" class="val ts">125</text>
@@ -40,6 +40,6 @@
 <rect class="bar" x="160" y="180" width="8.8" height="11" rx="2"/>
 <text x="176.8" y="189" font-size="11.5" class="val ts">43</text>
 <text x="660" y="189" font-size="11.5" class="val te">7</text>
-<text x="160" y="212" font-size="11" class="lbl ts">4,349 commits · 28 releases · 7 source repositories · negentropy 47.1%</text>
+<text x="160" y="212" font-size="11" class="lbl ts">4,349 commits · 29 releases · 7 source repositories · negentropy 47.1%</text>
 <text x="686" y="212" font-size="9.5" class="lbl te">as of 2026-09-05</text>
 </svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="196" viewBox="0 0 700 196" role="img" aria-label="Slope chart of language byte shares over the source repositories under two conditions. Left, as GitHub&#x27;s language endpoint reports it: HTML 67.8 percent, Python 22.7 percent, TypeScript 8.3 percent, Swift 0.5 percent, CSS 0.2 percent, C# 0.2 percent. Right, excluding threefish-ai.github.io, whose bytes of HTML are generated static-site output rather than authored source: Python 69.1 percent, TypeScript 25.2 percent, HTML 2.3 percent, Swift 1.4 percent, C# 0.6 percent, CSS 0.5 percent. HTML falls from rank 1 to rank 3; Python rises to rank 1. Byte counts measure committed source size, not authorship or effort, and include vendored files. Every source repo contributes counted bytes. Data: GitHub.">
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.bars{fill:none;stroke:#8c959f}.accs{fill:none;stroke:#0969da}.inks{fill:none;stroke:#1f2328}.vals{fill:none;stroke:#57606a}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.bars{stroke:#6e7681}.accs{stroke:#58a6ff}.inks{stroke:#f0f6fc}.vals{stroke:#8b949e}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+  }
+</style>
+<rect class="bg" width="700" height="196" rx="6"/>
+<line class="accs" x1="210" y1="122.0" x2="470" y2="44.0" stroke-width="1.6"/>
+<circle class="acc" cx="210" cy="122.0" r="2.4"/><circle class="acc" cx="470" cy="44.0" r="2.4"/>
+<line class="bars" x1="210" y1="146.1" x2="470" y2="117.7" stroke-width="1.6"/>
+<circle class="bar" cx="210" cy="146.1" r="2.4"/><circle class="bar" cx="470" cy="117.7" r="2.4"/>
+<line class="bars" x1="210" y1="46.2" x2="470" y2="156.2" stroke-width="1.6"/>
+<circle class="bar" cx="210" cy="46.2" r="2.4"/><circle class="bar" cx="470" cy="156.2" r="2.4"/>
+<line class="bars" x1="210" y1="159.2" x2="470" y2="157.6" stroke-width="1.6"/>
+<circle class="bar" cx="210" cy="159.2" r="2.4"/><circle class="bar" cx="470" cy="157.6" r="2.4"/>
+<line class="bars" x1="210" y1="159.7" x2="470" y2="159.0" stroke-width="1.6"/>
+<circle class="bar" cx="210" cy="159.7" r="2.4"/><circle class="bar" cx="470" cy="159.0" r="2.4"/>
+<line class="bars" x1="210" y1="159.6" x2="470" y2="159.2" stroke-width="1.6"/>
+<circle class="bar" cx="210" cy="159.6" r="2.4"/><circle class="bar" cx="470" cy="159.2" r="2.4"/>
+<line class="bars" x1="210" y1="159.8" x2="470" y2="159.3" stroke-width="1.6"/>
+<circle class="bar" cx="210" cy="159.8" r="2.4"/><circle class="bar" cx="470" cy="159.3" r="2.4"/>
+<text x="202" y="162.8" font-size="10" class="lbl te">Shell 0.1%</text>
+<text x="202" y="151.8" font-size="10" class="lbl te">C# 0.2%</text>
+<text x="202" y="140.8" font-size="10" class="lbl te">CSS 0.2%</text>
+<text x="202" y="129.8" font-size="10" class="lbl te">Swift 0.5%</text>
+<text x="202" y="118.8" font-size="10" class="lbl te">TypeScript 8.3%</text>
+<text x="202" y="107.8" font-size="10" class="lbl te">Python 22.7%</text>
+<text x="202" y="49.2" font-size="10" class="lbl te">HTML 67.8%</text>
+<text x="478" y="162.3" font-size="10" class="val ts">Shell 0.4%</text>
+<text x="478" y="151.3" font-size="10" class="val ts">CSS 0.5%</text>
+<text x="478" y="140.3" font-size="10" class="val ts">C# 0.6%</text>
+<text x="478" y="129.3" font-size="10" class="val ts">Swift 1.4%</text>
+<text x="478" y="118.3" font-size="10" class="val ts">HTML 2.3%</text>
+<text x="478" y="107.3" font-size="10" class="val ts">TypeScript 25.2%</text>
+<text x="478" y="47.0" font-size="10" class="accv ts">Python 69.1%</text>
+<text x="210" y="32" font-size="10" class="lbl tm">as GitHub counts it</text>
+<text x="470" y="32" font-size="10" class="lbl tm">excluding threefish-ai.github.io</text>
+<text x="42" y="176" font-size="9.5" class="lbl ts">others 0.2% / 0.5% · bytes measure committed source size, not authorship or effort · no zero-byte source repos</text>
+<text x="42" y="20" font-size="11" class="lbl ts">language byte share under two conditions · threefish-ai.github.io is generated static-site output</text>
+<text x="686" y="190" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+</svg>
