@@ -110,7 +110,6 @@ FACT_KEYS = frozenset({
 # an SVG in assets/ that this script did not render aborts the run, so the
 # workflow can safely `git add -A assets`.
 FIG_SPEC = {
-    "mark": ("mark.svg", 256),
     "growth": ("growth.svg", 700),
     "rhythm": ("rhythm.svg", 700),
     "ground": ("ground.svg", 700),
@@ -743,36 +742,6 @@ def render_ground(repo_commits, rel, asof, aria):
         "</svg>", ""])
     return s
 
-
-def render_mark(aria):
-    """Three-fish signature mark. The only 'figure' with no data — it IS the name."""
-    W, H = 256, 62
-    pos = [(24, 34, ".3s"), (110, 26, ".85s"), (196, 35, "1.35s")]
-    fish, rip = [], []
-    for x0, cy, d in pos:
-        fish.append('<path class="fi" d="M %g,%g C %g,%g %g,%g %g,%g C %g,%g %g,%g %g,%g Z"/>'
-                    % (x0, cy, x0+11, cy-10.5, x0+33, cy-10.5, x0+44, cy,
-                       x0+33, cy+10.5, x0+11, cy+10.5, x0, cy))
-        fish.append('<path class="fi" d="M %g,%g L %g,%g L %g,%g L %g,%g Z"/>'
-                    % (x0+3, cy, x0-12, cy-7.5, x0-8.5, cy, x0-12, cy+7.5))
-        fish.append('<circle class="eye" cx="%.1f" cy="%.1f" r="1.6"/>' % (x0+35.5, cy-3))
-        rip.append('<ellipse class="rip" style="--d:%s" cx="%g" cy="%g" rx="28" ry="12"/>' % (d, x0+22, cy))
-    st = ("<style>\n"
-          "  .fi{fill:none;stroke:%s;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}\n"
-          "  .eye{fill:%s}\n"
-          "  @media (prefers-color-scheme:dark){.fi{stroke:%s}.eye{fill:%s}}\n"
-          "  .rip{fill:none;stroke:%s;stroke-width:1.2;opacity:0;"
-          "transform-box:fill-box;transform-origin:center}\n"
-          "  @media (prefers-color-scheme:dark){.rip{stroke:%s}}\n"
-          "  @media (prefers-reduced-motion:no-preference){\n"
-          "    .rip{animation:rip 2s ease-out 1 both;animation-delay:var(--d)}\n"
-          "    @keyframes rip{0%%{opacity:0;transform:scale(.45)}\n"
-          "      45%%{opacity:.5}100%%{opacity:0;transform:scale(1.35)}}\n  }\n</style>") % (
-          LIGHT["lbl"], LIGHT["lbl"], DARK["lbl"], DARK["lbl"], LIGHT["acc"], DARK["acc"])
-    return "\n".join([
-        '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s">' % (W, H, W, H, aria),
-        st,
-        "\n".join(rip), "\n".join(fish), "</svg>", ""])
 
 
 def landing_motion(cls, kf, cx, cy, dur="1.6s", delay=".4s"):
@@ -1670,15 +1639,6 @@ def ground_alt(f, counts, rel, archived):
                "、".join("%s %d" % r for r in rel_rows), arc))
 
 
-def mark_alt(f):
-    if f == EN:
-        return ("Three fish, drawn as a signature mark. In Mandarin the three surpluses of "
-                "Dong Yu — winter, night, and rainy days (三余, sān yú) — sound nearly the "
-                "same as three fish (三鱼). Hence the handle ThreeFish. Purely decorative; "
-                "no data encoded.")
-    return ("三只鱼，作为签名图形。汉语里，董遇的「三余」——冬天、夜晚、雨天（sān yú）"
-            "——与「三鱼」几乎同音，ID 由此而来。纯装饰，不编码任何数据。")
-
 
 # v5 figures. Alt policy: the full series ships only when it has at most 24
 # values per series (growth n=11, rhythm n=24, surplus 2×24); above that the
@@ -2148,7 +2108,6 @@ ALTS = {
     "rhythm": {f: rhythm_alt(f, hours) for f in README_FILES},
     "ground": {f: ground_alt(f, ground_counts, rel_counts, archived_names)
                for f in README_FILES},
-    "mark": {f: mark_alt(f) for f in README_FILES},
     "punchcard": {f: punchcard_alt(f, weekhours, DOMAIN, wknd, wd_days, we_days)
                   for f in README_FILES},
     "surplus": {f: surplus_alt(f, wd_hour, we_hour, wd_days, we_days, DOMAIN)
@@ -2175,7 +2134,6 @@ figures = {
     FIG_SPEC["growth"][0]: render_growth(values, years, asof, ALTS["growth"][EN]),
     FIG_SPEC["rhythm"][0]: render_rhythm(hours, asof, ALTS["rhythm"][EN]),
     FIG_SPEC["ground"][0]: render_ground(ground_counts, rel_counts, asof, ALTS["ground"][EN]),
-    FIG_SPEC["mark"][0]: render_mark(ALTS["mark"][EN]),
     FIG_SPEC["punchcard"][0]: render_punchcard(weekhours, DOMAIN, asof, ALTS["punchcard"][EN]),
     FIG_SPEC["surplus"][0]: render_surplus(wd_hour, we_hour, wd_days, we_days, DOMAIN, asof,
                                            ALTS["surplus"][EN]),

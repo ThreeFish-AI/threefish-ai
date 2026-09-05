@@ -1,8 +1,6 @@
 <div align="center">
 
-<!-- FIG:mark --><img src="assets/mark.svg" width="256" alt="Three fish, drawn as a signature mark. In Mandarin the three surpluses of Dong Yu — winter, night, and rainy days (三余, sān yú) — sound nearly the same as three fish (三鱼). Hence the handle ThreeFish. Purely decorative; no data encoded." /><!-- /FIG:mark -->
-
-### Aurelius Huang · 三余
+### <img src="https://github.com/ThreeFish-AI.png?size=96" width="32" align="middle" alt="Aurelius Huang&#39;s personal avatar. The handle ThreeFish: in Mandarin the three surpluses of Dong Yu — winter, night, and rainy days (三余, sān yú) — sound nearly the same as three fish (三鱼)." /> Aurelius Huang · 三余
 
 **Entropy reduction — of codebases, and of days.**
 
@@ -278,7 +276,7 @@ Because notarization costs a developer account I have not bought for a two-star 
 
 **Definitions, so the words mean one thing.** A *source repository* is a non-fork repository with at least ten commits authored by me — that threshold is why the count is <!-- DATA:src_repos -->7<!-- /DATA:src_repos --> and not the number of repositories on the profile. *Stars actually mine* is total stars minus the mirror described in the honesty notes. *Streak* is the longest unbroken run of days with a public authored commit, ever — not a current streak, and narrower than the GitHub calendar. *Conventional Commits* is a regex over first lines, so a well-formed subject with a lying body still counts.
 
-**This page is a build artifact.** One Python script, standard library only, no dependencies to rot. It collects from GitHub, renders fourteen SVGs, and rewrites the numbers inside both READMEs — English and Chinese — from a single dictionary of language-neutral values, so a number cannot say one thing here and another thing there. Every figure passes a write gate before anything touches disk: under 8 KB, `role="img"` and a full data series in the alt text, no external resources, no animation that loops — entrances only, default state equal to final state, behind `prefers-reduced-motion: no-preference`.
+**This page is a build artifact.** One Python script, standard library only, no dependencies to rot. It collects from GitHub, renders thirteen SVGs, and rewrites the numbers inside both READMEs — English and Chinese — from a single dictionary of language-neutral values, so a number cannot say one thing here and another thing there. Every figure passes a write gate before anything touches disk: under 8 KB, `role="img"` and a full data series in the alt text, no external resources, no animation that loops — entrances only, default state equal to final state, behind `prefers-reduced-motion: no-preference`.
 
 **Guards, all of which abort the run without writing a byte.** The contributions page's per-day tooltips must sum to its own year total; the hour, weekday, day and commit-type histograms must each equal the per-repository commit total; the current-year figure must never decrease while the page still points at the current year; the external-PR ledger must match its own `total_count`; the two READMEs must carry the identical marker set in the identical order; the substitution must be a fixed point of itself. Stale and true beats fresh and wrong.
 
