@@ -96,6 +96,8 @@ FACT_KEYS = frozenset({
     "rel_last_name", "rel_last_tag",
     "streak_from", "streak_to", "active_days", "active_pct",
     "wd_days", "we_days", "we_peak_h",
+    # v5 content modules (per-project sub-lines)
+    "neg_commits", "rel_cp", "rel_hg", "rel_gmab",
 })
 
 # Figure key -> (filename, rendered width). Also the assets-closure contract:
@@ -1824,6 +1826,10 @@ facts = {
     "wd_days": wd_days,
     "we_days": we_days,
     "we_peak_h": f"{we_peak:02d}:00",
+    "neg_commits": f"{len(repo_commits.get('negentropy', [])):,}",
+    "rel_cp": rel_counts.get("coding-proxy", 0),
+    "rel_hg": rel_counts.get("hyper-git", 0),
+    "rel_gmab": rel_counts.get("give-me-a-break", 0),
 }
 
 # Closure between the declared contract and the actual derivation: lint audits
