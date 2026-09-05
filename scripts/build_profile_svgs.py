@@ -66,6 +66,7 @@ TZ = timezone(timedelta(hours=8))
 EN, ZH = "README.md", "docs/i18n/zh-CN/README.md"
 README_FILES = [EN, ZH]
 ACC_REPO = "analysis_claude_code"
+TRUNK = "negentropy"  # the repo the archived ones graduated into; accented throughout
 MIN_SOURCE_COMMITS = 10  # "source repository" = non-fork repo with >= N commits authored by USER
 FIRST_YEAR = 2016
 RHYTHM_ORIGIN = 4  # hour axis starts at 04:00 so the night block stays contiguous
@@ -964,7 +965,11 @@ def render_accrual(monthly, events, domain, asof, aria):
         cums[name] = out
     totals = [sum(v) for v in zip(*cums.values())] if cums else [0]
     vmax = max(totals) or 1
-    x = [L + i / max(1, len(months) - 1) * (R - L) for i in range(len(months))]
+    # Same mapping as month_ticks and the graduation marker below. Even
+    # index spacing would put the vertices on a second, silently different
+    # axis: months are unequal, and months[0] predates domain[0] by up to a
+    # month (x_date clamps it back to the domain start).
+    x = [x_date(m0, domain, L, R) for m0 in months]
     y = ["%.1f" % (BASE - v / vmax * (BASE - TOP)) for v in totals]
     lines = []
     ranked = sorted(cums.items(), key=lambda kv: kv[1][-1])
@@ -1085,7 +1090,7 @@ def render_cadence(rel_lists, domain, asof, aria):
                 body.append('<circle class="zero" cx="%.1f" cy="%.1f" r="3.4"/>' % (cx, y + dy))
             else:
                 body.append('<circle class="%s" cx="%.1f" cy="%.1f" r="3.4"/>'
-                            % ("acc" if name == "negentropy" else "bar", cx, y + dy))
+                            % ("acc" if name == TRUNK else "bar", cx, y + dy))
         # Endpoint tags. A lane can hold one release (first IS last -> one
         # label), and two releases days apart put the two labels on top of each
         # other, so the end label is only drawn when it clears the start one.
@@ -1118,20 +1123,25 @@ def render_cadence(rel_lists, domain, asof, aria):
         "</svg>", ""])
 
 
-def render_streak(day_counts, run, domain, asof, aria):
-    """Rug with the best run bracketed, over a ROLLING 400-day window — a fixed
-    span bounds the byte count forever. Zero days are drawn as a thin rule below
-    the axis per contiguous run, not per-day marks: in a rug the height channel
-    IS the encoding, so a zero at height 0 must still read as "nothing", but 550
-    individual slots would cost more bytes than the data. Counted over authored
-    commits in source repositories — NOT the GitHub calendar, which also counts
-    private work, issues and reviews."""
+def render_streak(day_counts, run, dom, asof, aria):
+    """Rug with the best run bracketed, over a ROLLING window — a fixed span
+    bounds the byte count forever. `dom` is the window itself, not the full
+    domain: the bracketed `run` is a WINDOWED record computed against the same
+    pair (see RUG_DAYS / rug_dom), and a second span literal here would let the
+    axis and the bracket it carries describe different windows — x_date clamps,
+    so that failure pins the bracket to an edge instead of tripping the gate.
+    Zero days are drawn as a thin rule below the axis per contiguous run, not
+    per-day marks: in a rug the height channel IS the encoding, so a zero at
+    height 0 must still read as "nothing", but 550 individual slots would cost
+    more bytes than the data. Counted over authored commits in source
+    repositories — NOT the GitHub calendar, which also counts private work,
+    issues and reviews."""
     W, H = 700, 164   # 164: month ticks at 142, as-of on its own line below
     L, R, BASE = 42.0, 686.0, 122.0
     # SPAN leaves the 36-48 band to the bracket's caption, which sits under the
     # bracket rather than on the title's baseline.
-    SPAN, RUG_DAYS = 70.0, 400
-    dom = (domain[1] - timedelta(days=RUG_DAYS - 1), domain[1])
+    SPAN = 70.0
+    rug_days = (dom[1] - dom[0]).days + 1
     in_win = {d: n for d, n in day_counts.items() if dom[0] <= d <= dom[1]}
     vmax = max(in_win.values()) or 1
     ticks, runs = [], []
@@ -1183,7 +1193,7 @@ def render_streak(day_counts, run, domain, asof, aria):
         '<rect class="sweep" x="%d" y="48" width="2.2" height="%.0f" rx="1.1"/>' % (bx0, BASE - 48),
         "\n".join(month_ticks(dom, L, R, 142, step=3)),
         '<text x="%.0f" y="20" font-size="11" class="lbl ts">one tick per day, latest %d · height ∝ √commits · authored commits in source repos, not the GitHub calendar</text>'
-        % (L, RUG_DAYS),
+        % (L, rug_days),
         '<text x="%.0f" y="158" font-size="9.5" class="lbl te">as of %s</text>' % (R, asof),
         "</svg>", ""])
 
@@ -1277,9 +1287,10 @@ def render_grammar(types_sorted, nonconf, total, sub1pct, asof, aria):
                       % (X0 + 160, Y0 + rank * 14, "accv" if rank == 0 else "val", name, c))
     # The non-conforming block takes every cell the types did not — exactly
     # 100 cells are drawn, so "one cell = one percent" stays literally true.
+    filled = used  # snapshot: the open cells below drive the cursor to 100
     zc = emit(100 - used, "zero")
     mo, ring = landing_motion("ring", "grr",
-                              X0 + (used % 10 - 0.5) * P, Y0 + (used // 10) * P + 5,
+                              X0 + (filled % 10 - 0.5) * P, Y0 + (filled // 10) * P + 5,
                               "1.5s", ".7s")
     return "\n".join([
         svg_open(W, H, aria),
@@ -1772,10 +1783,14 @@ def lifecycles_alt(f, spans, domain):
             % (domain[0], domain[1], rows))
 
 
-def cadence_alt(f, rel_lists, domain):
+def cadence_alt(f, rel_lists, domain, trunk_commits):
     lanes = sorted(((n, sorted(v, key=lambda r: r["published_at"]))
                     for n, v in rel_lists.items() if v),
                    key=lambda kv: (-len(kv[1]), kv[0]))
+    # The trunk sentence carries two numbers that MOVE — negentropy is the
+    # active repo, so a literal here would have the alt contradict the
+    # neg_commits marker rendered beside it within a month.
+    trunk_rels = len(rel_lists.get(TRUNK, ()))
     if f == EN:
         rows = "; ".join(
             "%s: %d releases, %s on %s through %s on %s%s" % (
@@ -1784,11 +1799,12 @@ def cadence_alt(f, rel_lists, domain):
                 "" if not all(r["prerelease"] for r in v) else ", all pre-releases")
             for n, v in lanes)
         return ("Dot timeline of %d public releases across %d repositories on one shared "
-                "date axis, %s to %s. %s. Hollow dots are pre-releases. negentropy shows "
-                "only its two release candidates against 2,048 commits because it is a "
-                "deployed service, not a distributed package — its shipping unit is the "
-                "merged pull request, not the tag. Data: GitHub."
-                % (rel_total, len(lanes), domain[0], domain[1], rows))
+                "date axis, %s to %s. %s. Hollow dots are pre-releases. %s shows only its "
+                "%d release candidates against %s commits because it is a deployed "
+                "service, not a distributed package — its shipping unit is the merged "
+                "pull request, not the tag. Data: GitHub."
+                % (rel_total, len(lanes), domain[0], domain[1], rows,
+                   TRUNK, trunk_rels, format(trunk_commits, ",")))
     rows = "；".join(
         "%s %d 个 release，%s（%s）至 %s（%s）%s" % (
             n, len(v), v[0]["tag_name"], v[0]["published_at"][:10],
@@ -1796,9 +1812,10 @@ def cadence_alt(f, rel_lists, domain):
             "" if not all(r["prerelease"] for r in v) else "，全部为预发布")
         for n, v in lanes)
     return ("各仓库公开 release 的点式时间线（共用日期轴，%s 至 %s）。%s。空心点为预发布。"
-            "negentropy 在 2,048 条提交面前只有两个 rc，因为它是部署型服务而非分发包——"
+            "%s 在 %s 条提交面前只有 %d 个 rc，因为它是部署型服务而非分发包——"
             "它的交付单元是已合并 PR，不是 tag。数据：GitHub。"
-            % (domain[0], domain[1], rows))
+            % (domain[0], domain[1], rows,
+               TRUNK, format(trunk_commits, ","), trunk_rels))
 
 
 def streak_alt(f, act, zeros, best, dom, rug_days):
@@ -1862,26 +1879,45 @@ def tongues_alt(f, lang_all, lang_src, gen_site, zero_repos):
     ta, tsrc = sum(lang_all.values()) or 1, sum(lang_src.values()) or 1
     top_all = lang_all.most_common(6)
     top_src = lang_src.most_common(6)
+    # The rank shift IS what this figure is about, so it is derived, never
+    # frozen: a literal "rank three" survives the language that overtakes it.
+    # "rises" is provably safe below — if the two conditions disagree on rank
+    # 1, the winner on the right was necessarily lower on the left.
+    naive_top = top_all[0][0]
+    src_order = [n for n, _ in lang_src.most_common()]
+    new_rank = src_order.index(naive_top) + 1 if naive_top in src_order else 0
+    if naive_top == top_src[0][0]:
+        shift_en = "%s leads under both conditions." % naive_top
+        shift_zh = "%s 在两种口径下均居首。" % naive_top
+    elif new_rank:
+        shift_en = ("%s falls from rank 1 to rank %d; %s rises to rank 1."
+                    % (naive_top, new_rank, top_src[0][0]))
+        shift_zh = ("%s 从第 1 位跌至第 %d 位；%s 升至第 1 位。"
+                    % (naive_top, new_rank, top_src[0][0]))
+    else:
+        shift_en = ("%s falls from rank 1 to no counted bytes at all; %s rises "
+                    "to rank 1." % (naive_top, top_src[0][0]))
+        shift_zh = ("%s 从第 1 位跌至无计入字节；%s 升至第 1 位。"
+                    % (naive_top, top_src[0][0]))
     if f == EN:
         return ("Slope chart of language byte shares over the source repositories under two "
                 "conditions. Left, as GitHub's language endpoint reports it: %s. Right, "
                 "excluding %s, whose bytes of %s are generated static-site output rather "
-                "than authored source: %s. %s falls from rank one to rank three; %s rises "
-                "to rank one. Byte counts measure committed source size, not authorship or "
-                "effort, and include vendored files. %s Data: GitHub."
+                "than authored source: %s. %s Byte counts measure committed source size, "
+                "not authorship or effort, and include vendored files. %s Data: GitHub."
                 % (", ".join("%s %.1f percent" % (n, v / ta * 100) for n, v in top_all),
                    gen_site, top_all[0][0] if top_all[0][0] == "HTML" else "its dominant language",
                    ", ".join("%s %.1f percent" % (n, v / tsrc * 100) for n, v in top_src),
-                   top_all[0][0], top_src[0][0],
+                   shift_en,
                    ("No counted bytes from: " + ", ".join(zero_repos) + ".")
                    if zero_repos else "Every source repo contributes counted bytes."))
     return ("源仓库语言字节占比的斜率图，两种口径。左：GitHub 语言端点原样——%s。右：剔除 %s"
-            "（其 %s 字节是静态站构建产物而非手写源码）——%s。%s 从第 1 位跌至第 3 位；%s 升至"
-            "第 1 位。字节数度量的是提交源码体积，不是作者归属或工作量，且含 vendored 文件。%s数据：GitHub。"
+            "（其 %s 字节是静态站构建产物而非手写源码）——%s。%s"
+            "字节数度量的是提交源码体积，不是作者归属或工作量，且含 vendored 文件。%s数据：GitHub。"
             % ("，".join("%s %.1f%%" % (n, v / ta * 100) for n, v in top_all),
                gen_site, "HTML" if lang_all.most_common(1)[0][0] == "HTML" else "其主要语言",
                "，".join("%s %.1f%%" % (n, v / tsrc * 100) for n, v in top_src),
-               top_all[0][0], top_src[0][0],
+               shift_zh,
                ("无计入字节的仓库：" + "、".join(zero_repos) + "。") if zero_repos
                else "每个源仓库均有计入字节。"))
 
@@ -2087,7 +2123,7 @@ facts = {
     "wd_days": wd_days,
     "we_days": we_days,
     "we_peak_h": f"{we_peak:02d}:00",
-    "neg_commits": f"{len(repo_commits.get('negentropy', [])):,}",
+    "neg_commits": f"{len(repo_commits.get(TRUNK, ())):,}",
     "rel_cp": rel_counts.get("coding-proxy", 0),
     "rel_hg": rel_counts.get("hyper-git", 0),
     "rel_gmab": rel_counts.get("give-me-a-break", 0),
@@ -2120,7 +2156,8 @@ ALTS = {
     "accrual": {f: accrual_alt(f, monthly, DOMAIN, grad_events, commits_total)
                 for f in README_FILES},
     "lifecycles": {f: lifecycles_alt(f, spans, DOMAIN) for f in README_FILES},
-    "cadence": {f: cadence_alt(f, rel_lists, DOMAIN) for f in README_FILES},
+    "cadence": {f: cadence_alt(f, rel_lists, DOMAIN, len(repo_commits.get(TRUNK, ())))
+                for f in README_FILES},
     "streak": {f: streak_alt(f, rug_act, RUG_DAYS - rug_act, rug_run, rug_dom, RUG_DAYS)
                for f in README_FILES},
     "latency": {f: latency_alt(f, lat_buckets, lat_stats, pct_hour)
@@ -2145,7 +2182,7 @@ figures = {
     FIG_SPEC["accrual"][0]: render_accrual(monthly, grad_events, DOMAIN, asof, ALTS["accrual"][EN]),
     FIG_SPEC["lifecycles"][0]: render_lifecycles(spans, DOMAIN, asof, ALTS["lifecycles"][EN]),
     FIG_SPEC["cadence"][0]: render_cadence(rel_lists, DOMAIN, asof, ALTS["cadence"][EN]),
-    FIG_SPEC["streak"][0]: render_streak(day_counts, rug_run, DOMAIN, asof,
+    FIG_SPEC["streak"][0]: render_streak(day_counts, rug_run, rug_dom, asof,
                                          ALTS["streak"][EN]),
     FIG_SPEC["latency"][0]: render_latency(lat_buckets, ecdf_points(), lat_stats, asof,
                                            ALTS["latency"][EN]),
