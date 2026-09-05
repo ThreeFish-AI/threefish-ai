@@ -26,7 +26,7 @@
 <path class="bar" d="M178 142h10v10h-10z M192 142h10v10h-10z M206 142h10v10h-10z"/>
 <path class="bar" d="M220 142h10v10h-10z M234 142h10v10h-10z"/>
 <path class="zero" d="M248 142h10v10h-10z M262 142h10v10h-10z M276 142h10v10h-10z M150 156h10v10h-10z M164 156h10v10h-10z M178 156h10v10h-10z M192 156h10v10h-10z M206 156h10v10h-10z M220 156h10v10h-10z M234 156h10v10h-10z M248 156h10v10h-10z M262 156h10v10h-10z M276 156h10v10h-10z M150 170h10v10h-10z M164 170h10v10h-10z M178 170h10v10h-10z M192 170h10v10h-10z M206 170h10v10h-10z M220 170h10v10h-10z M234 170h10v10h-10z M248 170h10v10h-10z M262 170h10v10h-10z M276 170h10v10h-10z"/>
-<circle class="ring" cx="143.0" cy="189.0" r="11"/>
+<circle class="ring" cx="241.0" cy="147.0" r="11"/>
 <text x="310" y="44" font-size="10" class="accv ts">fix 827</text>
 <text x="310" y="58" font-size="10" class="val ts">docs 725</text>
 <text x="310" y="72" font-size="10" class="val ts">feat 697</text>

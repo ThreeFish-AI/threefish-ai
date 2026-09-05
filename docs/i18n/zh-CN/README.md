@@ -52,7 +52,7 @@
 
 <sub>仓库即区间，自创建至最后推送；两根同日终止的条就是那次毕业。已删除的仓库在此口径下不可见。</sub>
 
-<!-- FIG:cadence --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/cadence.svg" width="700" alt="各仓库公开 release 的点式时间线（共用日期轴，2024-06-22 至 2026-09-01）。coding-proxy 12 个 release，v0.1.1（2026-04-05）至 v0.5.2a8（2026-07-06）；give-me-a-break 7 个 release，v0.1.0（2026-06-27）至 v0.1.6（2026-09-04）；hyper-git 7 个 release，v0.0.6（2026-06-30）至 v0.0.16（2026-09-01）；negentropy 2 个 release，negentropy-v0.0.1-rc.1（2026-06-19）至 negentropy-v0.0.1-rc.2（2026-06-19），全部为预发布；negentropy-perceives 1 个 release，v0.2.0a3（2026-04-20）至 v0.2.0a3（2026-04-20）。空心点为预发布。negentropy 在 2,048 条提交面前只有两个 rc，因为它是部署型服务而非分发包——它的交付单元是已合并 PR，不是 tag。数据：GitHub。" /><!-- /FIG:cadence -->
+<!-- FIG:cadence --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/cadence.svg" width="700" alt="各仓库公开 release 的点式时间线（共用日期轴，2024-06-22 至 2026-09-01）。coding-proxy 12 个 release，v0.1.1（2026-04-05）至 v0.5.2a8（2026-07-06）；give-me-a-break 7 个 release，v0.1.0（2026-06-27）至 v0.1.6（2026-09-04）；hyper-git 7 个 release，v0.0.6（2026-06-30）至 v0.0.16（2026-09-01）；negentropy 2 个 release，negentropy-v0.0.1-rc.1（2026-06-19）至 negentropy-v0.0.1-rc.2（2026-06-19），全部为预发布；negentropy-perceives 1 个 release，v0.2.0a3（2026-04-20）至 v0.2.0a3（2026-04-20）。空心点为预发布。negentropy 在 2,048 条提交面前只有 2 个 rc，因为它是部署型服务而非分发包——它的交付单元是已合并 PR，不是 tag。数据：GitHub。" /><!-- /FIG:cadence -->
 
 <sub>Release 有时机，不止有计数——最新一个：**<!-- DATA:rel_last_name -->give-me-a-break<!-- /DATA:rel_last_name --> <!-- DATA:rel_last_tag -->v0.1.6<!-- /DATA:rel_last_tag -->**。negentropy 以已合并 PR 交付，不以 tag。</sub>
 
