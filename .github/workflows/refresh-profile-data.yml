@@ -3,13 +3,34 @@ name: Refresh Profile Data
 on:
   schedule:
     - cron: "23 2 1 * *" # monthly, 10:23 Asia/Shanghai, off the hour to dodge scheduler congestion
+  pull_request:
+    paths:
+      - "README.md"
+      - "docs/i18n/zh-CN/README.md"
+      - "scripts/build_profile_svgs.py"
+      - "assets/**"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
+  lint:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Zero network calls: catches a broken marker contract on the PR that
+      # introduces it, not a month later when the cron dies.
+      - name: Marker and parity lint
+        run: python scripts/build_profile_svgs.py --lint
+
   refresh:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -24,10 +45,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/build_profile_svgs.py
 
+      # -A covers figures added or retired since the last run; stray files in
+      # assets/ are already refused by the script's assets-closure guard.
       - name: Commit if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/growth.svg assets/rhythm.svg assets/ground.svg assets/mark.svg README.md docs/i18n/zh-CN/README.md
-          git diff --staged --quiet || git commit -m "chore(profile): 刷新 v4 图表与数据;"
+          git add -A assets README.md docs/i18n/zh-CN/README.md
+          git diff --staged --quiet || git commit -m "chore(profile): 刷新 v5 图表与数据;"
           git push
