@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="198" viewBox="0 0 700 198" role="img" aria-label="Cumulative authored commits per source repository at monthly resolution, 2024-06-22 to 2026-09-01 — a window of about 26 months, not the eleven years shown above. Final totals: agentic-ai-cognizes 945, coding-proxy 638, give-me-a-break 43, hyper-git 125, negentropy 2,048, negentropy-perceives 433, threefish-ai.github.io 117; all repos together 4,349. on 2026-05-18 both archived repos flatten and the trunk keeps rising: both graduated into the negentropy trunk that day. Data: GitHub.">
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+  }
+
+  .trc{fill:#0969da;opacity:0;offset-path:path('M42 157.8  L66 157.8  L90 156.3  L114 154.9  L137 154.9  L161 154.9  L185 154.9  L209 154.9  L233 154.9  L257 154.9  L281 154.9  L304 154.9  L328 154.9  L352 154.9  L376 154.9  L400 154.9  L424 154.7  L447 149.8  L471 131.2  L495 125.6  L519 112.8  L543 89.1  L567 66.0  L591 53.9  L614 44.9  L638 42.2  L662 42.1  L686 42.0')}
+  @media (prefers-color-scheme:dark){.trc{fill:#58a6ff}}
+  @media (prefers-reduced-motion:no-preference){
+    .trc{animation:trc 2.6s cubic-bezier(.4,0,.2,1) .4s 1 both}
+    @keyframes trc{0%{opacity:0;offset-distance:0%}
+      8%{opacity:.9}88%{opacity:.9}
+      100%{opacity:0;offset-distance:100%}}
+  }
+</style>
+<rect class="bg" width="700" height="198" rx="6"/>
+<line class="rule" x1="42" y1="158" x2="686" y2="158" stroke-width="1"/>
+<line class="rule" x1="600.8" y1="38" x2="600.8" y2="158" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="597.8" y="154" font-size="9" class="lbl tm" transform="rotate(-90 597.8 154)">graduated</text>
+<path class="bar" d="M42 158.0 L66 158.0 L90 158.0 L114 158.0 L137 158.0 L161 158.0 L185 158.0 L209 158.0 L233 158.0 L257 158.0 L281 158.0 L304 158.0 L328 158.0 L352 158.0 L376 158.0 L400 158.0 L424 158.0 L447 158.0 L471 158.0 L495 158.0 L519 158.0 L543 158.0 L567 158.0 L591 158.0 L614 156.9 L638 156.9 L662 156.9 L686 156.9" fill="none" stroke-width="1.1"/>
+<path class="bar" d="M42 157.8 L66 157.8 L90 156.3 L114 154.9 L137 154.9 L161 154.9 L185 154.9 L209 154.9 L233 154.9 L257 154.9 L281 154.9 L304 154.9 L328 154.9 L352 154.9 L376 154.9 L400 154.9 L424 154.9 L447 154.9 L471 154.9 L495 154.9 L519 154.9 L543 154.9 L567 154.9 L591 154.9 L614 154.9 L638 154.9 L662 154.9 L686 154.9" fill="none" stroke-width="1.1"/>
+<path class="bar" d="M42 158.0 L66 158.0 L90 158.0 L114 158.0 L137 158.0 L161 158.0 L185 158.0 L209 158.0 L233 158.0 L257 158.0 L281 158.0 L304 158.0 L328 158.0 L352 158.0 L376 158.0 L400 158.0 L424 158.0 L447 158.0 L471 158.0 L495 158.0 L519 158.0 L543 158.0 L567 158.0 L591 158.0 L614 156.6 L638 154.8 L662 154.8 L686 154.7" fill="none" stroke-width="1.1"/>
+<path class="bar" d="M42 158.0 L66 158.0 L90 158.0 L114 158.0 L137 158.0 L161 158.0 L185 158.0 L209 158.0 L233 158.0 L257 158.0 L281 158.0 L304 158.0 L328 158.0 L352 158.0 L376 158.0 L400 158.0 L424 158.0 L447 155.1 L471 154.4 L495 154.4 L519 154.4 L543 149.1 L567 146.5 L591 146.5 L614 146.5 L638 146.5 L662 146.5 L686 146.5" fill="none" stroke-width="1.1"/>
+<path class="bar" d="M42 158.0 L66 158.0 L90 158.0 L114 158.0 L137 158.0 L161 158.0 L185 158.0 L209 158.0 L233 158.0 L257 158.0 L281 158.0 L304 158.0 L328 158.0 L352 158.0 L376 158.0 L400 158.0 L424 158.0 L447 158.0 L471 158.0 L495 158.0 L519 158.0 L543 155.9 L567 142.3 L591 141.0 L614 141.0 L638 141.0 L662 141.0 L686 141.0" fill="none" stroke-width="1.1"/>
+<path class="bar" d="M42 158.0 L66 158.0 L90 158.0 L114 158.0 L137 158.0 L161 158.0 L185 158.0 L209 158.0 L233 158.0 L257 158.0 L281 158.0 L304 158.0 L328 158.0 L352 158.0 L376 158.0 L400 158.0 L424 157.9 L447 155.8 L471 137.9 L495 132.9 L519 132.8 L543 132.8 L567 132.8 L591 132.8 L614 132.8 L638 132.8 L662 132.8 L686 132.8" fill="none" stroke-width="1.1"/>
+<path class="bar" d="M42 158.0 L66 158.0 L90 158.0 L114 158.0 L137 158.0 L161 158.0 L185 158.0 L209 158.0 L233 158.0 L257 158.0 L281 158.0 L304 158.0 L328 158.0 L352 158.0 L376 158.0 L400 158.0 L424 158.0 L447 158.0 L471 158.0 L495 157.5 L519 144.7 L543 128.4 L567 121.5 L591 110.8 L614 104.3 L638 103.4 L662 103.4 L686 103.4" fill="none" stroke-width="1.1"/>
+<path class="acc" d="M42 157.8 L66 157.8 L90 156.3 L114 154.9 L137 154.9 L161 154.9 L185 154.9 L209 154.9 L233 154.9 L257 154.9 L281 154.9 L304 154.9 L328 154.9 L352 154.9 L376 154.9 L400 154.9 L424 154.7 L447 149.8 L471 131.2 L495 125.6 L519 112.8 L543 89.1 L567 66.0 L591 53.9 L614 44.9 L638 42.2 L662 42.1 L686 42.0" fill="none" stroke-width="2"/>
+<text x="684" y="154.9" font-size="9" class="val ts">give-me-a-break</text>
+<text x="684" y="143.9" font-size="9" class="val ts">threefish-ai.github.io</text>
+<text x="684" y="132.9" font-size="9" class="val ts">hyper-git</text>
+<text x="684" y="121.9" font-size="9" class="val ts">negentropy-perceives</text>
+<text x="684" y="110.9" font-size="9" class="val ts">coding-proxy</text>
+<text x="684" y="99.9" font-size="9" class="val ts">agentic-ai-cognizes</text>
+<text x="684" y="88.9" font-size="9" class="val ts">negentropy</text>
+<text x="684" y="50.0" font-size="9" class="accv ts">total 4,349</text>
+<circle class="trc" r="3.2"/>
+<text x="25" y="176" font-size="10" class="lbl tm">2024-06</text>
+<text x="74" y="176" font-size="10" class="lbl tm">2024-08</text>
+<text x="123" y="176" font-size="10" class="lbl tm">2024-10</text>
+<text x="172" y="176" font-size="10" class="lbl tm">2024-12</text>
+<text x="222" y="176" font-size="10" class="lbl tm">2025-02</text>
+<text x="270" y="176" font-size="10" class="lbl tm">2025-04</text>
+<text x="319" y="176" font-size="10" class="lbl tm">2025-06</text>
+<text x="368" y="176" font-size="10" class="lbl tm">2025-08</text>
+<text x="417" y="176" font-size="10" class="lbl tm">2025-10</text>
+<text x="466" y="176" font-size="10" class="lbl tm">2025-12</text>
+<text x="516" y="176" font-size="10" class="lbl tm">2026-02</text>
+<text x="563" y="176" font-size="10" class="lbl tm">2026-04</text>
+<text x="612" y="176" font-size="10" class="lbl tm">2026-06</text>
+<text x="661" y="176" font-size="10" class="lbl tm">2026-08</text>
+<text x="42" y="20" font-size="11" class="lbl ts">cumulative authored commits per repo · monthly · 2024-06-22 → 2026-09-01 · not the eleven years above</text>
+<text x="686" y="192" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+</svg>

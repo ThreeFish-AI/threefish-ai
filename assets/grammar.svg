@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="172" viewBox="0 0 700 172" role="img" aria-label="Waffle chart of one hundred cells, each cell one percent of 4,349 authored commit subjects classified by Conventional Commits prefix. fix 827, docs 725, feat 697, refactor 319, chore 255, style 176, test 144, ci 110, build 92, perf 6, revert 2. 996 subjects do not parse as Conventional Commits and are drawn as open cells. The accented block is fix, the largest type at 19.0 percent of all subjects. Data: GitHub.">
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+  }
+
+  .ring{fill:none;stroke:#0969da;stroke-width:1.6;opacity:0;transform-box:fill-box;transform-origin:center}
+  @media (prefers-color-scheme:dark){.ring{stroke:#58a6ff}}
+  @media (prefers-reduced-motion:no-preference){
+    .ring{animation:grr 1.5s cubic-bezier(.22,1,.36,1) .7s 1 both}
+    @keyframes grr{0%{opacity:0;transform:scale(1.9)}
+      30%{opacity:.85}100%{opacity:0;transform:scale(1)}}
+  }
+</style>
+<rect class="bg" width="700" height="172" rx="6"/>
+<path class="acc" d="M150 44h10v10h-10z M164 44h10v10h-10z M178 44h10v10h-10z M192 44h10v10h-10z M206 44h10v10h-10z M220 44h10v10h-10z M234 44h10v10h-10z M248 44h10v10h-10z M262 44h10v10h-10z M276 44h10v10h-10z M150 58h10v10h-10z M164 58h10v10h-10z M178 58h10v10h-10z M192 58h10v10h-10z M206 58h10v10h-10z M220 58h10v10h-10z M234 58h10v10h-10z M248 58h10v10h-10z M262 58h10v10h-10z"/>
+<path class="bar" d="M276 58h10v10h-10z M150 72h10v10h-10z M164 72h10v10h-10z M178 72h10v10h-10z M192 72h10v10h-10z M206 72h10v10h-10z M220 72h10v10h-10z M234 72h10v10h-10z M248 72h10v10h-10z M262 72h10v10h-10z M276 72h10v10h-10z M150 86h10v10h-10z M164 86h10v10h-10z M178 86h10v10h-10z M192 86h10v10h-10z M206 86h10v10h-10z M220 86h10v10h-10z"/>
+<path class="bar" d="M234 86h10v10h-10z M248 86h10v10h-10z M262 86h10v10h-10z M276 86h10v10h-10z M150 100h10v10h-10z M164 100h10v10h-10z M178 100h10v10h-10z M192 100h10v10h-10z M206 100h10v10h-10z M220 100h10v10h-10z M234 100h10v10h-10z M248 100h10v10h-10z M262 100h10v10h-10z M276 100h10v10h-10z M150 114h10v10h-10z M164 114h10v10h-10z"/>
+<path class="bar" d="M178 114h10v10h-10z M192 114h10v10h-10z M206 114h10v10h-10z M220 114h10v10h-10z M234 114h10v10h-10z M248 114h10v10h-10z M262 114h10v10h-10z"/>
+<path class="bar" d="M276 114h10v10h-10z M150 128h10v10h-10z M164 128h10v10h-10z M178 128h10v10h-10z M192 128h10v10h-10z M206 128h10v10h-10z"/>
+<path class="bar" d="M220 128h10v10h-10z M234 128h10v10h-10z M248 128h10v10h-10z M262 128h10v10h-10z"/>
+<path class="bar" d="M276 128h10v10h-10z M150 142h10v10h-10z M164 142h10v10h-10z"/>
+<path class="bar" d="M178 142h10v10h-10z M192 142h10v10h-10z M206 142h10v10h-10z"/>
+<path class="bar" d="M220 142h10v10h-10z M234 142h10v10h-10z"/>
+<path class="zero" d="M248 142h10v10h-10z M262 142h10v10h-10z M276 142h10v10h-10z M150 156h10v10h-10z M164 156h10v10h-10z M178 156h10v10h-10z M192 156h10v10h-10z M206 156h10v10h-10z M220 156h10v10h-10z M234 156h10v10h-10z M248 156h10v10h-10z M262 156h10v10h-10z M276 156h10v10h-10z M150 170h10v10h-10z M164 170h10v10h-10z M178 170h10v10h-10z M192 170h10v10h-10z M206 170h10v10h-10z M220 170h10v10h-10z M234 170h10v10h-10z M248 170h10v10h-10z M262 170h10v10h-10z M276 170h10v10h-10z"/>
+<circle class="ring" cx="138.0" cy="189.0" r="11"/>
+<text x="310" y="44" font-size="10" class="accv ts">fix 827</text>
+<text x="310" y="58" font-size="10" class="val ts">docs 725</text>
+<text x="310" y="72" font-size="10" class="val ts">feat 697</text>
+<text x="310" y="86" font-size="10" class="val ts">refactor 319</text>
+<text x="310" y="100" font-size="10" class="val ts">chore 255</text>
+<text x="310" y="114" font-size="10" class="val ts">style 176</text>
+<text x="310" y="128" font-size="10" class="val ts">test 144</text>
+<text x="310" y="142" font-size="10" class="val ts">ci 110</text>
+<text x="310" y="156" font-size="10" class="val ts">build 92</text>
+<text x="310" y="170" font-size="10" class="val ts">perf 6</text>
+<text x="310" y="184" font-size="10" class="val ts">revert 2</text>
+<text x="310" y="198" font-size="10" class="val ts">none-parse 996</text>
+<text x="42" y="20" font-size="11" class="lbl ts">commit subjects by Conventional Commits type · one cell = one percent of 4,349</text>
+<text x="42" y="34" font-size="9.5" class="lbl ts">open cells do not parse as Conventional Commits · 2 types under one percent each: perf, revert — folded here, not drawn</text>
+<text x="686" y="166" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+</svg>
