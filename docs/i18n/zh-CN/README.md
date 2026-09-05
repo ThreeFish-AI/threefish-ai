@@ -1,6 +1,6 @@
 <div align="center">
 
-<!-- FIG:mark --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/mark.svg" width="256" alt="三只鱼，作为签名图形。汉语里，董遇的「三余」——冬天、夜晚、雨天（sān yú）——与「三鱼」几乎同音，ID 由此而来。纯装饰，不编码任何数据。" /><!-- /FIG:mark -->
+<img src="https://github.com/ThreeFish-AI.png?size=320" width="160" alt="Aurelius Huang 的个人头像。ID ThreeFish 由来：汉语里董遇的「三余」（sān yú）与「三鱼」几乎同音。" />
 
 ### Aurelius Huang · 三余
 
@@ -278,7 +278,7 @@ sequenceDiagram
 
 **定义，让词只有一个意思。** *源仓库* 指非 fork 且有至少十条我署名提交的仓库——正因这个阈值，计数是 <!-- DATA:src_repos -->7<!-- /DATA:src_repos --> 个，而不是主页上的仓库总数。*真正属于我的星* 指总星数减去诚实性说明里那个镜像仓库。*连续天数* 指历史上最长的、每天都有公开署名提交的不间断区间——不是当前连续天数，且窄于 GitHub 贡献日历。*Conventional Commits* 是对首行做正则匹配，所以标题规范而正文说谎的提交同样计入。
 
-**这一页是一个构建产物。** 一个 Python 脚本，仅用标准库，没有会腐烂的依赖。它从 GitHub 采集，渲染十四张 SVG，并从同一份「语言中立取值」的字典出发，重写两份 README——英文与中文——里的数字，因此同一个数不可能在这边说一套、那边说另一套。每张图在落盘之前都要过一道写入门禁：小于 8 KB；带 `role="img"` 且 alt 文本承载完整数据序列；无外部资源；没有任何会循环的动画——只有入场，默认态等于终态，整体置于 `prefers-reduced-motion: no-preference` 之后。
+**这一页是一个构建产物。** 一个 Python 脚本，仅用标准库，没有会腐烂的依赖。它从 GitHub 采集，渲染十三张 SVG，并从同一份「语言中立取值」的字典出发，重写两份 README——英文与中文——里的数字，因此同一个数不可能在这边说一套、那边说另一套。每张图在落盘之前都要过一道写入门禁：小于 8 KB；带 `role="img"` 且 alt 文本承载完整数据序列；无外部资源；没有任何会循环的动画——只有入场，默认态等于终态，整体置于 `prefers-reduced-motion: no-preference` 之后。
 
 **守卫，每一条都会中止运行且一个字节不写。** 贡献页逐日 tooltip 之和必须等于该页自身的年度合计；小时、星期、逐日与提交类型直方图必须各自等于各仓库提交总数；当页面仍指向当年时，当年数字绝不允许下降；外部 PR 账本必须与它自己的 `total_count` 吻合；两份 README 必须携带完全相同的标记集合与顺序；替换必须是自身的不动点。陈旧而真，胜过新鲜而错。
 
