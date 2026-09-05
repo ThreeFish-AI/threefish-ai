@@ -2,9 +2,9 @@
 <style>
   text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
   .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
-  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.bars{fill:none;stroke:#8c959f}.accs{fill:none;stroke:#0969da}.inks{fill:none;stroke:#1f2328}.vals{fill:none;stroke:#57606a}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
   @media (prefers-color-scheme:dark){
-    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.bars{stroke:#6e7681}.accs{stroke:#58a6ff}.inks{stroke:#f0f6fc}.vals{stroke:#8b949e}.zero{stroke:#6e7681}.rule{stroke:#30363d}
   }
 
   .sweep{fill:#0969da;opacity:0}
@@ -18,10 +18,10 @@
 </style>
 <rect class="bg" width="700" height="178" rx="6"/>
 <line class="rule" x1="42" y1="138" x2="686" y2="138" stroke-width="1"/>
-<path class="bar" d="M42.0 136.0 H68.8 V136.0 H95.7 V136.0 H122.5 V136.0 H149.3 V134.4 H176.2 V90.6 H203.0 V67.4 H229.8 V80.2 H256.7 V111.6 H283.5 V113.8 H310.3 V95.0 H337.2 V94.0 H364.0 V95.4 H390.8 V94.0 H417.7 V105.8 H444.5 V108.7 H471.3 V111.4 H498.2 V85.5 H525.0 V63.8 H551.8 V85.3 H578.7 V125.7 H605.5 V136.0 H632.3 V136.0 H659.2 V136.0 H686.0" fill="none" stroke-width="1.8"/>
-<path class="acc" d="M42.0 136.0 H68.8 V136.0 H95.7 V136.0 H122.5 V135.0 H149.3 V120.6 H176.2 V116.4 H203.0 V110.3 H229.8 V89.9 H256.7 V91.7 H283.5 V87.5 H310.3 V85.7 H337.2 V76.1 H364.0 V86.3 H390.8 V71.9 H417.7 V72.5 H444.5 V86.9 H471.3 V75.5 H498.2 V59.2 H525.0 V46.0 H551.8 V71.3 H578.7 V113.9 H605.5 V120.0 H632.3 V136.0 H659.2 V136.0 H686.0" fill="none" stroke-width="1.8"/>
+<path class="bars" d="M42.0 136.0 H68.8 V136.0 H95.7 V136.0 H122.5 V136.0 H149.3 V134.4 H176.2 V90.6 H203.0 V67.4 H229.8 V80.2 H256.7 V111.6 H283.5 V113.8 H310.3 V95.0 H337.2 V94.0 H364.0 V95.4 H390.8 V94.0 H417.7 V105.8 H444.5 V108.7 H471.3 V111.4 H498.2 V85.5 H525.0 V63.8 H551.8 V85.3 H578.7 V125.7 H605.5 V136.0 H632.3 V136.0 H659.2 V136.0 H686.0" fill="none" stroke-width="1.8"/>
+<path class="accs" d="M42.0 136.0 H68.8 V136.0 H95.7 V136.0 H122.5 V135.0 H149.3 V120.6 H176.2 V116.4 H203.0 V110.3 H229.8 V89.9 H256.7 V91.7 H283.5 V87.5 H310.3 V85.7 H337.2 V76.1 H364.0 V86.3 H390.8 V71.9 H417.7 V72.5 H444.5 V86.9 H471.3 V75.5 H498.2 V59.2 H525.0 V46.0 H551.8 V71.3 H578.7 V113.9 H605.5 V120.0 H632.3 V136.0 H659.2 V136.0 H686.0" fill="none" stroke-width="1.8"/>
 <text x="42" y="20" font-size="11" class="lbl ts">commits per day, weekday vs weekend · axis 04→03 · 2024-06-22 → 2026-09-01</text>
-<text x="42" y="36" font-size="10" class="lbl ts">normalised: 2841 weekdays ÷ 572, 1508 weekend days ÷ 230</text>
+<text x="42" y="36" font-size="10" class="lbl ts">per-day rates: 2841 commits ÷ 572 weekdays · 1508 commits ÷ 230 weekend days</text>
 <circle class="acc" cx="538.4" cy="40.0" r="2.6"/><text x="538.4" y="36.0" font-size="11" class="accv tm">0.7/d</text>
 <text x="686" y="172" font-size="9.5" class="lbl te">as of 2026-09-05</text>
 <text x="55" y="156" font-size="10" class="lbl tm">04</text><text x="163" y="156" font-size="10" class="lbl tm">08</text><text x="270" y="156" font-size="10" class="lbl tm">12</text><text x="377" y="156" font-size="10" class="lbl tm">16</text><text x="485" y="156" font-size="10" class="lbl tm">20</text><text x="592" y="156" font-size="10" class="lbl tm">00</text>

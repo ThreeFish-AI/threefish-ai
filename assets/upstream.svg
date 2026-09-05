@@ -1,33 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="700" height="158" viewBox="0 0 700 158" role="img" aria-label="Dot ledger of 6 public pull requests to repositories owned by others, 2024-06-26 to 2025-12-06. langgenius/dify#5631, merged, 2024-06-26; langgenius/dify#8921, merged, 2024-09-30; langgenius/dify-plugin-daemon#389, closed unmerged, 2025-07-07; langgenius/dify-cloud-kit#3, merged, 2025-07-08; langgenius/dify#22646, merged, 2025-07-18; DayuanJiang/next-ai-draw-io#124, merged, 2025-12-06. These are 0.3 percent of 1,849 public pull requests; the rest are to my own repositories. Data: GitHub is:public search.">
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="181" viewBox="0 0 700 181" role="img" aria-label="Dot ledger of 6 public pull requests to repositories owned by others, 2024-06-26 to 2025-12-06. langgenius/dify#5631, merged, 2024-06-26; langgenius/dify#8921, merged, 2024-09-30; langgenius/dify-plugin-daemon#389, closed unmerged, 2025-07-07; langgenius/dify-cloud-kit#3, merged, 2025-07-08; langgenius/dify#22646, merged, 2025-07-18; DayuanJiang/next-ai-draw-io#124, merged, 2025-12-06. These are 0.3 percent of 1,849 public pull requests; the rest are to my own repositories. Data: GitHub is:public search.">
 <style>
   text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
   .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
-  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.bars{fill:none;stroke:#8c959f}.accs{fill:none;stroke:#0969da}.inks{fill:none;stroke:#1f2328}.vals{fill:none;stroke:#57606a}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
   @media (prefers-color-scheme:dark){
-    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.bars{stroke:#6e7681}.accs{stroke:#58a6ff}.inks{stroke:#f0f6fc}.vals{stroke:#8b949e}.zero{stroke:#6e7681}.rule{stroke:#30363d}
   }
 </style>
-<rect class="bg" width="700" height="158" rx="6"/>
-<line class="rule" x1="42" y1="96" x2="686" y2="96" stroke-width="1"/>
-<line class="rule" x1="42.0" y1="96" x2="42.0" y2="91" stroke-width="1"/>
-<circle class="acc" cx="42.0" cy="88.0" r="3.6"/>
-<text x="42.0" y="81.0" font-size="9" class="val ts">langgenius/dify#5631 · merged · 2024-06-26</text>
-<line class="rule" x1="159.1" y1="96" x2="159.1" y2="65" stroke-width="1"/>
-<circle class="acc" cx="159.1" cy="62.0" r="3.6"/>
-<text x="159.1" y="55.0" font-size="9" class="val tm">langgenius/dify#8921 · merged · 2024-09-30</text>
-<line class="rule" x1="500.6" y1="96" x2="500.6" y2="91" stroke-width="1"/>
-<circle class="zero" cx="500.6" cy="88.0" r="3.6"/>
-<text x="500.6" y="81.0" font-size="9" class="lbl tm">langgenius/dify-plugin-daemon#389 · closed unmerged · 2025-07-07</text>
-<line class="rule" x1="501.8" y1="96" x2="501.8" y2="65" stroke-width="1"/>
-<circle class="acc" cx="501.8" cy="62.0" r="3.6"/>
-<text x="501.8" y="55.0" font-size="9" class="val tm">langgenius/dify-cloud-kit#3 · merged · 2025-07-08</text>
-<line class="rule" x1="514.0" y1="96" x2="514.0" y2="91" stroke-width="1"/>
-<circle class="acc" cx="514.0" cy="88.0" r="3.6"/>
-<text x="514.0" y="81.0" font-size="9" class="val tm">langgenius/dify#22646 · merged · 2025-07-18</text>
-<line class="rule" x1="686.0" y1="96" x2="686.0" y2="65" stroke-width="1"/>
-<circle class="bar" cx="686.0" cy="62.0" r="3.6"/>
-<text x="686.0" y="55.0" font-size="9" class="val te">DayuanJiang/next-ai-draw-io#124 · merged · 2025-12-06</text>
-<text x="42" y="130" font-size="9.5" class="lbl ts">6 external public PRs — 0.3% of 1,849 public PRs; the rest are my own repositories</text>
+<rect class="bg" width="700" height="181" rx="6"/>
+<line class="rule" x1="42" y1="131" x2="686" y2="131" stroke-width="1"/>
+<line class="rule" x1="42.0" y1="44.0" x2="42.0" y2="131" stroke-width="1" stroke-dasharray="2 3"/>
+<circle class="acc" cx="42.0" cy="40.0" r="3.6"/>
+<text x="49.0" y="43.0" font-size="9.0" class="val ts">langgenius/dify#5631 · merged · 2024-06-26</text>
+<line class="rule" x1="159.1" y1="59.0" x2="159.1" y2="131" stroke-width="1" stroke-dasharray="2 3"/>
+<circle class="acc" cx="159.1" cy="55.0" r="3.6"/>
+<text x="166.1" y="58.0" font-size="9.0" class="val ts">langgenius/dify#8921 · merged · 2024-09-30</text>
+<line class="rule" x1="500.6" y1="74.0" x2="500.6" y2="131" stroke-width="1" stroke-dasharray="2 3"/>
+<circle class="zero" cx="500.6" cy="70.0" r="3.6"/>
+<text x="493.6" y="73.0" font-size="9.0" class="lbl te">langgenius/dify-plugin-daemon#389 · closed unmerged · 2025-07-07</text>
+<line class="rule" x1="501.8" y1="89.0" x2="501.8" y2="131" stroke-width="1" stroke-dasharray="2 3"/>
+<circle class="acc" cx="501.8" cy="85.0" r="3.6"/>
+<text x="494.8" y="88.0" font-size="9.0" class="val te">langgenius/dify-cloud-kit#3 · merged · 2025-07-08</text>
+<line class="rule" x1="514.0" y1="104.0" x2="514.0" y2="131" stroke-width="1" stroke-dasharray="2 3"/>
+<circle class="acc" cx="514.0" cy="100.0" r="3.6"/>
+<text x="507.0" y="103.0" font-size="9.0" class="val te">langgenius/dify#22646 · merged · 2025-07-18</text>
+<line class="rule" x1="686.0" y1="119.0" x2="686.0" y2="131" stroke-width="1" stroke-dasharray="2 3"/>
+<circle class="bar" cx="686.0" cy="115.0" r="3.6"/>
+<text x="679.0" y="118.0" font-size="9.0" class="val te">DayuanJiang/next-ai-draw-io#124 · merged · 2025-12-06</text>
+<text x="124" y="145" font-size="10" class="lbl tm">2024-09</text>
+<text x="235" y="145" font-size="10" class="lbl tm">2024-12</text>
+<text x="344" y="145" font-size="10" class="lbl tm">2025-03</text>
+<text x="457" y="145" font-size="10" class="lbl tm">2025-06</text>
+<text x="569" y="145" font-size="10" class="lbl tm">2025-09</text>
+<text x="677" y="145" font-size="10" class="lbl tm">2025-12</text>
+<text x="42" y="163" font-size="9.5" class="lbl ts">6 external public PRs — 0.3% of 1,849 public PRs; the rest are my own repositories</text>
 <text x="42" y="20" font-size="11" class="lbl ts">pull requests into code I do not own · hollow = closed unmerged · blue = Dify ecosystem</text>
-<text x="686" y="152" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+<text x="686" y="173" font-size="9.5" class="lbl te">as of 2026-09-05</text>
 </svg>

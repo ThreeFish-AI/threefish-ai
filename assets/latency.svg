@@ -2,9 +2,9 @@
 <style>
   text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
   .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
-  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.bars{fill:none;stroke:#8c959f}.accs{fill:none;stroke:#0969da}.inks{fill:none;stroke:#1f2328}.vals{fill:none;stroke:#57606a}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
   @media (prefers-color-scheme:dark){
-    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.bars{stroke:#6e7681}.accs{stroke:#58a6ff}.inks{stroke:#f0f6fc}.vals{stroke:#8b949e}.zero{stroke:#6e7681}.rule{stroke:#30363d}
   }
 
   .ring{fill:none;stroke:#0969da;stroke-width:1.6;opacity:0;transform-box:fill-box;transform-origin:center}
@@ -26,10 +26,10 @@
 <rect class="bar" x="379.3" y="123.95" width="37.6" height="34.05" rx="2"/>
 <rect class="bar" x="444.1" y="127.28" width="37.6" height="30.72" rx="2"/>
 <rect class="bar" x="508.8" y="156.00" width="37.6" height="2.00" rx="2"/>
-<path class="acc" d="M42.0 158.0 L74.4 130.9 L139.1 130.9 L139.1 123.9 L203.9 123.9 L203.9 110.1 L268.6 110.1 L268.6 88.3 L333.4 88.3 L333.4 71.3 L398.1 71.3 L398.1 62.4 L462.9 62.4 L462.9 54.4 L527.6 54.4 L527.6 54.0 L686.0 54.0" fill="none" stroke-width="1.8"/>
-<line class="acc" x1="333.4" y1="158" x2="333.4" y2="52" stroke-width="1" stroke-dasharray="2 3"/>
+<path class="accs" d="M42.0 158.0 L74.4 130.9 L139.1 130.9 L139.1 123.9 L203.9 123.9 L203.9 110.1 L268.6 110.1 L268.6 88.3 L333.4 88.3 L333.4 71.3 L398.1 71.3 L398.1 62.4 L462.9 62.4 L462.9 54.4 L527.6 54.4 L527.6 54.0 L686.0 54.0" fill="none" stroke-width="1.8"/>
+<line class="accs" x1="333.4" y1="158" x2="333.4" y2="52" stroke-width="1" stroke-dasharray="2 3"/>
 <text x="333.4" y="64" font-size="10" class="accv tm">median 6 min</text>
-<line class="val" x1="398.1" y1="158" x2="398.1" y2="52" stroke-width="1" stroke-dasharray="2 3"/>
+<line class="vals" x1="398.1" y1="158" x2="398.1" y2="52" stroke-width="1" stroke-dasharray="2 3"/>
 <text x="398.1" y="64" font-size="9.5" class="val tm">1 h</text>
 <circle class="ring" cx="333.4" cy="148.0" r="11"/>
 <text x="74.4" y="50.0" font-size="9" class="val tm">281</text>
@@ -50,7 +50,7 @@
 <text x="527.6" y="174" font-size="8.5" class="lbl tm">&gt;24h</text>
 <text x="690.0" y="54" font-size="9" class="lbl te">100%</text>
 <text x="690.0" y="158" font-size="9" class="lbl te">0%</text>
-<text x="42" y="20" font-size="11" class="lbl ts">merged-PR lifetime in negentropy · 1078 merged, 40 closed-unmerged excluded · solo self-merge: unit size, not review speed</text>
-<text x="42" y="32" font-size="9.5" class="lbl ts">log buckets; the tail is compressed by design — longest was 11.9 d (printed, not just bucketed)</text>
+<text x="42" y="20" font-size="11" class="lbl ts">merged-PR lifetime in negentropy · 1078 merged, 40 closed-unmerged excluded</text>
+<text x="42" y="32" font-size="9.5" class="lbl ts">solo self-merge: unit size, not review speed · log buckets, tail compressed by design — longest was 11.9 d</text>
 <text x="680" y="194" font-size="9.5" class="lbl te">as of 2026-09-05</text>
 </svg>
