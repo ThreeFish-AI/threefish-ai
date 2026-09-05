@@ -11,7 +11,7 @@
 <line class="rule" x1="42" y1="96" x2="686" y2="96" stroke-width="1"/>
 <line class="rule" x1="42.0" y1="96" x2="42.0" y2="91" stroke-width="1"/>
 <circle class="acc" cx="42.0" cy="88.0" r="3.6"/>
-<text x="42.0" y="81.0" font-size="9" class="val tm">langgenius/dify#5631 · merged · 2024-06-26</text>
+<text x="42.0" y="81.0" font-size="9" class="val ts">langgenius/dify#5631 · merged · 2024-06-26</text>
 <line class="rule" x1="159.1" y1="96" x2="159.1" y2="65" stroke-width="1"/>
 <circle class="acc" cx="159.1" cy="62.0" r="3.6"/>
 <text x="159.1" y="55.0" font-size="9" class="val tm">langgenius/dify#8921 · merged · 2024-09-30</text>
@@ -27,7 +27,6 @@
 <line class="rule" x1="686.0" y1="96" x2="686.0" y2="65" stroke-width="1"/>
 <circle class="bar" cx="686.0" cy="62.0" r="3.6"/>
 <text x="686.0" y="55.0" font-size="9" class="val te">DayuanJiang/next-ai-draw-io#124 · merged · 2025-12-06</text>
-
 <text x="42" y="130" font-size="9.5" class="lbl ts">6 external public PRs — 0.3% of 1,849 public PRs; the rest are my own repositories</text>
 <text x="42" y="20" font-size="11" class="lbl ts">pull requests into code I do not own · hollow = closed unmerged · blue = Dify ecosystem</text>
 <text x="686" y="152" font-size="9.5" class="lbl te">as of 2026-09-05</text>

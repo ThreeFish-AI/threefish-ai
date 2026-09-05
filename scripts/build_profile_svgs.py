@@ -50,6 +50,7 @@ import statistics
 import subprocess
 import sys
 import urllib.request
+import xml.dom.minidom
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 
@@ -189,12 +190,13 @@ def audit_parity(orders):
 
 def audit_assets():
     """Keeps the script the single source of truth for assets/, so the workflow
-    can safely `git add -A assets`."""
+    can safely `git add -A assets`. Any extension: the guard's surface must be
+    at least as wide as `git add -A`'s."""
     rendered = {fname for fname, _ in FIG_SPEC.values()}
-    stray = sorted(p.name for p in pathlib.Path("assets").glob("*.svg")
-                   if p.name not in rendered)
+    stray = sorted(p.name for p in pathlib.Path("assets").iterdir()
+                   if p.is_file() and p.name not in rendered)
     if stray:
-        die(f"assets/ contains ungenerated SVG(s) {stray} — "
+        die(f"assets/ contains ungenerated file(s) {stray} — "
             "'git add -A assets' would commit them, refusing")
 
 
@@ -515,8 +517,11 @@ def style_sheet(extra=""):
 
 
 def svg_open(w, h, aria):
+    # Escaped here: an aria carrying a bucket label like "<1m" would emit a
+    # bare "<" inside an XML attribute and the whole figure fails to parse.
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" '
-            'viewBox="0 0 %d %d" role="img" aria-label="%s">' % (w, h, w, h, aria))
+            'viewBox="0 0 %d %d" role="img" aria-label="%s">'
+            % (w, h, w, h, html.escape(aria, quote=True)))
 
 
 def render_growth(values, years, asof, aria):
@@ -734,16 +739,21 @@ def month_ticks(domain, L, R, y, step=2):
     """First-of-month x ticks across the shared domain, every `step` months."""
     out, d, k = [], domain[0].replace(day=1), 0
     while d <= domain[1]:
-        if k % step == 0:
-            x = L + (d - domain[0]).days / max(1, (domain[1] - domain[0]).days) * (R - L)
-            out.append('<text x="%.0f" y="%d" font-size="10" class="lbl tm">%d-%02d</text>'
-                       % (x, y, d.year, d.month))
+        if d >= domain[0]:  # replace(day=1) can predate the domain start
+            if k % step == 0:
+                x = L + (d - domain[0]).days / max(1, (domain[1] - domain[0]).days) * (R - L)
+                out.append('<text x="%.0f" y="%d" font-size="10" class="lbl tm">%d-%02d</text>'
+                           % (x, y, d.year, d.month))
         d = (d + timedelta(days=32)).replace(day=1)
         k += 1
     return out
 
 
 def x_date(d, domain, L, R):
+    # Clamped: pushed_at/published_at can postdate the last AUTHORED commit
+    # (dependabot, collaborator pushes, tagged releases), and an unclamped
+    # coordinate would draw past the axis with no upper bound.
+    d = min(max(d, domain[0]), domain[1])
     return L + (d - domain[0]).days / max(1, (domain[1] - domain[0]).days) * (R - L)
 
 
@@ -914,7 +924,7 @@ def render_accrual(monthly, events, domain, asof, aria):
               "    @keyframes trc{0%%{opacity:0;offset-distance:0%%}\n"
               "      8%%{opacity:.9}88%%{opacity:.9}\n"
               "      100%%{opacity:0;offset-distance:100%%}}\n  }\n"
-              ) % (LIGHT["acc"], tot_pts.replace("M", "M").replace("L", " L"), DARK["acc"])
+              ) % (LIGHT["acc"], tot_pts, DARK["acc"])
     return "\n".join([
         svg_open(W, H, aria),
         style_sheet(motion),
@@ -1090,8 +1100,8 @@ def render_latency(buckets, ecdf, stats, asof, aria):
         labels.append('<text x="%.1f" y="%.1f" font-size="9" class="val tm">%d</text>'
                       % (L + pitch * (i + 0.5), BASE - h - 4, c))
         labels.append('<text x="%.1f" y="174" font-size="8.5" class="lbl tm">%s</text>'
-                      % (L + pitch * (i + 0.5), lab))
-    pts = ["M%.1f %.1f" % (ER, BASE)]
+                      % (L + pitch * (i + 0.5), html.escape(lab)))
+    pts = ["M%.1f %.1f" % (L, BASE)]  # the ECDF starts at 0% on the LEFT axis
     for i, p in enumerate(ecdf):
         x = L + pitch * (i + 0.5)
         y = BASE - p / 100 * SPAN
@@ -1126,39 +1136,48 @@ def render_latency(buckets, ecdf, stats, asof, aria):
 
 def render_grammar(types_sorted, nonconf, total, sub1pct, asof, aria):
     """100-cell waffle: makes "77 of 100" countable. Types under one percent
-    earn no cell and are folded into the footer instead of stealing one."""
-    W, H = 700, 172
+    earn no cell and are folded into the footer instead of stealing one. Height
+    is derived from content: the last waffle row and the last legend row both
+    have to fit inside the viewBox, or 10 percent of the figure silently
+    disappears."""
     X0, Y0, P = 150.0, 44.0, 14.0
+    W = 700
+    H = max(Y0 + 10 * P + 26, Y0 + (len(types_sorted) + 2) * 14 + 26)
     cells, legend = [], []
     xi = yi = 0
-    total_conf = sum(c for _, c in types_sorted)
-    for rank, (name, c) in enumerate(types_sorted):
-        n_cells = round(c / total * 100)
-        cls = "acc" if rank == 0 else "bar"
+    used = 0
+
+    def emit(n, cls):
+        nonlocal xi, yi, used
         d = []
-        for _ in range(n_cells):
+        for _ in range(n):
+            if used >= 100:  # independent rounding could sum to 101
+                break
             d.append("M%.0f %.0fh10v10h-10z" % (X0 + xi * P, Y0 + yi * P))
             xi += 1
+            used += 1
             if xi == 10:
                 xi, yi = 0, yi + 1
+        return d
+
+    for rank, (name, c) in enumerate(types_sorted):
+        d = emit(round(c / total * 100), "acc" if rank == 0 else "bar")
         if d:
-            cells.append('<path class="%s" d="%s"/>' % (cls, " ".join(d)))
+            cells.append('<path class="%s" d="%s"/>' % ("acc" if rank == 0 else "bar", " ".join(d)))
         legend.append('<text x="%.0f" y="%.0f" font-size="10" class="%s ts">%s %d</text>'
                       % (X0 + 160, Y0 + rank * 14, "accv" if rank == 0 else "val", name, c))
-    zc = nonconf
-    d = []
-    for _ in range(round(zc / total * 100)):
-        d.append("M%.0f %.0fh10v10h-10z" % (X0 + xi * P, Y0 + yi * P))
-        xi += 1
-        if xi == 10:
-            xi, yi = 0, yi + 1
-    mo, ring = landing_motion("ring", "grr", X0 + (xi - 0.5) * P - 5, Y0 + yi * P + 5, "1.5s", ".7s")
+    # The non-conforming block takes every cell the types did not — exactly
+    # 100 cells are drawn, so "one cell = one percent" stays literally true.
+    zc = emit(100 - used, "zero")
+    mo, ring = landing_motion("ring", "grr",
+                              X0 + (used % 10 - 0.5) * P, Y0 + (used // 10) * P + 5,
+                              "1.5s", ".7s")
     return "\n".join([
         svg_open(W, H, aria),
         style_sheet(mo),
         '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
         "\n".join(cells),
-        '<path class="zero" d="%s"/>' % " ".join(d),
+        '<path class="zero" d="%s"/>' % " ".join(zc),
         ring,
         "\n".join(legend),
         '<text x="%.0f" y="%.0f" font-size="10" class="val ts">none-parse %d</text>'
@@ -1167,7 +1186,7 @@ def render_grammar(types_sorted, nonconf, total, sub1pct, asof, aria):
         % (42, format(total, ",")),
         '<text x="%.0f" y="34" font-size="9.5" class="lbl ts">open cells do not parse as Conventional Commits · %s</text>'
         % (42, sub1pct),
-        '<text x="%.0f" y="166" font-size="9.5" class="lbl te">as of %s</text>' % (686, asof),
+        '<text x="%.0f" y="%.0f" font-size="9.5" class="lbl te">as of %s</text>' % (686, H - 8, asof),
         "</svg>", ""])
 
 
@@ -1229,8 +1248,11 @@ def render_upstream(items, pub_prs, asof, aria):
     rows = sorted(items, key=lambda it: it["created_at"])
     d0 = datetime.strptime(rows[0]["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
     d1 = datetime.strptime(rows[-1]["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
+    if d1 == d0:  # single PR (or several on one day): give the axis some span
+        d0 -= timedelta(days=15)
+        d1 += timedelta(days=15)
     dom = (d0, d1)
-    body, labels = [], []
+    body = []
     for i, it in enumerate(rows):
         dt = datetime.strptime(it["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
         x = x_date(dt, dom, L, R)
@@ -1238,14 +1260,15 @@ def render_upstream(items, pub_prs, asof, aria):
         slug = it["repository_url"].split("/repos/")[1]
         merged = bool(it["pull_request"]["merged_at"])
         body.append('<line class="rule" x1="%.1f" y1="%.0f" x2="%.1f" y2="%.0f" stroke-width="1"/>'
-                    % (x, BASE, x, y + (3 if merged else 3)))
+                    % (x, BASE, x, y + 3))
         if merged:
             body.append('<circle class="%s" cx="%.1f" cy="%.1f" r="3.6"/>'
                         % ("acc" if slug.split("/")[0] == DIFY_OWNER else "bar", x, y))
         else:
             body.append('<circle class="zero" cx="%.1f" cy="%.1f" r="3.6"/>' % (x, y))
+        anchor = "tm" if L + 60 < x < R - 60 else ("ts" if x <= L + 60 else "te")
         body.append('<text x="%.1f" y="%.1f" font-size="9" class="%s %s">%s#%d · %s · %s</text>'
-                    % (x, y - 7, "val" if merged else "lbl", "tm" if 0 < x < 640 else ("ts" if x <= 42 else "te"),
+                    % (x, y - 7, "val" if merged else "lbl", anchor,
                        slug, it["number"], "merged" if merged else "closed unmerged",
                        it["created_at"][:10]))
     return "\n".join([
@@ -1254,7 +1277,6 @@ def render_upstream(items, pub_prs, asof, aria):
         '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
         '<line class="rule" x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke-width="1"/>' % (L, BASE, R, BASE),
         "\n".join(body),
-        "\n".join(labels),
         '<text x="%.0f" y="130" font-size="9.5" class="lbl ts">%d external public PRs — %.1f%% of %s public PRs; the rest are my own repositories</text>'
         % (42, len(rows), len(rows) / pub_prs * 100, format(pub_prs, ",")),
         '<text x="%.0f" y="20" font-size="11" class="lbl ts">pull requests into code I do not own · hollow = closed unmerged · blue = Dify ecosystem</text>' % 42,
@@ -1273,6 +1295,10 @@ def assert_svg_sane(src: str, name: str, max_bytes=8192):
     docs/motion-constraints.md."""
     assert not BANNED.search(src), f"{name}: infinite/indefinite loop found"
     assert 'role="img"' in src and "aria-label" in src, f"{name}: a11y metadata missing"
+    try:  # a bare "<" in an attribute or text node kills the whole <img> load
+        xml.dom.minidom.parseString(src)
+    except Exception as e:
+        raise AssertionError(f"{name}: not well-formed XML — {e}")
     n = len(src.encode("utf-8"))
     assert n <= max_bytes, f"{name}: {n}B over budget"
     assert "@import" not in src and 'href="http' not in src, f"{name}: external resource"
@@ -1309,8 +1335,9 @@ def assert_svg_sane(src: str, name: str, max_bytes=8192):
             depth += (src[j] == "{") - (src[j] == "}")  # one-line dark format
             j += 1
         dark_spans.append((m.start(), j))
-    for cls in ("bg", "ink", "lbl", "val", "bar", "acc", "accv", "zero",
-                "sweep", "fi", "eye", "rip", "tick"):
+    # Dynamic class collection: a hardcoded list silently stops covering
+    # whatever class the next figure invents (.trc, .ring, ...).
+    for cls in sorted(set(re.findall(r"\.([\w-]+)\{", src))):
         i = src.find(".%s{" % cls)
         if i != -1:
             assert not any(a <= i <= b for a, b in dark_spans), \
@@ -1667,6 +1694,17 @@ def upstream_alt(f, items, pub_prs):
 
 
 # ------------------------------------------------- figure derivations ----
+# Degenerate-but-reachable shapes die cleanly here instead of raising a bare
+# traceback further down; the write-nothing contract holds either way.
+if not lifetimes:
+    die("no merged PRs in negentropy — latency figures undefined, refusing")
+if not any(rel_lists.values()):
+    die("no releases in any source repo — release figures undefined, refusing")
+if not types:
+    die("no Conventional Commits found — grammar figure undefined, refusing")
+if not lang_src:
+    die("no language bytes outside the generated-site repo — tongues undefined, refusing")
+
 peak_cell = max(weekhours, key=lambda k: weekhours[k])
 wknd = sum(n for (wd, _), n in weekhours.items() if wd >= 5)
 types_sorted = types.most_common()
@@ -1683,6 +1721,9 @@ while _d <= DOMAIN[1]:  # calendar denominators: every day counts, commit or not
     else:
         wd_days += 1
     _d += timedelta(days=1)
+if wd_days == 0 or we_days == 0:
+    die(f"window has {wd_days} weekdays / {we_days} weekend days — "
+        "surplus normalisation undefined, refusing")
 for (wd, h), n in weekhours.items():
     (we_hour if wd >= 5 else wd_hour)[h] += n
 we_peak = max(we_hour, key=lambda h: we_hour[h])
@@ -1742,16 +1783,18 @@ lat_stats = {
 
 def windowed_run(dom):
     """Longest streak + activity counts INSIDE the rug's rolling window, so the
-    figure's bracket and its alt text can never disagree with its own axis."""
+    figure's bracket and its alt text can never disagree with its own axis.
+    Same counting semantics as the all-time loop above: the first active day
+    is itself a run of length 1."""
     wd_days = [d for d in sorted(day_counts) if dom[0] <= d <= dom[1]]
-    best = b_start = b_end = None
-    run = 0
+    if not wd_days:
+        die("no authored commits inside the rug window — streak figure undefined")
+    best, b_start, b_end, run = 1, wd_days[0], wd_days[0], 1
     for prev, cur in zip(wd_days, wd_days[1:]):
         run = run + 1 if (cur - prev).days == 1 else 1
-        if run > (best or 0):
-            best, b_start, b_end = run, cur - timedelta(days=run - 1), cur
-    if wd_days and best is None:
-        best, b_start, b_end = 1, wd_days[0], wd_days[0]
+        if run > best:
+            best, b_end = run, cur
+            b_start = cur - timedelta(days=run - 1)
     return len(wd_days), best, (b_start, b_end)
 
 

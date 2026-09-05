@@ -37,12 +37,12 @@
 <circle class="bar" cx="632.9" cy="65.0" r="3.4"/>
 <circle class="bar" cx="635.3" cy="70.0" r="3.4"/>
 <circle class="bar" cx="637.8" cy="75.0" r="3.4"/>
-<circle class="bar" cx="688.4" cy="65.0" r="3.4"/>
-<circle class="bar" cx="688.4" cy="70.0" r="3.4"/>
-<circle class="bar" cx="688.4" cy="75.0" r="3.4"/>
-<circle class="bar" cx="688.4" cy="65.0" r="3.4"/>
+<circle class="bar" cx="686.0" cy="65.0" r="3.4"/>
+<circle class="bar" cx="686.0" cy="70.0" r="3.4"/>
+<circle class="bar" cx="686.0" cy="75.0" r="3.4"/>
+<circle class="bar" cx="686.0" cy="65.0" r="3.4"/>
 <text x="635.9" y="85.0" font-size="8.5" class="lbl ts">v0.1.0</text>
-<text x="685.4" y="85.0" font-size="8.5" class="lbl te">v0.1.6</text>
+<text x="683.0" y="85.0" font-size="8.5" class="lbl te">v0.1.6</text>
 <text x="36" y="73.0" font-size="9.5" class="lbl te">give-me-a-break · 7</text>
 <line class="rule" x1="42" y1="94" x2="686" y2="94" stroke-width="1"/>
 <circle class="bar" cx="635.3" cy="89.0" r="3.4"/>
@@ -67,7 +67,6 @@
 <text x="575.3" y="157.0" font-size="8.5" class="lbl te">v0.2.0a3</text>
 <text x="36" y="145.0" font-size="9.5" class="lbl te">negentropy-perceives · 1</text>
 <rect class="sweep" x="42" y="30" width="644" height="2.2" rx="1.1"/>
-<text x="25" y="158" font-size="10" class="lbl tm">2024-06</text>
 <text x="74" y="158" font-size="10" class="lbl tm">2024-08</text>
 <text x="123" y="158" font-size="10" class="lbl tm">2024-10</text>
 <text x="172" y="158" font-size="10" class="lbl tm">2024-12</text>

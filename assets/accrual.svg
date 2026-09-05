@@ -7,7 +7,7 @@
     .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.zero{stroke:#6e7681}.rule{stroke:#30363d}
   }
 
-  .trc{fill:#0969da;opacity:0;offset-path:path('M42 157.8  L66 157.8  L90 156.3  L114 154.9  L137 154.9  L161 154.9  L185 154.9  L209 154.9  L233 154.9  L257 154.9  L281 154.9  L304 154.9  L328 154.9  L352 154.9  L376 154.9  L400 154.9  L424 154.7  L447 149.8  L471 131.2  L495 125.6  L519 112.8  L543 89.1  L567 66.0  L591 53.9  L614 44.9  L638 42.2  L662 42.1  L686 42.0')}
+  .trc{fill:#0969da;opacity:0;offset-path:path('M42 157.8 L66 157.8 L90 156.3 L114 154.9 L137 154.9 L161 154.9 L185 154.9 L209 154.9 L233 154.9 L257 154.9 L281 154.9 L304 154.9 L328 154.9 L352 154.9 L376 154.9 L400 154.9 L424 154.7 L447 149.8 L471 131.2 L495 125.6 L519 112.8 L543 89.1 L567 66.0 L591 53.9 L614 44.9 L638 42.2 L662 42.1 L686 42.0')}
   @media (prefers-color-scheme:dark){.trc{fill:#58a6ff}}
   @media (prefers-reduced-motion:no-preference){
     .trc{animation:trc 2.6s cubic-bezier(.4,0,.2,1) .4s 1 both}
@@ -37,7 +37,6 @@
 <text x="684" y="88.9" font-size="9" class="val ts">negentropy</text>
 <text x="684" y="50.0" font-size="9" class="accv ts">total 4,349</text>
 <circle class="trc" r="3.2"/>
-<text x="25" y="176" font-size="10" class="lbl tm">2024-06</text>
 <text x="74" y="176" font-size="10" class="lbl tm">2024-08</text>
 <text x="123" y="176" font-size="10" class="lbl tm">2024-10</text>
 <text x="172" y="176" font-size="10" class="lbl tm">2024-12</text>

@@ -17,6 +17,8 @@ permissions:
 jobs:
   lint:
     if: github.event_name == 'pull_request'
+    permissions:
+      contents: read  # the lint makes zero API calls; never inherit write
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:

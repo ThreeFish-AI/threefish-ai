@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="700" height="172" viewBox="0 0 700 172" role="img" aria-label="Waffle chart of one hundred cells, each cell one percent of 4,349 authored commit subjects classified by Conventional Commits prefix. fix 827, docs 725, feat 697, refactor 319, chore 255, style 176, test 144, ci 110, build 92, perf 6, revert 2. 996 subjects do not parse as Conventional Commits and are drawn as open cells. The accented block is fix, the largest type at 19.0 percent of all subjects. Data: GitHub.">
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="252" viewBox="0 0 700 252" role="img" aria-label="Waffle chart of one hundred cells, each cell one percent of 4,349 authored commit subjects classified by Conventional Commits prefix. fix 827, docs 725, feat 697, refactor 319, chore 255, style 176, test 144, ci 110, build 92, perf 6, revert 2. 996 subjects do not parse as Conventional Commits and are drawn as open cells. The accented block is fix, the largest type at 19.0 percent of all subjects. Data: GitHub.">
 <style>
   text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
   .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
@@ -15,7 +15,7 @@
       30%{opacity:.85}100%{opacity:0;transform:scale(1)}}
   }
 </style>
-<rect class="bg" width="700" height="172" rx="6"/>
+<rect class="bg" width="700" height="252" rx="6"/>
 <path class="acc" d="M150 44h10v10h-10z M164 44h10v10h-10z M178 44h10v10h-10z M192 44h10v10h-10z M206 44h10v10h-10z M220 44h10v10h-10z M234 44h10v10h-10z M248 44h10v10h-10z M262 44h10v10h-10z M276 44h10v10h-10z M150 58h10v10h-10z M164 58h10v10h-10z M178 58h10v10h-10z M192 58h10v10h-10z M206 58h10v10h-10z M220 58h10v10h-10z M234 58h10v10h-10z M248 58h10v10h-10z M262 58h10v10h-10z"/>
 <path class="bar" d="M276 58h10v10h-10z M150 72h10v10h-10z M164 72h10v10h-10z M178 72h10v10h-10z M192 72h10v10h-10z M206 72h10v10h-10z M220 72h10v10h-10z M234 72h10v10h-10z M248 72h10v10h-10z M262 72h10v10h-10z M276 72h10v10h-10z M150 86h10v10h-10z M164 86h10v10h-10z M178 86h10v10h-10z M192 86h10v10h-10z M206 86h10v10h-10z M220 86h10v10h-10z"/>
 <path class="bar" d="M234 86h10v10h-10z M248 86h10v10h-10z M262 86h10v10h-10z M276 86h10v10h-10z M150 100h10v10h-10z M164 100h10v10h-10z M178 100h10v10h-10z M192 100h10v10h-10z M206 100h10v10h-10z M220 100h10v10h-10z M234 100h10v10h-10z M248 100h10v10h-10z M262 100h10v10h-10z M276 100h10v10h-10z M150 114h10v10h-10z M164 114h10v10h-10z"/>
@@ -26,7 +26,7 @@
 <path class="bar" d="M178 142h10v10h-10z M192 142h10v10h-10z M206 142h10v10h-10z"/>
 <path class="bar" d="M220 142h10v10h-10z M234 142h10v10h-10z"/>
 <path class="zero" d="M248 142h10v10h-10z M262 142h10v10h-10z M276 142h10v10h-10z M150 156h10v10h-10z M164 156h10v10h-10z M178 156h10v10h-10z M192 156h10v10h-10z M206 156h10v10h-10z M220 156h10v10h-10z M234 156h10v10h-10z M248 156h10v10h-10z M262 156h10v10h-10z M276 156h10v10h-10z M150 170h10v10h-10z M164 170h10v10h-10z M178 170h10v10h-10z M192 170h10v10h-10z M206 170h10v10h-10z M220 170h10v10h-10z M234 170h10v10h-10z M248 170h10v10h-10z M262 170h10v10h-10z M276 170h10v10h-10z"/>
-<circle class="ring" cx="138.0" cy="189.0" r="11"/>
+<circle class="ring" cx="143.0" cy="189.0" r="11"/>
 <text x="310" y="44" font-size="10" class="accv ts">fix 827</text>
 <text x="310" y="58" font-size="10" class="val ts">docs 725</text>
 <text x="310" y="72" font-size="10" class="val ts">feat 697</text>
@@ -41,5 +41,5 @@
 <text x="310" y="198" font-size="10" class="val ts">none-parse 996</text>
 <text x="42" y="20" font-size="11" class="lbl ts">commit subjects by Conventional Commits type · one cell = one percent of 4,349</text>
 <text x="42" y="34" font-size="9.5" class="lbl ts">open cells do not parse as Conventional Commits · 2 types under one percent each: perf, revert — folded here, not drawn</text>
-<text x="686" y="166" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+<text x="686" y="244" font-size="9.5" class="lbl te">as of 2026-09-05</text>
 </svg>
