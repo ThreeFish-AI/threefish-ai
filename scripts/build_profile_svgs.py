@@ -1461,7 +1461,7 @@ def mark_alt(f):
                 "Dong Yu — winter, night, and rainy days (三余, sān yú) — sound nearly the "
                 "same as three fish (三鱼). Hence the handle ThreeFish. Purely decorative; "
                 "no data encoded.")
-    return ("三条鱼，作为签名图形。汉语里，董遇的「三余」——冬天、夜晚、雨天（sān yú）"
+    return ("三只鱼，作为签名图形。汉语里，董遇的「三余」——冬天、夜晚、雨天（sān yú）"
             "——与「三鱼」几乎同音，ID 由此而来。纯装饰，不编码任何数据。")
 
 

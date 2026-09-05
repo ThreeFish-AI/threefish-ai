@@ -2,7 +2,7 @@
 
 <!-- FIG:mark --><img src="assets/mark.svg" width="256" alt="Three fish, drawn as a signature mark. In Mandarin the three surpluses of Dong Yu — winter, night, and rainy days (三余, sān yú) — sound nearly the same as three fish (三鱼). Hence the handle ThreeFish. Purely decorative; no data encoded." /><!-- /FIG:mark -->
 
-### Aurelius Huang · 阿浩
+### Aurelius Huang · 三余
 
 **Entropy reduction — of codebases, and of days.**
 
@@ -22,11 +22,11 @@
 
 ---
 
-<!-- FIG:growth --><img src="assets/growth.svg" width="700" alt="Column chart, contributions per year 2016 to 2026 on a square-root scale: 1, 0, 0, 13, 129, 198, 676, 589, 1,181, 3,193, 9,311. 2017 and 2018 are exactly zero, drawn as open slots below the axis. 2023 (589) is lower than 2022 (676). Data: GitHub." /><!-- /FIG:growth -->
+<!-- FIG:growth --><img src="assets/growth.svg" width="700" alt="Column chart, contributions per year 2016 to 2026 on a square-root scale: 1, 0, 0, 13, 129, 198, 676, 589, 1,181, 3,193, 9,313. 2017 and 2018 are exactly zero, drawn as open slots below the axis. 2023 (589) is lower than 2022 (676). Data: GitHub." /><!-- /FIG:growth -->
 
-<sub>Eleven years, square-root scale. **<!-- DATA:cur_total -->9,311<!-- /DATA:cur_total --> in <!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** — after two years that are genuinely zero and one year that is genuinely down.</sub>
+<sub>Eleven years, square-root scale. **<!-- DATA:cur_total -->9,313<!-- /DATA:cur_total --> in <!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** — after two years that are genuinely zero and one year that is genuinely down.</sub>
 
-**2016** — one commit. **2017–2018** — nothing; the gap in the chart is real, and it is two years long. **2019** — 13. **2020** — 129, the year of coming back. **2022** — 676. **2023** — 589, lower than the year before, and the chart does not smooth it. **2024** — 1,181; the first upstream patch merged into [Dify](https://github.com/langgenius/dify/pull/5631) that July. **2025** — 3,193; `negentropy-perceives` in August, `agentic-ai-cognizes` in October. **2026-01-31** — the trunk starts. **2026-05-18** — both of those repositories are archived into it. **<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** — <!-- DATA:cur_total -->9,311<!-- /DATA:cur_total --> so far.
+**2016** — one commit. **2017–2018** — nothing; the gap in the chart is real, and it is two years long. **2019** — 13. **2020** — 129, the year of coming back. **2022** — 676. **2023** — 589, lower than the year before, and the chart does not smooth it. **2024** — 1,181; the first upstream patch merged into [Dify](https://github.com/langgenius/dify/pull/5631) that July. **2025** — 3,193; `negentropy-perceives` in August, `agentic-ai-cognizes` in October. **2026-01-31** — the trunk starts. **2026-05-18** — both of those repositories are archived into it. **<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** — <!-- DATA:cur_total -->9,313<!-- /DATA:cur_total --> so far.
 
 <!-- FIG:rhythm --><img src="assets/rhythm.svg" width="700" alt="Histogram of 4,349 open-source commits by hour of day, Asia/Shanghai, axis running 04:00 through 03:00 so the night block stays contiguous. Values by hour from 04:00: 0, 0, 0, 11, 44, 232, 338, 319, 186, 184, 265, 285, 262, 292, 242, 206, 214, 348, 460, 329, 91, 36, 3, 2. 04:00 to 06:59 are exactly zero, drawn as open slots below the axis. Peak 22:00 with 460 commits, 10.6 percent of all commits, 2.54 times a flat baseline. Bars below the 2.5-pixel minimum height are drawn at that minimum." /><!-- /FIG:rhythm -->
 

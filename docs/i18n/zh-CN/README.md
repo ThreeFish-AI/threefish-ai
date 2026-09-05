@@ -1,8 +1,8 @@
 <div align="center">
 
-<!-- FIG:mark --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/mark.svg" width="256" alt="三条鱼，作为签名图形。汉语里，董遇的「三余」——冬天、夜晚、雨天（sān yú）——与「三鱼」几乎同音，ID 由此而来。纯装饰，不编码任何数据。" /><!-- /FIG:mark -->
+<!-- FIG:mark --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/mark.svg" width="256" alt="三只鱼，作为签名图形。汉语里，董遇的「三余」——冬天、夜晚、雨天（sān yú）——与「三鱼」几乎同音，ID 由此而来。纯装饰，不编码任何数据。" /><!-- /FIG:mark -->
 
-### Aurelius Huang · 阿浩
+### Aurelius Huang · 三余
 
 **熵减——代码库的，与日子的。**
 
@@ -22,11 +22,11 @@
 
 ---
 
-<!-- FIG:growth --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/growth.svg" width="700" alt="2016–2026 逐年贡献柱状图，平方根标度：1, 0, 0, 13, 129, 198, 676, 589, 1,181, 3,193, 9,311。2017、2018 为真实零值，画作基线下方的空槽。2023（589）低于 2022（676）。数据：GitHub。" /><!-- /FIG:growth -->
+<!-- FIG:growth --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/growth.svg" width="700" alt="2016–2026 逐年贡献柱状图，平方根标度：1, 0, 0, 13, 129, 198, 676, 589, 1,181, 3,193, 9,313。2017、2018 为真实零值，画作基线下方的空槽。2023（589）低于 2022（676）。数据：GitHub。" /><!-- /FIG:growth -->
 
-<sub>十一年，平方根标度。**<!-- DATA:cur_total -->9,311<!-- /DATA:cur_total -->（<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->）**——此前是两个真正的零，和一次真正的回落。</sub>
+<sub>十一年，平方根标度。**<!-- DATA:cur_total -->9,313<!-- /DATA:cur_total -->（<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->）**——此前是两个真正的零，和一次真正的回落。</sub>
 
-**2016** —— 一条提交。**2017–2018** —— 空的；图上那个缺口是真的，而且长达两年。**2019** —— 13 条。**2020** —— 129 条，回来的那一年。**2022** —— 676 条。**2023** —— 589 条，低于上一年，图没有把它抹平。**2024** —— 1,181 条；当年 7 月，第一个上游补丁合入 [Dify](https://github.com/langgenius/dify/pull/5631)。**2025** —— 3,193 条；8 月有了 `negentropy-perceives`，10 月有了 `agentic-ai-cognizes`。**2026-01-31** —— 主干开始。**2026-05-18** —— 那两个仓库归档并入主干。**<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** —— 目前 <!-- DATA:cur_total -->9,311<!-- /DATA:cur_total --> 条。
+**2016** —— 一条提交。**2017–2018** —— 空的；图上那个缺口是真的，而且长达两年。**2019** —— 13 条。**2020** —— 129 条，回来的那一年。**2022** —— 676 条。**2023** —— 589 条，低于上一年，图没有把它抹平。**2024** —— 1,181 条；当年 7 月，第一个上游补丁合入 [Dify](https://github.com/langgenius/dify/pull/5631)。**2025** —— 3,193 条；8 月有了 `negentropy-perceives`，10 月有了 `agentic-ai-cognizes`。**2026-01-31** —— 主干开始。**2026-05-18** —— 那两个仓库归档并入主干。**<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** —— 目前 <!-- DATA:cur_total -->9,313<!-- /DATA:cur_total --> 条。
 
 <!-- FIG:rhythm --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/rhythm.svg" width="700" alt="开源提交按小时分布直方图（共 4,349 条，Asia/Shanghai，横轴自 04:00 起至 03:00，使夜间块连续）。自 04:00 起逐小时数值：0, 0, 0, 11, 44, 232, 338, 319, 186, 184, 265, 285, 262, 292, 242, 206, 214, 348, 460, 329, 91, 36, 3, 2。04:00–06:59 为真实零值（基线下方空槽）。峰值 22:00 共 460 条——占全部提交 10.6%，为平坦基线的 2.54 倍。低于最小可见高度 2.5 像素的柱按最小高度绘制。" /><!-- /FIG:rhythm -->
 
