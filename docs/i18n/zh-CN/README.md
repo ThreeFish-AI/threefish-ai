@@ -44,7 +44,7 @@
 
 <sub>[negentropy](https://github.com/ThreeFish-AI/negentropy) 知识引擎 · [coding-proxy](https://github.com/ThreeFish-AI/coding-proxy) 编码 Agent 故障转移 · [hyper-git](https://github.com/ThreeFish-AI/hyper-git) VS Code 变更列表 · [agents.md](https://github.com/ThreeFish-AI/agents.md) 它们共同遵循的规约</sub>
 
-<!-- FIG:accrual --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/accrual.svg" width="700" alt="各源仓库累计提交折线（月分辨率，2024-06-22 至 2026-09-01——约 26 个月窗口，不是上方那张十一年图）。期末合计：agentic-ai-cognizes 945；coding-proxy 638；give-me-a-break 43；hyper-git 125；negentropy 2,048；negentropy-perceives 433；threefish-ai.github.io 117；全部仓库共 4,349。2026-05-18 两个已归档仓库走平、主干继续上升：两个仓库于该日毕业并入 negentropy 主干。数据：GitHub。" /><!-- /FIG:accrual -->
+<!-- FIG:accrual --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/accrual.svg" width="700" alt="各源仓库累计提交折线（月分辨率，2024-06-22 至 2026-09-01——约 26 个月窗口，不是上方那张十一年图）。期末合计：agentic-ai-cognizes 945；coding-proxy 638；give-me-a-break 43；hyper-git 125；negentropy 2,048；negentropy-perceives 433；threefish-ai.github.io 117；全部仓库共 4,349。2026-05-18，agentic-ai-cognizes、negentropy-perceives 走平、主干继续上升：该日毕业并入 negentropy 主干。数据：GitHub。" /><!-- /FIG:accrual -->
 
 <sub>月度累计：两条曲线在毕业并入主干的那一天走平，而主干继续爬升。窗口 <!-- DATA:win_from -->2024-06-22<!-- /DATA:win_from --> → <!-- DATA:win_to -->2026-09-01<!-- /DATA:win_to -->——**<!-- DATA:win_months -->26<!-- /DATA:win_months --> 个月，不是上方那张十一年图。**</sub>
 
@@ -58,7 +58,7 @@
 
 <!-- FIG:streak --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/streak.svg" width="700" alt="一维 rug 图，取最近 400 天（2025-07-29 至 2026-09-01），每天一根刻度，高度为当日署名提交数的平方根。208 天有至少一条提交（52%）；其余 192 天画作基线下方的细线，每个空档一段。窗口内最长连续区间 88 天（2026-03-19 至 2026-06-14），以括号标出。口径为源仓库内我署名的提交——与本页其他提交图同一总体，且窄于 GitHub 贡献日历（后者还计入私有工作、issue 与 review）。数据：GitHub。" /><!-- /FIG:streak -->
 
-<sub>连续区间的落点：**<!-- DATA:streak -->88<!-- /DATA:streak --> 天，<!-- DATA:streak_from -->2026-03-19<!-- /DATA:streak_from --> → <!-- DATA:streak_to -->2026-06-14<!-- /DATA:streak_to -->**，已加括号标注。rug 图取最近 400 天；整个窗口 <!-- DATA:win_days -->802<!-- /DATA:win_days --> 天中 <!-- DATA:active_days -->249<!-- /DATA:active_days --> 天有提交（<!-- DATA:active_pct -->31%<!-- /DATA:active_pct -->）——口径为源仓库内我署名的提交，窄于上方的 GitHub 贡献日历。</sub>
+<sub>rug 图括号标注的区间：**<!-- DATA:rug_streak -->88<!-- /DATA:rug_streak --> 天，<!-- DATA:rug_streak_from -->2026-03-19<!-- /DATA:rug_streak_from --> → <!-- DATA:rug_streak_to -->2026-06-14<!-- /DATA:rug_streak_to -->**，是它那最近 400 天窗口内最长的一段；历史最长为 <!-- DATA:streak -->88<!-- /DATA:streak --> 天（<!-- DATA:streak_from -->2026-03-19<!-- /DATA:streak_from --> → <!-- DATA:streak_to -->2026-06-14<!-- /DATA:streak_to -->）。整个窗口 <!-- DATA:win_days -->802<!-- /DATA:win_days --> 天中 <!-- DATA:active_days -->249<!-- /DATA:active_days --> 天有提交（<!-- DATA:active_pct -->31%<!-- /DATA:active_pct -->）——口径为源仓库内我署名的提交，窄于上方的 GitHub 贡献日历。</sub>
 
 ---
 
