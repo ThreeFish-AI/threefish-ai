@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/ThreeFish-AI.png?size=320" width="160" alt="Aurelius Huang 的个人头像。ID ThreeFish 由来：汉语里董遇的「三余」（sān yú）与「三鱼」几乎同音。" />
-
-### Aurelius Huang · 三余
+### <img src="https://github.com/ThreeFish-AI.png?size=96" width="32" align="middle" alt="Aurelius Huang 的个人头像。ID ThreeFish 由来：汉语里董遇的「三余」（sān yú）与「三鱼」几乎同音。" /> Aurelius Huang · 三余
 
 **熵减——代码库的，与日子的。**
 

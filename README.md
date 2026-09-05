@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/ThreeFish-AI.png?size=320" width="160" alt="Aurelius Huang&#39;s personal avatar. The handle ThreeFish: in Mandarin the three surpluses of Dong Yu — winter, night, and rainy days (三余, sān yú) — sound nearly the same as three fish (三鱼)." />
-
-### Aurelius Huang · 三余
+### <img src="https://github.com/ThreeFish-AI.png?size=96" width="32" align="middle" alt="Aurelius Huang&#39;s personal avatar. The handle ThreeFish: in Mandarin the three surpluses of Dong Yu — winter, night, and rainy days (三余, sān yú) — sound nearly the same as three fish (三鱼)." /> Aurelius Huang · 三余
 
 **Entropy reduction — of codebases, and of days.**
 
