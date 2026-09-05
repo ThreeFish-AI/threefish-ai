@@ -96,6 +96,10 @@ FACT_KEYS = frozenset({
     "lang_top", "lang_top_pct", "lang_naive", "lang_naive_pct",
     "rel_last_name", "rel_last_tag",
     "streak_from", "streak_to", "active_days", "active_pct",
+    # The rug is a rolling 400-day window, so its bracket is a WINDOWED record
+    # and needs its own facts: the all-time streak above will eventually age out
+    # of the window and stop being the run the figure marks.
+    "rug_streak", "rug_streak_from", "rug_streak_to",
     "wd_days", "we_days", "we_peak_h",
     # v5 content modules (per-project sub-lines)
     "neg_commits", "rel_cp", "rel_hg", "rel_gmab",
@@ -371,8 +375,6 @@ for prev, cur in zip(sorted_days, sorted_days[1:]):
         best, best_start, best_end = streak, run_start, run_end
 streak = best
 
-zero_hours = [h for h in range(24) if hours[h] == 0]
-
 # The shared x-domain for every time-axis figure (accrual, lifecycles, cadence,
 # streak): three stacked figures with three silently different ranges is a
 # worse honesty failure than any single figure's caveat.
@@ -499,14 +501,81 @@ LIGHT = dict(bg="#ffffff", ink="#1f2328", lbl="#6e7781", val="#57606a",
 DARK = dict(bg="#0d1117", ink="#f0f6fc", lbl="#9198a1", val="#8b949e",
             bar="#6e7681", acc="#58a6ff", rule="#30363d")
 
+# Helvetica advance widths, 1/1000 em, grouped by width. Used only to REJECT
+# layouts at the write gate, never to position anything — a wrong guess costs a
+# false abort, not a silently clipped figure.
+_GLYPHS = {
+    191: "'", 222: "ijl", 260: "|", 278: " !,./:;I[\\]ft·", 333: "()-`r",
+    334: "{}", 355: '"', 389: "*", 469: "^", 500: "Jcksvxyz", 549: "÷√≈",
+    556: "#$0123456789?L_abdeghnopqu", 584: "+<=>~×", 611: "FTZ", 634: "→∝■",
+    667: "&ABEKPSVXY", 722: "CDHNRUw", 778: "GOQ", 833: "Mm", 889: "%",
+    944: "W", 1000: "—", 1015: "@",
+}
+GLYPH_W = {c: w for w, cs in _GLYPHS.items() for c in cs}
+
+
+# The figures ask for a system-font stack, so the actual renderer is whatever
+# the reader's OS resolves first — measured in Chrome/macOS, SF Pro runs ~7-12%
+# wider than these Helvetica metrics at the sizes used here. Widths are scaled
+# by this factor so the gate over-estimates: a label that fits under the gate
+# fits on the widest font in the stack, and the cost of the margin is a false
+# abort rather than a figure that ships clipped.
+FONT_SLACK = 1.14
+
+
+def text_w(s, size):
+    """Advance width of `s` in px, over-estimated (see FONT_SLACK). Unknown
+    Latin falls back to digit width; CJK and other wide scripts to one full em
+    — both err wide, so the gate refuses layouts it cannot vouch for."""
+    return sum(GLYPH_W.get(c, 1000 if ord(c) > 0x2E80 else 600)
+               for c in s) * size / 1000.0 * FONT_SLACK
+
+
+def clamp_start(x, s, size, right=700.0, pad=8.0):
+    """x for a start-anchored label, pulled left so it ends inside the canvas.
+    Data-derived labels (tags, date ranges) sit at data x positions, and the
+    rightmost datum is always near the edge."""
+    return min(x, right - pad - text_w(s, size))
+
+
+def clamp_mid(cx, s, size, left=0.0, right=700.0, pad=2.0):
+    """cx for a middle-anchored label, nudged so both ends stay on the canvas."""
+    half = text_w(s, size) / 2
+    return min(max(cx, left + pad + half), right - pad - half)
+
+
+def spread_labels(items, cap, gap=11.0):
+    """De-overlap end-of-line labels bottom-up: walk downward-sorted, let each
+    claim its y, and push the one above it further up. Lines that converge at
+    one end (cumulative totals, slope-chart tails) crowd there by construction,
+    so the label column cannot inherit the data's y positions verbatim.
+
+    `items` is [(y, *rest)]; returns the same tuples with y replaced."""
+    out = []
+    for y, *rest in sorted(items, key=lambda t: -t[0]):
+        y = min(y, cap)
+        out.append((y, *rest))
+        cap = y - gap
+    return out
+
 
 def style_sheet(extra=""):
-    """Base tokens + dark override (always AFTER base rules) + extras."""
+    """Base tokens + dark override (always AFTER base rules) + extras.
+
+    .bar/.acc fill; .bars/.accs are their STROKE twins. A class rule beats a
+    presentation attribute in the cascade, so `<path class="bar" fill="none"
+    stroke-width="2">` is not a grey line — it is a grey blob with no stroke,
+    and `<line class="acc">` is invisible. Stroked marks must use the -s
+    variants; assert_stroked_marks enforces it at the write gate."""
     base = "  .bg{fill:%(bg)s}.ink{fill:%(ink)s}.lbl{fill:%(lbl)s}.val{fill:%(val)s}" \
            ".bar{fill:%(bar)s}.acc{fill:%(acc)s}.accv{fill:%(acc)s;font-weight:600}" \
+           ".bars{fill:none;stroke:%(bar)s}.accs{fill:none;stroke:%(acc)s}" \
+           ".inks{fill:none;stroke:%(ink)s}.vals{fill:none;stroke:%(val)s}" \
            ".zero{fill:none;stroke:%(bar)s;stroke-width:1.2}.rule{stroke:%(rule)s}" % LIGHT
     dark = "    .bg{fill:%(bg)s}.ink{fill:%(ink)s}.lbl{fill:%(lbl)s}.val{fill:%(val)s}" \
            ".bar{fill:%(bar)s}.acc{fill:%(acc)s}.accv{fill:%(acc)s;font-weight:600}" \
+           ".bars{stroke:%(bar)s}.accs{stroke:%(acc)s}.inks{stroke:%(ink)s}" \
+           ".vals{stroke:%(val)s}" \
            ".zero{stroke:%(bar)s}.rule{stroke:%(rule)s}" % DARK
     return ("<style>\n"
             "  text{font-family:%s;font-variant-numeric:tabular-nums}\n"
@@ -736,14 +805,24 @@ def sweep_y_motion(dy, kf, x0=42, x1=686, y0=30, dur="1.8s", delay=".3s"):
 
 
 def month_ticks(domain, L, R, y, step=2):
-    """First-of-month x ticks across the shared domain, every `step` months."""
+    """First-of-month x ticks across the shared domain, every `step` months.
+
+    `step` is a floor, not the answer: figures that reserve a left name column
+    have far less axis for the same date span, so the step is widened until the
+    labels physically fit. A "YYYY-MM" is ~44px at font-size 10."""
+    months = max(1, round((domain[1] - domain[0]).days / 30.44))
+    while (R - L) / max(1, months / step) < text_w("2026-06", 10) + 6:
+        step += 1
     out, d, k = [], domain[0].replace(day=1), 0
     while d <= domain[1]:
         if d >= domain[0]:  # replace(day=1) can predate the domain start
             if k % step == 0:
                 x = L + (d - domain[0]).days / max(1, (domain[1] - domain[0]).days) * (R - L)
-                out.append('<text x="%.0f" y="%d" font-size="10" class="lbl tm">%d-%02d</text>'
-                           % (x, y, d.year, d.month))
+                lab = "%d-%02d" % (d.year, d.month)
+                # Middle-anchored at a data x: the last tick sits at the domain
+                # end, half a label past the plot's right edge.
+                out.append('<text x="%.0f" y="%d" font-size="10" class="lbl tm">%s</text>'
+                           % (clamp_mid(x, lab, 10), y, lab))
         d = (d + timedelta(days=32)).replace(day=1)
         k += 1
     return out
@@ -847,11 +926,12 @@ def render_surplus(wd_hour, we_hour, wd_days, we_days, domain, asof, aria):
         style_sheet(motion),
         '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
         '<line class="rule" x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke-width="1"/>' % (L, BASE, R, BASE),
-        step_path(wd_rate, "bar"),
-        step_path(we_rate, "acc"),
+        step_path(wd_rate, "bars"),
+        step_path(we_rate, "accs"),
         '<text x="%.0f" y="20" font-size="11" class="lbl ts">commits per day, weekday vs weekend · axis 04→03 · %s → %s</text>'
         % (L, domain[0], domain[1]),
-        '<text x="%.0f" y="36" font-size="10" class="lbl ts">normalised: %d weekdays ÷ %d, %d weekend days ÷ %d</text>'
+        # "N weekdays ÷ D" reads as if N were a day count; name both units.
+        '<text x="%.0f" y="36" font-size="10" class="lbl ts">per-day rates: %d commits ÷ %d weekdays · %d commits ÷ %d weekend days</text>'
         % (L, sum(wd_hour.values()), wd_days, sum(we_hour.values()), we_days),
         '<circle class="acc" cx="%.1f" cy="%.1f" r="2.6"/><text x="%.1f" y="%.1f" font-size="11" class="accv tm">%.1f/d</text>'
         % (L + pitch * (ep_i + 0.5), BASE - max(we_rate) / rmax * SPAN - 6,
@@ -863,9 +943,12 @@ def render_surplus(wd_hour, we_hour, wd_days, we_days, domain, asof, aria):
 
 def render_accrual(monthly, events, domain, asof, aria):
     """Cumulative lines per repo at monthly resolution. The flat-lining of the
-    two archived repos on the graduation date is a graph shape, not a sentence."""
+    two archived repos on the graduation date is a graph shape, not a sentence.
+
+    R stops well short of the canvas: the right margin is the per-repo legend,
+    and repo names run to ~90px."""
     W, H = 700, 198
-    L, R, BASE, TOP = 42.0, 686.0, 158.0, 42.0
+    L, R, BASE, TOP = 42.0, 594.0, 158.0, 42.0
     months = []
     d = domain[0].replace(day=1)
     while d <= domain[1]:
@@ -890,29 +973,24 @@ def render_accrual(monthly, events, domain, asof, aria):
         pts = " ".join(("M%.0f %.1f" if i == 0 else "L%.0f %.1f")
                        % (x[i], BASE - vals[i] / vmax * (BASE - TOP))
                        for i in range(len(vals)))
-        lines.append('<path class="bar" d="%s" fill="none" stroke-width="1.1"/>' % pts)
+        lines.append('<path class="bars" d="%s" fill="none" stroke-width="1.1"/>' % pts)
         label_y.append((BASE - vals[-1] / vmax * (BASE - TOP) - 2, name, "val"))
     tot_pts = " ".join(("M%.0f %s" if i == 0 else "L%.0f %s") % (x[i], y[i])
                        for i in range(len(x)))
-    lines.append('<path class="acc" d="%s" fill="none" stroke-width="2"/>' % tot_pts)
+    lines.append('<path class="accs" d="%s" fill="none" stroke-width="2"/>' % tot_pts)
     label_y.append((TOP + 8, "total %s" % format(totals[-1], ","), "accv"))
-    # De-overlap the right-edge labels bottom-up: cumulative lines end low and
-    # crowd there, so each label claims its y and the one above is pushed up.
-    placed = []
-    cap = BASE + 8
-    for ly, text, cls in sorted(label_y, key=lambda t: -t[0]):
-        ly = min(ly, cap)
-        placed.append((ly, text, cls))
-        cap = ly - 11
-    for ly, text, cls in placed:
+    # Cumulative lines end low and crowd there, so the label column cannot
+    # inherit their y positions verbatim.
+    for ly, text, cls in spread_labels(label_y, BASE + 8):
         lines.append('<text x="%.0f" y="%.1f" font-size="9" class="%s ts">%s</text>'
-                     % (R - 2, ly, cls, text))
+                     % (R + 4, ly, cls, text))
     ev = []
     seen = set()
-    for dte, label in events:
+    for dte, _name in events:
         if dte in seen or not (domain[0] <= dte <= domain[1]):
             continue
         seen.add(dte)
+        label = "graduated"
         ex = x_date(dte, domain, L, R)
         ev.append('<line class="rule" x1="%.1f" y1="%.0f" x2="%.1f" y2="%.0f" stroke-width="1" stroke-dasharray="3 3"/>' % (ex, TOP - 4, ex, BASE))
         ev.append('<text x="%.1f" y="%.0f" font-size="9" class="lbl tm" transform="rotate(-90 %.1f %.0f)">%s</text>'
@@ -936,52 +1014,67 @@ def render_accrual(monthly, events, domain, asof, aria):
         "\n".join(month_ticks(domain, L, R, 176)),
         '<text x="%.0f" y="20" font-size="11" class="lbl ts">cumulative authored commits per repo · monthly · %s → %s · not the eleven years above</text>'
         % (L, domain[0], domain[1]),
-        '<text x="%.0f" y="192" font-size="9.5" class="lbl te">as of %s</text>' % (R, asof),
+        '<text x="686" y="192" font-size="9.5" class="lbl te">as of %s</text>' % asof,
         "</svg>", ""])
 
 
 def render_lifecycles(spans, domain, asof, aria):
     """Interval ribbon. Bar ends are LAST PUSH — GitHub exposes no public
     archive timestamp, so archived-ness rides the terminal glyph, not the date."""
-    W, H = 700, 180
-    L, R = 42.0, 686.0
-    body = []
+    W = 700
+    # L reserves the row-name column: repo names run to ~86px. Height is
+    # derived from the row count — a new source repo adds a row, and a fixed
+    # canvas would push the month-tick axis under the last bar.
+    L, R = 132.0, 686.0
+    TOP, PITCH = 52.0, 18.0   # TOP clears the legend at y=34 (labels ride -5)
     spans = sorted(spans, key=lambda s: s[1])  # by created
+    AXIS = TOP + (len(spans) - 1) * PITCH + 20
+    H = int(AXIS + 32)
+    body = []
     for i, (name, created, pushed, archived) in enumerate(spans):
-        y = 40 + i * 18
+        y = TOP + i * PITCH
         x0 = x_date(created, domain, L, R)
         x1 = x_date(max(pushed, domain[0]), domain, L, R)
-        cls = "acc" if not archived else "bar"
+        cls = "accs" if not archived else "bars"
         body.append('<line class="%s" x1="%.1f" y1="%.0f" x2="%.1f" y2="%.0f" stroke-width="4" stroke-linecap="round"/>'
                     % (cls, x0, y, x1, y))
         if archived:
             body.append('<rect class="ink" x="%.1f" y="%.1f" width="7" height="7"/>' % (x1 - 3.5, y - 3.5))
         body.append('<text x="%.0f" y="%.1f" font-size="9.5" class="lbl te">%s</text>' % (L - 6, y + 3, name))
-        body.append('<text x="%.1f" y="%.1f" font-size="8.5" class="lbl ts">%s → %s</text>'
-                    % (x0 + 4, y - 5, created.strftime("%Y-%m"), pushed.strftime("%Y-%m")))
-    mo, rect = sweep_y_motion(132, "swy")
+        # Clamped: a repo created near the domain end starts its bar at the
+        # right edge, and the range label would run off the canvas.
+        span_txt = "%s → %s" % (created.strftime("%Y-%m"), pushed.strftime("%Y-%m"))
+        body.append('<text x="%.1f" y="%.1f" font-size="8.5" class="lbl ts">%s</text>'
+                    % (clamp_start(x0 + 4, span_txt, 8.5), y - 5, span_txt))
+    mo, rect = sweep_y_motion(int(AXIS - 40), "swy")
     return "\n".join([
         svg_open(W, H, aria),
         style_sheet(mo),
         '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
         "\n".join(body),
         rect,
-        "\n".join(month_ticks(domain, L, R, 158)),
-        '<text x="%.0f" y="20" font-size="11" class="lbl ts">repository lifespans, creation to last push · ends are last push, not archive dates</text>' % L,
-        '<text x="%.0f" y="34" font-size="9.5" class="lbl ts">■ graduated (archived) · bars in blue are live · deleted repos are invisible at public caliber</text>' % L,
-        '<text x="%.0f" y="174" font-size="9.5" class="lbl te">as of %s</text>' % (R, asof),
+        "\n".join(month_ticks(domain, L, R, AXIS)),
+        '<text x="42" y="20" font-size="11" class="lbl ts">repository lifespans, creation to last push · ends are last push, not archive dates</text>',
+        '<text x="42" y="34" font-size="9.5" class="lbl ts">■ graduated (archived) · bars in blue are live · deleted repos are invisible at public caliber</text>',
+        '<text x="%.0f" y="%.0f" font-size="9.5" class="lbl te">as of %s</text>' % (R, H - 8, asof),
         "</svg>", ""])
 
 
 def render_cadence(rel_lists, domain, asof, aria):
     """Release dots on the shared axis. negentropy's 2 tags against 2,048
     commits need the in-frame note or the figure quietly slanders the trunk."""
-    W, H = 700, 180
-    L, R = 42.0, 686.0
+    W = 700
+    # L reserves the lane-name column: names run to ~105px with their counts.
+    # Height follows the lane count: a repo's first release adds a lane, and a
+    # fixed canvas would drop the month-tick axis onto the last lane's tags.
+    L, R = 152.0, 686.0
+    TOP, PITCH = 46.0, 24.0
     lanes = [(n, v) for n, v in sorted(rel_lists.items(), key=lambda kv: -len(kv[1])) if v]
+    AXIS = TOP + (len(lanes) - 1) * PITCH + 32   # clears the +15 tag baseline
+    H = int(AXIS + 32)
     body = []
     for i, (name, rels) in enumerate(lanes):
-        y = 46 + i * 24
+        y = TOP + i * PITCH
         rels = sorted(rels, key=lambda r: r["published_at"])
         body.append('<line class="rule" x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke-width="1"/>' % (L, y, R, y))
         for j, r in enumerate(rels):
@@ -993,26 +1086,35 @@ def render_cadence(rel_lists, domain, asof, aria):
             else:
                 body.append('<circle class="%s" cx="%.1f" cy="%.1f" r="3.4"/>'
                             % ("acc" if name == "negentropy" else "bar", cx, y + dy))
+        # Endpoint tags. A lane can hold one release (first IS last -> one
+        # label), and two releases days apart put the two labels on top of each
+        # other, so the end label is only drawn when it clears the start one.
+        FS = 8.5
         first, last = rels[0], rels[-1]
-        for r, anchor in ((first, "start"), (last, "end")):
-            dt = datetime.strptime(r["published_at"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
-            cx = x_date(dt.date(), domain, L, R)
-            anchor_cls = "ts" if anchor == "start" else "te"
-            body.append('<text x="%.1f" y="%.1f" font-size="8.5" class="lbl %s">%s</text>'
-                        % (cx + (3 if anchor == "start" else -3), y + 15, anchor_cls, r["tag_name"]))
+        fx = x_date(datetime.strptime(first["published_at"], "%Y-%m-%dT%H:%M:%SZ")
+                    .replace(tzinfo=timezone.utc).date(), domain, L, R)
+        fx = clamp_start(fx + 3, first["tag_name"], FS)
+        body.append('<text x="%.1f" y="%.1f" font-size="%s" class="lbl ts">%s</text>'
+                    % (fx, y + 15, FS, first["tag_name"]))
+        if last is not first:
+            lx = x_date(datetime.strptime(last["published_at"], "%Y-%m-%dT%H:%M:%SZ")
+                        .replace(tzinfo=timezone.utc).date(), domain, L, R) - 3
+            if lx - text_w(last["tag_name"], FS) > fx + text_w(first["tag_name"], FS) + 4:
+                body.append('<text x="%.1f" y="%.1f" font-size="%s" class="lbl te">%s</text>'
+                            % (lx, y + 15, FS, last["tag_name"]))
         body.append('<text x="%.0f" y="%.1f" font-size="9.5" class="lbl te">%s · %d</text>'
                     % (L - 6, y + 3, name, len(rels)))
-    mo, rect = sweep_y_motion(118, "csw", delay=".5s")
+    mo, rect = sweep_y_motion(int(AXIS - 40), "csw", delay=".5s")
     return "\n".join([
         svg_open(W, H, aria),
         style_sheet(mo),
         '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
         "\n".join(body),
         rect,
-        "\n".join(month_ticks(domain, L, R, 158)),
-        '<text x="%.0f" y="20" font-size="11" class="lbl ts">releases on the commit timeline · hollow = pre-release · counts at left</text>' % L,
-        '<text x="%.0f" y="34" font-size="9.5" class="lbl ts">negentropy ships as merged PRs, not tags — it is a deployed service, not a distributed package</text>' % L,
-        '<text x="%.0f" y="174" font-size="9.5" class="lbl te">as of %s</text>' % (R, asof),
+        "\n".join(month_ticks(domain, L, R, AXIS)),
+        '<text x="42" y="20" font-size="11" class="lbl ts">releases on the commit timeline · hollow = pre-release · counts at left</text>',
+        '<text x="42" y="34" font-size="9.5" class="lbl ts">negentropy ships as merged PRs, not tags — it is a deployed service, not a distributed package</text>',
+        '<text x="%.0f" y="%.0f" font-size="9.5" class="lbl te">as of %s</text>' % (R, H - 8, asof),
         "</svg>", ""])
 
 
@@ -1024,9 +1126,11 @@ def render_streak(day_counts, run, domain, asof, aria):
     individual slots would cost more bytes than the data. Counted over authored
     commits in source repositories — NOT the GitHub calendar, which also counts
     private work, issues and reviews."""
-    W, H = 700, 152
+    W, H = 700, 164   # 164: month ticks at 142, as-of on its own line below
     L, R, BASE = 42.0, 686.0, 122.0
-    SPAN, RUG_DAYS = 78.0, 400
+    # SPAN leaves the 36-48 band to the bracket's caption, which sits under the
+    # bracket rather than on the title's baseline.
+    SPAN, RUG_DAYS = 70.0, 400
     dom = (domain[1] - timedelta(days=RUG_DAYS - 1), domain[1])
     in_win = {d: n for d, n in day_counts.items() if dom[0] <= d <= dom[1]}
     vmax = max(in_win.values()) or 1
@@ -1065,17 +1169,22 @@ def render_streak(day_counts, run, domain, asof, aria):
         '<line class="rule" x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke-width="1"/>' % (L, BASE, R, BASE),
         '<path class="tick" d="%s"/>' % " ".join(ticks),
         '<path class="zero" d="%s"/>' % " ".join(runs),
-        '<line class="acc" x1="%d" y1="30" x2="%d" y2="30" stroke-width="1.6"/>'
-        '<line class="acc" x1="%d" y1="26" x2="%d" y2="34" stroke-width="1.6"/>'
-        '<line class="acc" x1="%d" y1="26" x2="%d" y2="34" stroke-width="1.6"/>'
+        '<line class="accs" x1="%d" y1="30" x2="%d" y2="30" stroke-width="1.6"/>'
+        '<line class="accs" x1="%d" y1="26" x2="%d" y2="34" stroke-width="1.6"/>'
+        '<line class="accs" x1="%d" y1="26" x2="%d" y2="34" stroke-width="1.6"/>'
         % (bx0, bx1, bx0, bx0, bx1, bx1),
-        '<text x="%.0f" y="22" font-size="11" class="accv tm">%d days, %s → %s</text>'
-        % ((bx0 + bx1) / 2, (run[1] - run[0]).days + 1, run[0], run[1]),
-        '<rect class="sweep" x="%d" y="34" width="2.2" height="%.0f" rx="1.1"/>' % (bx0, BASE - 34),
+        # Below the bracket, not above it: the run tracks a moving record, so a
+        # label on the title's baseline overprints the title whenever the run
+        # sits right of centre. The band between bracket and tick tops is its.
+        '<text x="%.1f" y="44" font-size="10.5" class="accv tm">%d days, %s → %s</text>'
+        % (clamp_mid((bx0 + bx1) / 2, "%d days, %s → %s"
+                     % ((run[1] - run[0]).days + 1, run[0], run[1]), 10.5),
+           (run[1] - run[0]).days + 1, run[0], run[1]),
+        '<rect class="sweep" x="%d" y="48" width="2.2" height="%.0f" rx="1.1"/>' % (bx0, BASE - 48),
         "\n".join(month_ticks(dom, L, R, 142, step=3)),
         '<text x="%.0f" y="20" font-size="11" class="lbl ts">one tick per day, latest %d · height ∝ √commits · authored commits in source repos, not the GitHub calendar</text>'
         % (L, RUG_DAYS),
-        '<text x="%.0f" y="146" font-size="9.5" class="lbl te">as of %s</text>' % (R, asof),
+        '<text x="%.0f" y="158" font-size="9.5" class="lbl te">as of %s</text>' % (R, asof),
         "</svg>", ""])
 
 
@@ -1117,18 +1226,18 @@ def render_latency(buckets, ecdf, stats, asof, aria):
         '<line class="rule" x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke-width="1"/>' % (L, BASE, ER, BASE),
         '<line class="rule" x1="%.1f" y1="%.0f" x2="%.1f" y2="%.0f" stroke-width="1"/>' % (ER, BASE, ER, BASE - SPAN),
         "\n".join(parts),
-        '<path class="acc" d="%s" fill="none" stroke-width="1.8"/>' % " ".join(pts),
-        '<line class="acc" x1="%.1f" y1="%.0f" x2="%.1f" y2="%.0f" stroke-width="1" stroke-dasharray="2 3"/>' % (med_x, BASE, med_x, BASE - SPAN - 2),
+        '<path class="accs" d="%s" fill="none" stroke-width="1.8"/>' % " ".join(pts),
+        '<line class="accs" x1="%.1f" y1="%.0f" x2="%.1f" y2="%.0f" stroke-width="1" stroke-dasharray="2 3"/>' % (med_x, BASE, med_x, BASE - SPAN - 2),
         '<text x="%.1f" y="%.0f" font-size="10" class="accv tm">median %s</text>' % (med_x, BASE - SPAN + 10, stats["med"]),
-        '<line class="val" x1="%.1f" y1="%.0f" x2="%.1f" y2="%.0f" stroke-width="1" stroke-dasharray="2 3"/>' % (hr_x, BASE, hr_x, BASE - SPAN - 2),
+        '<line class="vals" x1="%.1f" y1="%.0f" x2="%.1f" y2="%.0f" stroke-width="1" stroke-dasharray="2 3"/>' % (hr_x, BASE, hr_x, BASE - SPAN - 2),
         '<text x="%.1f" y="%.0f" font-size="9.5" class="val tm">1 h</text>' % (hr_x, BASE - SPAN + 10),
         ring,
         "\n".join(labels),
         '<text x="%.1f" y="%.0f" font-size="9" class="lbl te">100%%</text>' % (ER + 4, BASE - SPAN),
         '<text x="%.1f" y="%.0f" font-size="9" class="lbl te">0%%</text>' % (ER + 4, BASE),
-        '<text x="%.0f" y="20" font-size="11" class="lbl ts">merged-PR lifetime in negentropy · %d merged, %d closed-unmerged excluded · solo self-merge: unit size, not review speed</text>'
+        '<text x="%.0f" y="20" font-size="11" class="lbl ts">merged-PR lifetime in negentropy · %d merged, %d closed-unmerged excluded</text>'
         % (L, stats["n"], stats["unmerged"]),
-        '<text x="%.0f" y="32" font-size="9.5" class="lbl ts">log buckets; the tail is compressed by design — longest was %s (printed, not just bucketed)</text>'
+        '<text x="%.0f" y="32" font-size="9.5" class="lbl ts">solo self-merge: unit size, not review speed · log buckets, tail compressed by design — longest was %s</text>'
         % (L, stats["lat_max"]),
         '<text x="%.0f" y="194" font-size="9.5" class="lbl te">as of %s</text>' % (R + 120, asof),
         "</svg>", ""])
@@ -1211,17 +1320,27 @@ def render_tongues(lang_all, lang_src, gen_site, zero_repos, asof, aria):
         return TOP + SPAN - p / ymax * SPAN
 
     body = []
+    left, right = [], []
     for n in names:
         y1, y2 = y_of(na[n]), y_of(ns[n])
-        cls = "acc" if n == max(ns, key=ns.get) else "bar"
+        acc = n == max(ns, key=ns.get)
         body.append('<line class="%s" x1="%.0f" y1="%.1f" x2="%.0f" y2="%.1f" stroke-width="1.6"/>'
-                    % (cls, XL, y1, XR, y2))
+                    % ("accs" if acc else "bars", XL, y1, XR, y2))
+        dot = "acc" if acc else "bar"
         body.append('<circle class="%s" cx="%.0f" cy="%.1f" r="2.4"/><circle class="%s" cx="%.0f" cy="%.1f" r="2.4"/>'
-                    % (cls, XL, y1, cls, XR, y2))
-        body.append('<text x="%.0f" y="%.1f" font-size="10" class="lbl te">%s %.1f%%</text>'
-                    % (XL - 8, y1 + 3, n, na[n] * 100))
-        body.append('<text x="%.0f" y="%.1f" font-size="10" class="%s ts">%s %.1f%%</text>'
-                    % (XR + 8, y2 + 3, "accv" if cls == "acc" else "val", n, ns[n] * 100))
+                    % (dot, XL, y1, dot, XR, y2))
+        left.append((y1 + 3, "%s %.1f%%" % (n, na[n] * 100), "lbl"))
+        right.append((y2 + 3, "%s %.1f%%" % (n, ns[n] * 100),
+                      "accv" if acc else "val"))
+    # Both rankings have a long tail that converges on ~0%, so several labels
+    # land within a couple of pixels of each other and print as one blob. The
+    # dots stay on the true value; only the label column is de-overlapped.
+    for ly, txt, cls in spread_labels(left, TOP + SPAN + 5):
+        body.append('<text x="%.0f" y="%.1f" font-size="10" class="%s te">%s</text>'
+                    % (XL - 8, ly, cls, txt))
+    for ly, txt, cls in spread_labels(right, TOP + SPAN + 5):
+        body.append('<text x="%.0f" y="%.1f" font-size="10" class="%s ts">%s</text>'
+                    % (XR + 8, ly, cls, txt))
     others_a = 1 - sum(na.values())
     others_s = 1 - sum(ns.values())
     return "\n".join([
@@ -1243,9 +1362,16 @@ def render_upstream(items, pub_prs, asof, aria):
     """Named-event ledger. n=6: any aggregate destroys the only value. The
     in-frame denominator is what keeps a full-width figure honest about a
     small number."""
-    W, H = 700, 158
-    L, R, BASE = 42.0, 686.0, 96.0
+    W = 700
+    L, R = 42.0, 686.0
+    FS, TOP, PITCH = 9.0, 40.0, 15.0
     rows = sorted(items, key=lambda it: it["created_at"])
+    # One row per PR. A two-row alternation cannot separate this data: these
+    # arrive in clusters (two of six land eleven days apart), and two ~200px
+    # labels sharing a baseline print on top of each other. Row count is bounded
+    # by the ext_prs <= 10 guard, so the figure simply grows a row instead.
+    BASE = TOP + (len(rows) - 1) * PITCH + 16
+    H = int(BASE + 50)
     d0 = datetime.strptime(rows[0]["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
     d1 = datetime.strptime(rows[-1]["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
     if d1 == d0:  # single PR (or several on one day): give the axis some span
@@ -1256,44 +1382,122 @@ def render_upstream(items, pub_prs, asof, aria):
     for i, it in enumerate(rows):
         dt = datetime.strptime(it["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
         x = x_date(dt, dom, L, R)
-        y = BASE - (i % 2) * 26 - 8
+        y = TOP + i * PITCH
         slug = it["repository_url"].split("/repos/")[1]
         merged = bool(it["pull_request"]["merged_at"])
-        body.append('<line class="rule" x1="%.1f" y1="%.0f" x2="%.1f" y2="%.0f" stroke-width="1"/>'
-                    % (x, BASE, x, y + 3))
+        body.append('<line class="rule" x1="%.1f" y1="%.1f" x2="%.1f" y2="%.0f" stroke-width="1" stroke-dasharray="2 3"/>'
+                    % (x, y + 4, x, BASE))
         if merged:
             body.append('<circle class="%s" cx="%.1f" cy="%.1f" r="3.6"/>'
                         % ("acc" if slug.split("/")[0] == DIFY_OWNER else "bar", x, y))
         else:
             body.append('<circle class="zero" cx="%.1f" cy="%.1f" r="3.6"/>' % (x, y))
-        anchor = "tm" if L + 60 < x < R - 60 else ("ts" if x <= L + 60 else "te")
-        body.append('<text x="%.1f" y="%.1f" font-size="9" class="%s %s">%s#%d · %s · %s</text>'
-                    % (x, y - 7, "val" if merged else "lbl", anchor,
-                       slug, it["number"], "merged" if merged else "closed unmerged",
-                       it["created_at"][:10]))
+        txt = "%s#%d · %s · %s" % (slug, it["number"],
+                                   "merged" if merged else "closed unmerged",
+                                   it["created_at"][:10])
+        # Label goes right of its dot, or left when that would overflow; each
+        # row owns its baseline, so within-row is the only collision possible.
+        if x + 7 + text_w(txt, FS) <= R:
+            body.append('<text x="%.1f" y="%.1f" font-size="%s" class="%s ts">%s</text>'
+                        % (x + 7, y + 3, FS, "val" if merged else "lbl", txt))
+        else:
+            body.append('<text x="%.1f" y="%.1f" font-size="%s" class="%s te">%s</text>'
+                        % (x - 7, y + 3, FS, "val" if merged else "lbl", txt))
     return "\n".join([
         svg_open(W, H, aria),
         style_sheet(),
         '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
         '<line class="rule" x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke-width="1"/>' % (L, BASE, R, BASE),
         "\n".join(body),
-        '<text x="%.0f" y="130" font-size="9.5" class="lbl ts">%d external public PRs — %.1f%% of %s public PRs; the rest are my own repositories</text>'
-        % (42, len(rows), len(rows) / pub_prs * 100, format(pub_prs, ",")),
+        "\n".join(month_ticks(dom, L, R, BASE + 14, step=3)),
+        '<text x="%.0f" y="%.0f" font-size="9.5" class="lbl ts">%d external public PRs — %.1f%% of %s public PRs; the rest are my own repositories</text>'
+        % (42, BASE + 32, len(rows), len(rows) / pub_prs * 100, format(pub_prs, ",")),
         '<text x="%.0f" y="20" font-size="11" class="lbl ts">pull requests into code I do not own · hollow = closed unmerged · blue = Dify ecosystem</text>' % 42,
-        '<text x="%.0f" y="152" font-size="9.5" class="lbl te">as of %s</text>' % (686, asof),
+        '<text x="%.0f" y="%.0f" font-size="9.5" class="lbl te">as of %s</text>' % (686, H - 8, asof),
         "</svg>", ""])
 # ------------------------------------------------------------ sanitizer ----
 BANNED = re.compile(r'infinite|repeatCount\s*=\s*["\']indefinite')
 KEYFRAME = re.compile(r'@keyframes\s+(\w+)\s*\{', re.S)
+TEXT_EL = re.compile(
+    r'<text x="([-\d.]+)" y="([-\d.]+)" font-size="([\d.]+)" class="([^"]*)"([^>]*)>([^<]*)</text>')
+
+
+def text_boxes(src):
+    """[(x0, x1, y, size, txt)] for every unrotated <text>, resolving the anchor
+    class. Rotated labels are skipped: their box is not axis-aligned and the two
+    in this codebase are vertical event labels with a lane to themselves."""
+    out = []
+    for m in TEXT_EL.finditer(src):
+        x, y, size, cls, extra, txt = (float(m.group(1)), float(m.group(2)),
+                                       float(m.group(3)), m.group(4),
+                                       m.group(5), html.unescape(m.group(6)))
+        if "transform" in extra or not txt:
+            continue
+        toks = cls.split()
+        w = text_w(txt, size)
+        x0 = x - w if "te" in toks else (x - w / 2 if "tm" in toks else x)
+        out.append((x0, x0 + w, y, size, txt))
+    return out
+
+
+FILL_ONLY = ("bar", "acc", "ink", "val", "accv", "lbl")
+STROKED = re.compile(r'<(line|polyline)\b[^>]*class="([^"]*)"|'
+                     r'<(path)\b[^>]*class="([^"]*)"[^>]*fill="none"')
+
+
+def assert_stroked_marks(src, name):
+    """Write-gate: a stroked mark may not carry a fill-only class.
+
+    CSS beats presentation attributes, so `.bar{fill:#8c959f}` on a
+    `<path fill="none" stroke-width="2">` silently repaints the line as a filled
+    area with no stroke, and a `<line>` with a fill-only class draws nothing at
+    all. Both are invisible to the XML and geometry gates — the file parses, the
+    labels fit, and the data just isn't drawn. Use the .bars/.accs stroke twins."""
+    for m in STROKED.finditer(src):
+        cls = (m.group(2) or m.group(4) or "").split()
+        bad = [c for c in cls if c in FILL_ONLY]
+        if bad:
+            raise AssertionError(
+                f"{name}: <{m.group(1) or m.group(3)}> carries fill-only class "
+                f"{bad[0]!r} — a stroked mark needs .{bad[0]}s (fill:none;stroke)")
+
+
+def assert_text_fits(src, name, pad=1.0):
+    """Write-gate: no label may leave the canvas or print on top of another.
+
+    Every figure here derives label positions from data (repo names, tag names,
+    a bracket that tracks a record run), so a layout that fits today can be
+    broken by tomorrow's collection with no code change. Only a mechanical check
+    catches that — a clipped or overprinted label is invisible to the XML,
+    byte-budget and motion gates, and the alt text keeps describing the figure
+    as if it rendered."""
+    W = int(re.search(r'viewBox="0 0 (\d+) (\d+)"', src).group(1))
+    boxes = text_boxes(src)
+    for x0, x1, y, _, txt in boxes:
+        assert x0 >= -pad, f"{name}: label {txt!r} starts at x={x0:.0f}, off the left edge"
+        assert x1 <= W + pad, f"{name}: label {txt!r} ends at x={x1:.0f}, past the {W}px canvas"
+    for i, a in enumerate(boxes):
+        for b in boxes[i + 1:]:
+            # Same visual line: baselines within the larger cap height. Two
+            # labels on one baseline overlap iff their x ranges do.
+            if abs(a[2] - b[2]) >= max(a[3], b[3]) * 0.85:
+                continue
+            if min(a[1], b[1]) - max(a[0], b[0]) > pad:
+                raise AssertionError(
+                    f"{name}: labels {a[4]!r} and {b[4]!r} overlap on baseline "
+                    f"y≈{a[2]:.0f}")
 
 
 def assert_svg_sane(src: str, name: str, max_bytes=8192):
     """Write-gate: no loops, a11y metadata, size budget, no external resources,
     additive-only motion (base opacity:0 + explicit 0%/100% opacity:0), one
     @keyframes per file, animated classes never carry text, dark override
-    strictly after base rules. The prose counterpart of these rules is
+    strictly after base rules, and every label inside the canvas and clear of
+    its neighbours. The prose counterpart of these rules is
     docs/motion-constraints.md."""
     assert not BANNED.search(src), f"{name}: infinite/indefinite loop found"
+    assert_stroked_marks(src, name)
+    assert_text_fits(src, name)
     assert 'role="img"' in src and "aria-label" in src, f"{name}: a11y metadata missing"
     try:  # a bare "<" in an attribute or text node kills the whole <img> load
         xml.dom.minidom.parseString(src)
@@ -1517,24 +1721,35 @@ def surplus_alt(f, wd_hour, we_hour, wd_days, we_days, domain):
 
 
 def accrual_alt(f, monthly, domain, events, final_total):
+    """`events` is [(date, repo_name)] for the archived repos. The graduation
+    sentence is derived from it, never hardcoded: a third archival, or the two
+    dates drifting apart, must change the prose rather than silently make it a
+    lie. The count and the names both come off the list."""
     names = sorted({n for n, _ in monthly})
     finals = {n: sum(v for (nm, _), v in monthly.items() if nm == n) for n in names}
-    ev = sorted({e[0] for e in events})
-    ev_txt = "; ".join("on %s both archived repos flatten and the trunk keeps rising" % d for d in ev)
+    by_date = {}
+    for dte, nm in sorted(events):
+        by_date.setdefault(dte, []).append(nm)
     if f == EN:
+        ev_txt = " ".join(
+            "On %s %s flatten%s and the trunk keeps rising: %s graduated into the "
+            "negentropy trunk that day." % (
+                d, _join(nms, ", ", " and "), "" if len(nms) > 1 else "s",
+                "they" if len(nms) > 1 else "it")
+            for d, nms in by_date.items())
         return ("Cumulative authored commits per source repository at monthly resolution, "
                 "%s to %s — a window of about %d months, not the eleven years shown above. "
-                "Final totals: %s; all repos together %s. %s: both graduated into the "
-                "negentropy trunk that day. Data: GitHub."
+                "Final totals: %s; all repos together %s. %s Data: GitHub."
                 % (domain[0], domain[1], round((domain[1] - domain[0]).days / 30.44),
                    ", ".join("%s %s" % (n, format(finals[n], ",")) for n in names),
                    format(final_total, ","), ev_txt))
+    ev_txt = "".join("%s，%s 走平、主干继续上升：该日毕业并入 negentropy 主干。"
+                     % (d, "、".join(nms)) for d, nms in by_date.items())
     return ("各源仓库累计提交折线（月分辨率，%s 至 %s——约 %d 个月窗口，不是上方那张十一年图）。"
-            "期末合计：%s；全部仓库共 %s。%s：两个仓库于该日毕业并入 negentropy 主干。数据：GitHub。"
+            "期末合计：%s；全部仓库共 %s。%s数据：GitHub。"
             % (domain[0], domain[1], round((domain[1] - domain[0]).days / 30.44),
                "；".join("%s %s" % (n, format(finals[n], ",")) for n in names),
-               format(final_total, ","),
-               "；".join("%s 两个已归档仓库走平、主干继续上升" % d for d in ev)))
+               format(final_total, ","), ev_txt))
 
 
 def lifecycles_alt(f, spans, domain):
@@ -1737,7 +1952,7 @@ for name, lst in repo_commits.items():
 # the closest public proxy (GitHub exposes no archive timestamp); the renderer
 # labels the axis "last push", never "archived on".
 grad_events = [
-    (datetime.strptime(r["pushed_at"], "%Y-%m-%dT%H:%M:%SZ").date(), "graduated")
+    (datetime.strptime(r["pushed_at"], "%Y-%m-%dT%H:%M:%SZ").date(), r["name"])
     for r in repos if r["archived"] and r["name"] in repo_commits
 ]
 spans = [
@@ -1864,6 +2079,9 @@ facts = {
     "rel_last_tag": rel_last[1],
     "streak_from": str(best_start),
     "streak_to": str(best_end),
+    "rug_streak": rug_best_n,
+    "rug_streak_from": str(rug_run[0]),
+    "rug_streak_to": str(rug_run[1]),
     "active_days": len(day_counts),
     "active_pct": f"{len(day_counts) / WIN_DAYS * 100:.0f}%",
     "wd_days": wd_days,
@@ -1884,10 +2102,11 @@ if set(facts) != set(FACT_KEYS):
 
 ground_counts = {k: len(v) for k, v in repo_commits.items()}
 sub1pct = [n for n, c in types_sorted if c / commits_total < 0.01]
+# In-frame text is English-only: one SVG serves both READMEs (the zh file
+# references the same assets by absolute URL). Per-language phrasing lives in
+# the alt text, which is derived per README.
 sub1_txt = ("%d types under one percent each: %s — folded here, not drawn"
             % (len(sub1pct), ", ".join(sub1pct))) if sub1pct else "no types under one percent"
-sub1_txt_zh = ("%d 个类型各不足百分之一：%s——折叠于此，不绘制"
-               % (len(sub1pct), "、".join(sub1pct))) if sub1pct else "没有不足百分之一的类型"
 ALTS = {
     "growth": {f: growth_alt(f, values, years) for f in README_FILES},
     "rhythm": {f: rhythm_alt(f, hours) for f in README_FILES},
@@ -1931,7 +2150,7 @@ figures = {
     FIG_SPEC["latency"][0]: render_latency(lat_buckets, ecdf_points(), lat_stats, asof,
                                            ALTS["latency"][EN]),
     FIG_SPEC["grammar"][0]: render_grammar(types_sorted, commits_total - conv, commits_total,
-                                           sub1_txt if EN else sub1_txt_zh, asof,
+                                           sub1_txt, asof,
                                            ALTS["grammar"][EN]),
     FIG_SPEC["tongues"][0]: render_tongues(lang_all, lang_src, GEN_SITE, zero_byte_repos,
                                            asof, ALTS["tongues"][EN]),

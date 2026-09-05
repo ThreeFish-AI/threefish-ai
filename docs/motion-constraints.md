@@ -44,3 +44,21 @@
 v1 的贡献贪吃蛇（第三方 action 输出动图）因违反规则 1 在 v2 移除。v4 曾把本约束写在
 `.context/v4-motion-constraints.md`，而 `.context/` 在 `.gitignore` 中——文档从未入库即丢失；
 本文件（v5）是按闸门反推的重建，并修正了脚本 docstring 的悬空引用。
+
+## 布局闸门（v5 追加）
+
+动效之外，`assert_svg_sane` 还机械强制两条**布局**规则。它们与动效规则同源：
+图元位置由数据推导，今天排得下的标签，明天的采集就可能排不下——只有闸门能发现。
+
+8. **每个标签必须落在画布内，且不与其他标签重叠。**
+   `assert_text_fits` 按 Helvetica 字宽表推算每个 `<text>` 的包围盒（解析 `tm`/`te`/`ts`
+   锚点），越界或同基线重叠即拒绝。字宽表乘 `FONT_SLACK`（实测系统字体栈首选的 SF Pro
+   比 Helvetica 宽 7–12%），闸门因此**高估**宽度：宁可误报，不可漏过一张已裁剪的图。
+   位置推导用 `clamp_start` / `clamp_mid` / `spread_labels`，不要手写坐标硬扛。
+
+9. **描边图元不得挂 fill-only 类。**
+   CSS 类规则优先级高于 presentation attribute，因此 `.bar{fill:#8c959f}` 加在
+   `<path fill="none" stroke-width="2">` 上，画出的不是灰线而是**无描边的灰色色块**；
+   `<line class="acc">` 则完全不可见——XML 合法、标签不越界、体积达标，只有数据没画出来。
+   描边一律用 `.bars` / `.accs` / `.inks` / `.vals`（`fill:none;stroke:…`），
+   由 `assert_stroked_marks` 强制。
