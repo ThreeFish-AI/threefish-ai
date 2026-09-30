@@ -24,7 +24,7 @@
 
 <sub>十一年，平方根标度。**<!-- DATA:cur_total -->9,313<!-- /DATA:cur_total -->（<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->）**——此前是两个真正的零，和一次真正的回落。</sub>
 
-**2016** —— 一条提交。**2017–2018** —— 空的；图上那个缺口是真的，而且长达两年。**2019** —— 13 条。**2020** —— 129 条，回来的那一年。**2022** —— 676 条。**2023** —— 589 条，低于上一年，图没有把它抹平。**2024** —— 1,181 条；当年 7 月，第一个上游补丁合入 [Dify](https://github.com/langgenius/dify/pull/5631)。**2025** —— 3,193 条；8 月有了 `negentropy-perceives`，10 月有了 `agentic-ai-cognizes`。**2026-01-31** —— 主干开始。**2026-05-18** —— 那两个仓库归档并入主干。**<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** —— 目前 <!-- DATA:cur_total -->9,313<!-- /DATA:cur_total --> 条。
+**2016** —— 一条提交。**2017–2018** —— 空的；图上那个缺口是真的，而且长达两年。**2019** —— 13 条。**2020** —— 129 条，回来的那一年。**2021** —— 198 条。**2022** —— 676 条。**2023** —— 589 条，低于上一年，图没有把它抹平。**2024** —— 1,181 条；当年 7 月，第一个上游补丁合入 [Dify](https://github.com/langgenius/dify/pull/5631)。**2025** —— 3,193 条；8 月有了 `negentropy-perceives`，10 月有了 `agentic-ai-cognizes`。**2026-01-31** —— 主干开始。**2026-05-18** —— 那两个仓库归档并入主干。**<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** —— 目前 <!-- DATA:cur_total -->9,313<!-- /DATA:cur_total --> 条。
 
 <!-- FIG:rhythm --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/rhythm.svg" width="700" alt="开源提交按小时分布直方图（共 4,349 条，Asia/Shanghai，横轴自 04:00 起至 03:00，使夜间块连续）。自 04:00 起逐小时数值：0, 0, 0, 11, 44, 232, 338, 319, 186, 184, 265, 285, 262, 292, 242, 206, 214, 348, 460, 329, 91, 36, 3, 2。04:00–06:59 为真实零值（基线下方空槽）。峰值 22:00 共 460 条——占全部提交 10.6%，为平坦基线的 2.54 倍。低于最小可见高度 2.5 像素的柱按最小高度绘制。" /><!-- /FIG:rhythm -->
 
@@ -83,7 +83,7 @@
 **[negentropy](https://github.com/ThreeFish-AI/negentropy)** —— 个人知识引擎：一个调度内核，五片羽翼，每片对准一种衰变。感知对抗信息过载，内化对抗遗忘与碎片，沉思对抗浮浅，行动对抗空谈，影响对抗湮没。记忆按艾宾浩斯曲线衰减——因为「什么都记住」本身就是另一种噪声。整套栈一条命令起五个容器，且不需要任何云凭据。
 <sub>Python 3.13 · Next.js 16 · Google ADK · Apache-2.0 · <!-- DATA:neg_commits -->2,048<!-- /DATA:neg_commits --> 条提交 · <!-- DATA:neg_pr -->1,078<!-- /DATA:neg_pr --> 个已合并 PR · 两个 rc，尚无 1.0</sub>
 
-**[coding-proxy](https://github.com/ThreeFish-AI/coding-proxy)** —— 编码 Agent 的 N 级链式故障转移。主厂商返回 `429`、`403`、`503` 时，请求顺链下降而不是直接失败：Claude 套餐、Copilot、Antigravity、GLM、MiniMax、Qwen、Kimi、豆包。每厂商独立熔断与配额守卫；Anthropic↔Gemini、Anthropic↔OpenAI 双向请求与 SSE 转译。客户端只改一行 `ANTHROPIC_BASE_URL`，此外什么都不必知道。
+**[coding-proxy](https://github.com/ThreeFish-AI/coding-proxy)** —— 编码 Agent 的 N 级链式故障转移。主厂商返回 `429`、`403`、`503` 时，请求顺链下降而不是直接失败：Claude 套餐、Copilot、Antigravity、GLM、MiniMax、Qwen、小米、Kimi、豆包。每厂商独立熔断与配额守卫；Anthropic↔Gemini、Anthropic↔OpenAI 双向请求与 SSE 转译。客户端只改一行 `ANTHROPIC_BASE_URL`，此外什么都不必知道。
 <sub>Python · FastAPI · httpx · SQLite-WAL 本地用量看板，无 Redis、无消息队列 · <!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> 个 release，最新版仍带 alpha 标</sub>
 
 **[hyper-git](https://github.com/ThreeFish-AI/hyper-git)** —— 把 IntelliJ 的提交模型重建进 VS Code：多变更列表分组、手绘带泳道的提交图 DAG 与七个可组合筛选器、行级与 hunk 级提交、独立于 `git stash` 的 Shelf、手写三方合并编辑器。`engine/` 是零 `vscode` 依赖的纯逻辑层——403 个单元测试之所以能存在，只因为这一点。
@@ -240,7 +240,7 @@ sequenceDiagram
 <summary><b>这一页会招来的问题</b></summary>
 
 **「一年九千多次贡献——那是真活，还是脚本？」**
-是真的，同时也确实被「小单位工作法」放大了。<!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> 条公开提交里 <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> 符合 Conventional Commits，类型大致是四分之一 `fix`、五分之一 `docs`、五分之一 `feat`——文档提交几乎与功能提交等量。请据 release（<!-- DATA:rel_total -->29<!-- /DATA:rel_total --> 个）与 diff 评判，而不是据计数。
+是真的，同时也确实被「小单位工作法」放大了。<!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> 条公开提交里 <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> 符合 Conventional Commits，类型大致是五分之一 `fix`、五分之一 `docs`、五分之一 `feat`——文档提交几乎与功能提交等量。请据 release（<!-- DATA:rel_total -->29<!-- /DATA:rel_total --> 个）与 diff 评判，而不是据计数。
 
 **「一个人开发，为什么还要给自己开 PR？」**
 因为 PR 是一个带标题、可回滚、附着 diff 的单元，无论有没有人评审，这件事本身有价值。它不是评审门禁，本页也从不这样称它。<!-- DATA:neg_median -->6<!-- /DATA:neg_median --> 分钟中位数测的是一个做完的分支等了多久，不是有人看了多久。
