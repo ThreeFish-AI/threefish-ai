@@ -24,7 +24,7 @@
 
 <sub>Eleven years, square-root scale. **<!-- DATA:cur_total -->9,313<!-- /DATA:cur_total --> in <!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** — after two years that are genuinely zero and one year that is genuinely down.</sub>
 
-**2016** — one commit. **2017–2018** — nothing; the gap in the chart is real, and it is two years long. **2019** — 13. **2020** — 129, the year of coming back. **2022** — 676. **2023** — 589, lower than the year before, and the chart does not smooth it. **2024** — 1,181; the first upstream patch merged into [Dify](https://github.com/langgenius/dify/pull/5631) that July. **2025** — 3,193; `negentropy-perceives` in August, `agentic-ai-cognizes` in October. **2026-01-31** — the trunk starts. **2026-05-18** — both of those repositories are archived into it. **<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** — <!-- DATA:cur_total -->9,313<!-- /DATA:cur_total --> so far.
+**2016** — one commit. **2017–2018** — nothing; the gap in the chart is real, and it is two years long. **2019** — 13. **2020** — 129, the year of coming back. **2021** — 198. **2022** — 676. **2023** — 589, lower than the year before, and the chart does not smooth it. **2024** — 1,181; the first upstream patch merged into [Dify](https://github.com/langgenius/dify/pull/5631) that July. **2025** — 3,193; `negentropy-perceives` in August, `agentic-ai-cognizes` in October. **2026-01-31** — the trunk starts. **2026-05-18** — both of those repositories are archived into it. **<!-- DATA:cur_year -->2026<!-- /DATA:cur_year -->** — <!-- DATA:cur_total -->9,313<!-- /DATA:cur_total --> so far.
 
 <!-- FIG:rhythm --><img src="assets/rhythm.svg" width="700" alt="Histogram of 4,349 open-source commits by hour of day, Asia/Shanghai, axis running 04:00 through 03:00 so the night block stays contiguous. Values by hour from 04:00: 0, 0, 0, 11, 44, 232, 338, 319, 186, 184, 265, 285, 262, 292, 242, 206, 214, 348, 460, 329, 91, 36, 3, 2. 04:00 to 06:59 are exactly zero, drawn as open slots below the axis. Peak 22:00 with 460 commits, 10.6 percent of all commits, 2.54 times a flat baseline. Bars below the 2.5-pixel minimum height are drawn at that minimum." /><!-- /FIG:rhythm -->
 
@@ -74,7 +74,7 @@
 
 <!-- FIG:upstream --><img src="assets/upstream.svg" width="700" alt="Dot ledger of 6 public pull requests to repositories owned by others, 2024-06-26 to 2025-12-06. langgenius/dify#5631, merged, 2024-06-26; langgenius/dify#8921, merged, 2024-09-30; langgenius/dify-plugin-daemon#389, closed unmerged, 2025-07-07; langgenius/dify-cloud-kit#3, merged, 2025-07-08; langgenius/dify#22646, merged, 2025-07-18; DayuanJiang/next-ai-draw-io#124, merged, 2025-12-06. These are 0.3 percent of 1,849 public pull requests; the rest are to my own repositories. Data: GitHub is:public search." /><!-- /FIG:upstream -->
 
-<sub>N = <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs -->, named: <!-- DATA:ext_first -->2024-06-26<!-- /DATA:ext_first --> → <!-- DATA:ext_last -->2025-12-06<!-- /DATA:ext_last -->, <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> merged, one closed unmerged — a fraction of a percent of all public PRs. The ratio is the point.</sub>
+<sub>N = <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs -->, named: <!-- DATA:ext_first -->2024-06-26<!-- /DATA:ext_first --> → <!-- DATA:ext_last -->2025-12-06<!-- /DATA:ext_last -->, <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> merged, one closed unmerged — a fraction of a percent of all public PRs.</sub>
 
 ---
 
@@ -83,7 +83,7 @@
 **[negentropy](https://github.com/ThreeFish-AI/negentropy)** — a personal knowledge engine: one scheduling core, five wings, each aimed at one form of decay. Perception against information overload. Internalization against amnesia. Contemplation against superficiality. Action against all-talk. Influence against obscurity. Memory fades on an Ebbinghaus curve, because remembering everything is its own kind of noise. The whole stack comes up with one command, five containers, and zero cloud credentials.
 <sub>Python 3.13 · Next.js 16 · Google ADK · Apache-2.0 · <!-- DATA:neg_commits -->2,048<!-- /DATA:neg_commits --> commits · <!-- DATA:neg_pr -->1,078<!-- /DATA:neg_pr --> merged PRs · two release candidates and no 1.0</sub>
 
-**[coding-proxy](https://github.com/ThreeFish-AI/coding-proxy)** — N-tier failover for coding agents. When the primary vendor answers `429`, `403` or `503`, the request descends the chain instead of failing: Claude plans, Copilot, Antigravity, GLM, MiniMax, Qwen, Kimi, Doubao. Per-vendor circuit breaker and quota guard; bidirectional Anthropic↔Gemini and Anthropic↔OpenAI translation, streaming included. The client changes one line — `ANTHROPIC_BASE_URL` — and never learns any of this happened.
+**[coding-proxy](https://github.com/ThreeFish-AI/coding-proxy)** — N-tier failover for coding agents. When the primary vendor answers `429`, `403` or `503`, the request descends the chain instead of failing: Claude plans, Copilot, Antigravity, GLM, MiniMax, Qwen, Xiaomi, Kimi, Doubao. Per-vendor circuit breaker and quota guard; bidirectional Anthropic↔Gemini and Anthropic↔OpenAI translation, streaming included. The client changes one line — `ANTHROPIC_BASE_URL` — and never learns any of this happened.
 <sub>Python · FastAPI · httpx · SQLite-WAL token dashboard, no Redis, no queue · <!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> releases, latest still alpha-tagged</sub>
 
 **[hyper-git](https://github.com/ThreeFish-AI/hyper-git)** — IntelliJ's commit model, rebuilt inside VS Code: multi-changelist grouping, a hand-rendered commit-graph DAG with swimlanes and seven composable filters, line-level and hunk-level commits, a shelf that owes nothing to `git stash`, a hand-built three-way merge editor. `engine/` is pure logic with zero `vscode` imports — which is the only reason 403 unit tests can exist.
@@ -94,15 +94,9 @@
 
 **[agents.md](https://github.com/ThreeFish-AI/agents.md)** — the doctrine the four above are written under, symlinked into every agent on the machine by `./sync.sh --link`. Not a manifesto; a config file that happens to have opinions.
 
-<sub>**Written in** Python 3.13 · TypeScript · Swift · Shell, with a C# side build. **Run on** FastAPI · httpx · Next.js 16 · Google ADK · PostgreSQL · SQLite-WAL · MCP · MicroSandbox. **Kept honest by** structlog · OpenTelemetry · Langfuse. **Built with** `uv` · `pnpm` · one command and five containers. **No** Redis, no message queue, no cloud credentials on the default path.</sub>
+<sub>**Written in** Python 3.13 · TypeScript · Swift · Shell, with a C# side build. **Run on** FastAPI · httpx · Next.js 16 · Google ADK · PostgreSQL · SQLite-WAL · MCP · MicroSandbox. **Kept honest by** structlog · OpenTelemetry · Langfuse. **Built with** `uv` · `pnpm`. **No** Redis, no message queue, no cloud credentials on the default path.</sub>
 
 ---
-
-<div align="center"><sub>
-<b>Volume</b> · <!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> commits across <!-- DATA:src_repos -->7<!-- /DATA:src_repos --> source repositories · <!-- DATA:pub_prs -->1,849<!-- /DATA:pub_prs --> public pull requests · <!-- DATA:rel_total -->29<!-- /DATA:rel_total --> releases · <!-- DATA:own_stars -->51<!-- /DATA:own_stars --> stars actually mine<br/>
-<b>Cadence</b> · peak hour <!-- DATA:peak_h -->22:00<!-- /DATA:peak_h --> at <!-- DATA:peak_x -->2.54×<!-- /DATA:peak_x --> a flat baseline · <!-- DATA:wknd_pct -->34.7%<!-- /DATA:wknd_pct --> on weekends · <!-- DATA:streak -->88<!-- /DATA:streak -->-day longest run · of <!-- DATA:win_days -->802<!-- /DATA:win_days --> days, <!-- DATA:active_days -->249<!-- /DATA:active_days --> active<br/>
-<b>Discipline</b> · <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> Conventional Commits · median <!-- DATA:neg_median -->6<!-- /DATA:neg_median --> min open-to-merge, <!-- DATA:pct_hour -->83%<!-- /DATA:pct_hour --> within an hour, self-merged · <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> of <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs --> upstream PRs merged
-</sub></div>
 
 **Upstream, in code I do not own** — <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> of <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs --> pull requests merged, <!-- DATA:ext_dify -->4<!-- /DATA:ext_dify --> of them in the [Dify](https://github.com/langgenius/dify) ecosystem.
 
@@ -117,27 +111,46 @@
 
 <sub>Six against <!-- DATA:pub_prs -->1,849<!-- /DATA:pub_prs --> public PRs is the honest ratio: almost all of my public work is in repositories where I am also the reviewer.</sub>
 
-### One input box, three papers
-
-`give-me-a-break` shows a small box before each natural break and asks: what did you just finish, and optionally, what is next. It looks like a punch clock. It is the opposite of one.
-
-Leroy's work on attention residue is the reason it exists at all: when you switch tasks, part of your attention stays on the previous one, and the effect is worst when the task was interrupted or left unfinished.[^leroy] A break is an interruption by definition. So the box is not there to measure the session — it is there to close it: sixty seconds to write down *done, remaining, first step on return*, which is a ready-to-resume plan and, more importantly, permission to stop thinking about it.
-
-Stubblebine's interstitial journaling supplies the trigger and the dose: fire on the task transition rather than on the clock, two to four sentences, sixty to ninety seconds, and stay light — anything heavier is abandoned in the first week.[^interstitial] Fogg supplies the design constraint: at the moment a prompt fires, motivation is low and variable, so the only lever left is ability.[^fogg] Hence every field optional, Enter submits, the box auto-releases on timeout, and there is no minimum length — a minimum length is a proven completion killer.
-
-It is pinned to exactly one boundary, `working → resting`, and it never blocks the break. A rest ritual that can prevent rest is not a rest ritual.
-
-<sub>An exercise log appears symmetrically at the end of the break; both roll up into native week, month, quarter and year reports. Whether any of this changes behaviour over months, I have not measured — n=1, no baseline, and the literature above is about attention and habit formation in general, not about this app. It is a reasoned design, not a validated one.</sub>
-
 <details>
-<summary><b>Honesty notes</b></summary>
+<summary><b>Honesty notes — what this page leaves out, and why</b></summary>
 
 - `negentropy` is a solo, self-merge repo: the PR is a titled, revertible unit of change, not a review gate. That is what the <!-- DATA:neg_median -->6<!-- /DATA:neg_median -->-minute median measures.
 - [analysis_claude_code](https://github.com/ThreeFish-AI/analysis_claude_code) (<!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> stars) is mostly **not** my work — it mirrors [CrazyBoyM](https://github.com/CrazyBoyM) / ShareAI-Lab's Claude Code source analysis; the foundational commits are theirs. Mine in it: the reading notes.
-- <!-- DATA:archived_names -->agentic-ai-cognizes, negentropy-perceives<!-- /DATA:archived_names --> (<!-- DATA:archived_n -->2<!-- /DATA:archived_n --> source repos, 1,378 commits between them) are archived — they graduated into the negentropy trunk, perceives as its extraction service and cognizes as `apps/cognizes`. Intended lifecycle, not failure. Frozen by definition: archives don't move.
+- <!-- DATA:archived_names -->agentic-ai-cognizes, negentropy-perceives<!-- /DATA:archived_names --> (<!-- DATA:archived_n -->2<!-- /DATA:archived_n --> source repos) are archived — they graduated into the negentropy trunk; the dedicated block below is that story. Intended lifecycle, not failure: archives don't move.
 - The "Now" line under the tagline is the one thing on this page the automation cannot verify; it is hand-maintained and rots faster than everything else.
-- The yearly figure uses a square-root scale so early years stay visible; it understates recent growth. All figures are regenerated monthly from the GitHub API by [one workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) — as of <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->.
+- All figures are regenerated monthly from the GitHub API by [one workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) — as of <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->. Known distortions, the yearly chart's square-root scale among them, are registered in the method block below.
 
+- **3,640 private contributions** (as of 2026-09), against 5,590 that are public and clickable. They are real work and they get no headline, because a number you cannot open is a number you have to take on faith. The split is hand-written here; the generator is not allowed to look.
+- **My employer, and the production systems I am paid to build.** "Agentic AI infrastructure at production scale, by day" is as specific as this page gets. That work is the larger half of the private number.
+- **Follower and view counters, trophy walls, streak flames, language-percentage rings.** All available as one-line embeds; all measuring the profile rather than the work. The figures on this page were written to answer specific questions and each one prints the data series that produced it.
+- **Anything I could not verify at the caliber a visitor can reproduce.** Where a claim needed a wider view than a logged-out reader has, it is either hand-written with a date or absent.
+- **Dead links to platforms where I have an account but no output.** A dead link on a page about verifiable claims is worse than no link.
+
+<sub>The omissions are not modest. They are just the ones I can defend.</sub>
+</details>
+
+<details>
+<summary><b>The doctrine these repositories are written under — pure cores and 道 / 法 / 术</b></summary>
+
+- **`give-me-a-break`** — the state machine's `evaluate` has zero time dependency. It takes the clock as an argument, so the entire rest/work/AFK lifecycle is testable against a virtual clock: sleep, crash recovery with fast-forward, a display unplugged mid-break. Three modules, one of which knows nothing about macOS.
+- **`hyper-git`** — `engine/` contains no `vscode` import. That single constraint is why 403 unit tests exist: changelist grouping, DAG swimlane layout, and Conventional Commits validation are all testable without an editor host. The architecture note calls it "Path B" — consume the stable `vscode.git` API and hand-render everything above it, rather than fork.
+- **`hyper-git`, again** — five AI seams (`ILlmProvider`, `ICommitMessageProvider`, `IPreCommitInspector`, `IChangelistGrouper`, `IConflictResolver`) are wired in as null implementations, modeled on JetBrains' `CheckinHandler` lifecycle. The interfaces ship; the intelligence is deferred to M5. Declaring the seam early is cheap and declaring it late is not.
+- **`coding-proxy`** — the failover chain is policy, not plumbing: circuit breaker state and quota accounting are per-vendor and local, in SQLite-WAL. No Redis, no queue, so a single process is the whole deployment and a restart loses nothing that matters.
+- **`negentropy`** — the default path runs on the cheapest of its pluggable backends with **no cloud credentials at all**; if the cheapest configuration is not runnable, nobody runs the expensive one either.
+
+<sub>Stated as a virtue, this is testability. Stated honestly, it is what a single maintainer has to do to survive his own codebase: nothing here has a second pair of eyes, so the design has to make the mistakes cheap to find. And the null AI seams are still null — the interfaces are a plan, not a feature.</sub>
+
+[agents.md](https://github.com/ThreeFish-AI/agents.md) is three tiers, deliberately: mindset, strategy, tactics. `./sync.sh --link` symlinks it to `~/.codex/AGENTS.md` and `~/.agents/docs/`, so every agent on the machine loads the same file and editing one line changes how the tools behave everywhere.
+
+| Tier | | Holds |
+|---|---|---|
+| 道 | mindset | context-driven · minimal intervention · evidence-based · systemic integrity · knowledge crystallization · proactive navigation · low-entropy expression |
+| 法 | strategy | plan first by default · subagent concurrency · verification before done · reuse-driven · boundary management · orthogonal decomposition · single source of truth · hierarchical expression |
+| 术 | tactics | AI-pair pipeline · git, hooks and issue discipline · `uv` + `pnpm` toolchain · database safety rails · documentation and Mermaid norms · UI norms |
+
+Sub-specifications carry the parts that need to be exact: a structured-expression framework (PREP, Pyramid, SCQA, STAR), a browser-validation protocol with explicit OAuth red lines, and an IEEE reference specification — which is why the footnotes on this page look the way they do.
+
+<sub>One star. It is the least popular thing I have written and the one with the most leverage; those two facts are not in tension. It is also a document that describes intent, not a linter that enforces it — the <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> Conventional Commits figure elsewhere on this page is the measured gap between doctrine and practice.</sub>
 </details>
 
 <details>
@@ -177,7 +190,7 @@ Each wing exists because of the column on its right. Perception turns pages and 
 
 Backends are pluggable — in-memory, PostgreSQL, VertexAI, GCS — and the default path needs no cloud credentials at all: `./dev` brings up five containers. Observability is structlog, OpenTelemetry and Langfuse, which is the honest admission that a five-wing system is not debuggable by reading it.
 
-<sub>Two release candidates, no 1.0. The five wings are not equally finished — perception and internalization carry the two archived repositories' worth of history; influence is the thinnest.</sub>
+<sub>The five wings are not equally finished — perception and internalization carry the two archived repositories' worth of history; influence is the thinnest.</sub>
 
 </details>
 
@@ -202,51 +215,35 @@ sequenceDiagram
 
 The client is told nothing. That is the whole product: one line of configuration, and the failure mode changes from *stop working* to *work slower on someone else's model*. Nine vendors are wired — Claude plans, GitHub Copilot, Google Antigravity, Z AI's GLM, MiniMax, Qwen, Xiaomi, Kimi, Doubao — with a per-vendor circuit breaker and quota guard, and a local SQLite-WAL dashboard so the burn is visible before the bill is.
 
-<sub>FastAPI and httpx; no Redis, no message queue. <!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> releases, the latest still alpha-tagged — translation fidelity across three request shapes is the part that keeps not being finished. Chained failover also means a request can succeed on a model you did not choose; the dashboard exists partly so that is auditable.</sub>
+<sub>FastAPI and httpx. <!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> releases, the latest still alpha-tagged — translation fidelity across three request shapes is the part that keeps not being finished. Chained failover also means a request can succeed on a model you did not choose; the dashboard exists partly so that is auditable.</sub>
 
 </details>
 
 <details>
-<summary><b>The same move, four times: make the core a pure function</b></summary>
+<summary><b>give-me-a-break — one input box, three papers</b></summary>
 
-- **`give-me-a-break`** — the state machine's `evaluate` has zero time dependency. It takes the clock as an argument, so the entire rest/work/AFK lifecycle is testable against a virtual clock: sleep, crash recovery with fast-forward, a display unplugged mid-break. Three modules, one of which knows nothing about macOS.
-- **`hyper-git`** — `engine/` contains no `vscode` import. That single constraint is why 403 unit tests exist: changelist grouping, DAG swimlane layout, and Conventional Commits validation are all testable without an editor host. The architecture note calls it "Path B" — consume the stable `vscode.git` API and hand-render everything above it, rather than fork.
-- **`hyper-git`, again** — five AI seams (`ILlmProvider`, `ICommitMessageProvider`, `IPreCommitInspector`, `IChangelistGrouper`, `IConflictResolver`) are wired in as null implementations, modeled on JetBrains' `CheckinHandler` lifecycle. The interfaces ship; the intelligence is deferred to M5. Declaring the seam early is cheap and declaring it late is not.
-- **`coding-proxy`** — the failover chain is policy, not plumbing: circuit breaker state and quota accounting are per-vendor and local, in SQLite-WAL. No Redis, no queue, so a single process is the whole deployment and a restart loses nothing that matters.
-- **`negentropy`** — backends are pluggable across in-memory, PostgreSQL, VertexAI and GCS, and the default path boots with **no cloud credentials at all**. If the cheapest configuration is not runnable, nobody runs the expensive one either.
+`give-me-a-break` shows a small box before each natural break and asks: what did you just finish, and optionally, what is next. It looks like a punch clock. It is the opposite of one.
 
-<sub>Stated as a virtue, this is testability. Stated honestly, it is what a single maintainer has to do to survive his own codebase: nothing here has a second pair of eyes, so the design has to make the mistakes cheap to find. And the null AI seams are still null — the interfaces are a plan, not a feature.</sub>
+Leroy's work on attention residue is the reason it exists at all: when you switch tasks, part of your attention stays on the previous one, and the effect is worst when the task was interrupted or left unfinished.[^leroy] A break is an interruption by definition. So the box is not there to measure the session — it is there to close it: sixty seconds to write down *done, remaining, first step on return*, which is a ready-to-resume plan and, more importantly, permission to stop thinking about it.
 
-</details>
+Stubblebine's interstitial journaling supplies the trigger and the dose: fire on the task transition rather than on the clock, two to four sentences, sixty to ninety seconds, and stay light — anything heavier is abandoned in the first week.[^interstitial] Fogg supplies the design constraint: at the moment a prompt fires, motivation is low and variable, so the only lever left is ability.[^fogg] Hence every field optional, Enter submits, the box auto-releases on timeout, and there is no minimum length — a minimum length is a proven completion killer.
 
-<details>
-<summary><b>The doctrine these repositories are written under — 道 / 法 / 术</b></summary>
+It is pinned to exactly one boundary, `working → resting`, and it never blocks the break. A rest ritual that can prevent rest is not a rest ritual.
 
-[agents.md](https://github.com/ThreeFish-AI/agents.md) is three tiers, deliberately: mindset, strategy, tactics. `./sync.sh --link` symlinks it to `~/.codex/AGENTS.md` and `~/.agents/docs/`, so every agent on the machine loads the same file and editing one line changes how the tools behave everywhere.
-
-| Tier | | Holds |
-|---|---|---|
-| 道 | mindset | context-driven · minimal intervention · evidence-based · systemic integrity · knowledge crystallization · proactive navigation · low-entropy expression |
-| 法 | strategy | plan first by default · subagent concurrency · verification before done · reuse-driven · boundary management · orthogonal decomposition · single source of truth · hierarchical expression |
-| 术 | tactics | AI-pair pipeline · git, hooks and issue discipline · `uv` + `pnpm` toolchain · database safety rails · documentation and Mermaid norms · UI norms |
-
-Sub-specifications carry the parts that need to be exact: a structured-expression framework (PREP, Pyramid, SCQA, STAR), a browser-validation protocol with explicit OAuth red lines, and an IEEE reference specification — which is why the footnotes on this page look the way they do.
-
-<sub>One star. It is the least popular thing I have written and the one with the most leverage; those two facts are not in tension. It is also a document that describes intent, not a linter that enforces it — the <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> Conventional Commits figure elsewhere on this page is the measured gap between doctrine and practice.</sub>
-
+<sub>An exercise log appears symmetrically at the end of the break; both roll up into native week, month, quarter and year reports. Whether any of this changes behaviour over months, I have not measured — n=1, no baseline, and the literature above is about attention and habit formation in general, not about this app. It is a reasoned design, not a validated one.</sub>
 </details>
 
 <details>
 <summary><b>Questions this page invites</b></summary>
 
 **"Nine thousand contributions in one year — is that real work or is it a script?"**
-It is real, and it is also inflated by working in small units. Of <!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> public commits, <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> are Conventional Commits, and the type mix is roughly a quarter `fix`, a fifth `docs`, a fifth `feat` — documentation commits nearly equal feature commits. Judge the releases (<!-- DATA:rel_total -->29<!-- /DATA:rel_total -->) and the diffs, not the count.
+It is real, and it is also inflated by working in small units. Of <!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> public commits, <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> are Conventional Commits, and the type mix is roughly a fifth `fix`, a fifth `docs`, a fifth `feat` — documentation commits nearly equal feature commits. Judge the releases (<!-- DATA:rel_total -->29<!-- /DATA:rel_total -->) and the diffs, not the count.
 
 **"Why does a solo developer open pull requests to himself?"**
 Because a PR is a titled, revertible unit with a diff attached, and that is worth having whether or not anyone reviews it. It is not a review gate and this page never calls it one. The <!-- DATA:neg_median -->6<!-- /DATA:neg_median -->-minute median measures how long a finished branch waits, not how long anyone looked at it.
 
 **"Your most-starred repository is not yours."**
-Correct, and it is the first thing in the honesty notes. Of <!-- DATA:total_stars -->363<!-- /DATA:total_stars --> stars, <!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> are on a mirror of someone else's Claude Code analysis. The number I would rather be judged on is <!-- DATA:own_stars -->51<!-- /DATA:own_stars -->.
+Correct — it is flagged in the honesty notes: of <!-- DATA:total_stars -->363<!-- /DATA:total_stars --> stars, <!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> sit on that mirror. The number I would rather be judged on is <!-- DATA:own_stars -->51<!-- /DATA:own_stars -->.
 
 **"Why is everything bilingual?"**
 Because half of the writing is in Chinese and half of the readers are not, and a machine-translated page would fail the low-entropy-expression rule it claims to follow. Both READMEs are maintained by hand and structurally mirrored; the numbers inside them come from one generator so they cannot disagree.
@@ -257,20 +254,7 @@ Because notarization costs a developer account I have not bought for a two-star 
 </details>
 
 <details>
-<summary><b>What this page leaves out, and why</b></summary>
-
-- **3,640 private contributions** (as of 2026-09), against 5,590 that are public and clickable. They are real work and they get no headline, because a number you cannot open is a number you have to take on faith. The split is hand-written here; the generator is not allowed to look.
-- **My employer, and the production systems I am paid to build.** "Agentic AI infrastructure at production scale, by day" is as specific as this page gets. That work is the larger half of the private number.
-- **Follower and view counters, trophy walls, streak flames, language-percentage rings.** All available as one-line embeds; all measuring the profile rather than the work. The figures on this page were written to answer specific questions and each one prints the data series that produced it.
-- **Anything I could not verify at the caliber a visitor can reproduce.** Where a claim needed a wider view than a logged-out reader has, it is either hand-written with a date or absent.
-- **Dead links to platforms where I have an account but no output.** A dead link on a page about verifiable claims is worse than no link.
-
-<sub>The omissions are not modest. They are just the ones I can defend.</sub>
-
-</details>
-
-<details>
-<summary><b>Method, caliber, and what would make this page wrong</b></summary>
+<summary><b>Method, caliber, and the full repository census</b></summary>
 
 **Caliber.** Every auto-refreshed number is collected at the anonymous public caliber: the contributions page as a logged-out visitor renders it, GitHub's `is:public` search, and public REST endpoints. `GITHUB_TOKEN` is present for rate limit and nothing else. Draft releases are excluded — invisible anonymously, visible to a push token, so counting them would make a local run and a CI run disagree. Private-limited figures (the public/private split) are hand-written with an as-of date and never touched by the generator.
 
@@ -283,11 +267,6 @@ Because notarization costs a developer account I have not bought for a two-star 
 **Known distortions.** The yearly chart is on a square-root scale so 2016's single commit stays visible — which means it *understates* recent growth rather than flattering it. Bars below 2.5 px are drawn at 2.5 px, so the shortest bars are slightly overstated. Zero values are drawn as open slots below the axis, because a missing bar and a zero bar are different facts.
 
 <sub>Recompute the commit figures yourself: <code>for r in $(gh api users/ThreeFish-AI/repos --paginate --jq '.[]|select(.fork==false)|.name'); do gh api "/repos/ThreeFish-AI/$r/commits?author=ThreeFish-AI" --paginate --jq '.[].commit.message|split("\n")[0]'; done</code> — note this omits the ten-commit source-repository threshold, so a raw run returns slightly more repositories than the page counts. Refreshed monthly by [one workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) · as of <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->. And the honest limit: this only automates what is publicly countable — the prose, the claims, and the Now line are hand-written and can go stale silently. No script catches that.</sub>
-
-</details>
-
-<details>
-<summary><b>Full repository census</b></summary>
 
 | Repository | Language | Commits | Releases | Stars | State | Aimed at |
 |---|---|--:|--:|--:|---|---|
@@ -302,7 +281,6 @@ Because notarization costs a developer account I have not bought for a two-star 
 | [analysis_claude_code](https://github.com/ThreeFish-AI/analysis_claude_code) | — | — | — | 312 | mirror | **mostly not my work** — see honesty notes |
 
 <sub><!-- DATA:src_repos -->7<!-- /DATA:src_repos --> source repositories · <!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> authored commits · <!-- DATA:rel_total -->29<!-- /DATA:rel_total --> releases · <!-- DATA:own_stars -->51<!-- /DATA:own_stars --> stars actually mine, of <!-- DATA:total_stars -->363<!-- /DATA:total_stars --> shown on the profile. Two archived rows are graduations, not casualties. Commit counts are authored-by-me at anonymous caliber; body cells are frozen as of first publication — if the caption and the rows ever disagree, believe the caption.</sub>
-
 </details>
 
 ---
@@ -316,7 +294,7 @@ A Chinese-language knowledge base on AI infrastructure, agent engineering, and i
 
 Three long-running threads: **Negentropy** — the design and use of the entropy-reduction engine, written alongside the code · **Harness Engineering** — a survey of agent engineering as a discipline · **Sinestesia of Cognition** — 知见通感, the least practical and the most necessary.
 
-<sub>「你我的相识绝非一场零和游戏」 — the site's own line. Written in Chinese; there is no English mirror, and pretending otherwise on an English page would be the wrong kind of tidy.</sub>
+<sub>Written in Chinese; there is no English mirror, and pretending otherwise on an English page would be the wrong kind of tidy.</sub>
 
 ---
 
