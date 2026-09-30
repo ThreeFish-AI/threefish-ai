@@ -94,7 +94,7 @@
 
 **[agents.md](https://github.com/ThreeFish-AI/agents.md)** —— 上面四者共同遵循的规约，由 `./sync.sh --link` 软链进本机每一个 Agent。它不是宣言，是一个带主张的配置文件。
 
-<sub>**用什么写** Python 3.13 · TypeScript · Swift · Shell，另有一个 C# 旁支构建。**跑在** FastAPI · httpx · Next.js 16 · Google ADK · PostgreSQL · SQLite-WAL · MCP · MicroSandbox。**靠什么保持诚实** structlog · OpenTelemetry · Langfuse。**怎么构建** `uv` · `pnpm` · 一条命令，五个容器。**没有** Redis，没有消息队列，默认路径上没有云凭据。</sub>
+<sub>**用什么写** Python 3.13 · TypeScript · Swift · Shell，另有一个 C# 旁支构建。**跑在** FastAPI · httpx · Next.js 16 · Google ADK · PostgreSQL · SQLite-WAL · MCP · MicroSandbox。**靠什么保持诚实** structlog · OpenTelemetry · Langfuse。**怎么构建** `uv` · `pnpm`。**没有** Redis，没有消息队列，默认路径上没有云凭据。</sub>
 
 ---
 

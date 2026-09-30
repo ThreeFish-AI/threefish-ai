@@ -94,7 +94,7 @@
 
 **[agents.md](https://github.com/ThreeFish-AI/agents.md)** — the doctrine the four above are written under, symlinked into every agent on the machine by `./sync.sh --link`. Not a manifesto; a config file that happens to have opinions.
 
-<sub>**Written in** Python 3.13 · TypeScript · Swift · Shell, with a C# side build. **Run on** FastAPI · httpx · Next.js 16 · Google ADK · PostgreSQL · SQLite-WAL · MCP · MicroSandbox. **Kept honest by** structlog · OpenTelemetry · Langfuse. **Built with** `uv` · `pnpm` · one command and five containers. **No** Redis, no message queue, no cloud credentials on the default path.</sub>
+<sub>**Written in** Python 3.13 · TypeScript · Swift · Shell, with a C# side build. **Run on** FastAPI · httpx · Next.js 16 · Google ADK · PostgreSQL · SQLite-WAL · MCP · MicroSandbox. **Kept honest by** structlog · OpenTelemetry · Langfuse. **Built with** `uv` · `pnpm`. **No** Redis, no message queue, no cloud credentials on the default path.</sub>
 
 ---
 
