@@ -98,12 +98,6 @@
 
 ---
 
-<div align="center"><sub>
-<b>Volume</b> · <!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> commits across <!-- DATA:src_repos -->7<!-- /DATA:src_repos --> source repositories · <!-- DATA:pub_prs -->1,849<!-- /DATA:pub_prs --> public pull requests · <!-- DATA:rel_total -->29<!-- /DATA:rel_total --> releases · <!-- DATA:own_stars -->51<!-- /DATA:own_stars --> stars actually mine<br/>
-<b>Cadence</b> · peak hour <!-- DATA:peak_h -->22:00<!-- /DATA:peak_h --> at <!-- DATA:peak_x -->2.54×<!-- /DATA:peak_x --> a flat baseline · <!-- DATA:wknd_pct -->34.7%<!-- /DATA:wknd_pct --> on weekends · <!-- DATA:streak -->88<!-- /DATA:streak -->-day longest run · of <!-- DATA:win_days -->802<!-- /DATA:win_days --> days, <!-- DATA:active_days -->249<!-- /DATA:active_days --> active<br/>
-<b>Discipline</b> · <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> Conventional Commits · median <!-- DATA:neg_median -->6<!-- /DATA:neg_median --> min open-to-merge, <!-- DATA:pct_hour -->83%<!-- /DATA:pct_hour --> within an hour, self-merged · <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> of <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs --> upstream PRs merged
-</sub></div>
-
 **Upstream, in code I do not own** — <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> of <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs --> pull requests merged, <!-- DATA:ext_dify -->4<!-- /DATA:ext_dify --> of them in the [Dify](https://github.com/langgenius/dify) ecosystem.
 
 | Merged | Repository | Change |

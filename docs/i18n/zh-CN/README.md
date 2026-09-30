@@ -98,12 +98,6 @@
 
 ---
 
-<div align="center"><sub>
-<b>体量</b> · <!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> 条提交，横跨 <!-- DATA:src_repos -->7<!-- /DATA:src_repos --> 个源仓库 · <!-- DATA:pub_prs -->1,849<!-- /DATA:pub_prs --> 个公开 PR · <!-- DATA:rel_total -->29<!-- /DATA:rel_total --> 个 release · <!-- DATA:own_stars -->51<!-- /DATA:own_stars --> 颗真正属于我的星<br/>
-<b>节律</b> · 峰值 <!-- DATA:peak_h -->22:00<!-- /DATA:peak_h -->，为平坦基线的 <!-- DATA:peak_x -->2.54×<!-- /DATA:peak_x --> · <!-- DATA:wknd_pct -->34.7%<!-- /DATA:wknd_pct --> 落在周末 · 最长 <!-- DATA:streak -->88<!-- /DATA:streak --> 天连续 · <!-- DATA:win_days -->802<!-- /DATA:win_days --> 天里 <!-- DATA:active_days -->249<!-- /DATA:active_days --> 天活跃<br/>
-<b>纪律</b> · <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> Conventional Commits · 开启到合并中位 <!-- DATA:neg_median -->6<!-- /DATA:neg_median --> 分钟、<!-- DATA:pct_hour -->83%<!-- /DATA:pct_hour --> 一小时内，自合并 · 上游 PR <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged -->/<!-- DATA:ext_prs -->6<!-- /DATA:ext_prs --> 已合并
-</sub></div>
-
 **上游，在不属于我的代码里** —— <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged -->/<!-- DATA:ext_prs -->6<!-- /DATA:ext_prs --> 个 PR 已合并，其中 <!-- DATA:ext_dify -->4<!-- /DATA:ext_dify --> 个在 [Dify](https://github.com/langgenius/dify) 生态。
 
 | 合并日 | 仓库 | 变更 |
