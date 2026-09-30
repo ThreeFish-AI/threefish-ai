@@ -243,7 +243,7 @@ It is real, and it is also inflated by working in small units. Of <!-- DATA:comm
 Because a PR is a titled, revertible unit with a diff attached, and that is worth having whether or not anyone reviews it. It is not a review gate and this page never calls it one. The <!-- DATA:neg_median -->6<!-- /DATA:neg_median -->-minute median measures how long a finished branch waits, not how long anyone looked at it.
 
 **"Your most-starred repository is not yours."**
-Correct, and it is the first thing in the honesty notes: of <!-- DATA:total_stars -->363<!-- /DATA:total_stars --> stars, <!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> sit on that mirror. The number I would rather be judged on is <!-- DATA:own_stars -->51<!-- /DATA:own_stars -->.
+Correct — it is flagged in the honesty notes: of <!-- DATA:total_stars -->363<!-- /DATA:total_stars --> stars, <!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> sit on that mirror. The number I would rather be judged on is <!-- DATA:own_stars -->51<!-- /DATA:own_stars -->.
 
 **"Why is everything bilingual?"**
 Because half of the writing is in Chinese and half of the readers are not, and a machine-translated page would fail the low-entropy-expression rule it claims to follow. Both READMEs are maintained by hand and structurally mirrored; the numbers inside them come from one generator so they cannot disagree.
