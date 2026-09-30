@@ -124,7 +124,7 @@ Stubblebine 的间隙日志提供了触发时机与剂量：触发在任务切�
 <sub>休息结束时对称地出现一个运动记录；两者都汇总进原生的周、月、季、年报表。至于这套东西在数月尺度上是否真的改变了行为，我没有测过——n=1，无基线；上面的文献讲的是注意力与习惯养成的一般机制，不是这个应用。这是一个讲得通的设计，不是一个被验证过的设计。</sub>
 
 <details>
-<summary><b>诚实性说明</b></summary>
+<summary><b>诚实性说明——这一页省略了什么，以及为什么</b></summary>
 
 - `negentropy` 是单人自合并仓库：PR 是有标题、可回滚的原子变更单元，不是评审门禁。<!-- DATA:neg_median -->6<!-- /DATA:neg_median --> 分钟中位时长测的就是这件事。
 - [analysis_claude_code](https://github.com/ThreeFish-AI/analysis_claude_code)（<!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> 星）大部分**不是**我的作品——它镜像自 [CrazyBoyM](https://github.com/CrazyBoyM) / ShareAI-Lab 的 Claude Code 源码分析，奠基提交属原作者。属于我的部分：研读笔记。
@@ -132,6 +132,13 @@ Stubblebine 的间隙日志提供了触发时机与剂量：触发在任务切�
 - 标语下那行「正在做」是全页唯一自动化管不到的东西；手工维护，比其他一切腐化得都快。
 - 所有图表由[一个 workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) 每月自 GitHub API 重新生成——截至 <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->；已知的失真（含年度图的平方根标度）在下方「方法」一节中登记。
 
+- **3,640 条私有贡献**（截至 2026-09），对应 5,590 条公开可点击的。它们是真实的工作，且不配上标题——因为一个你打不开的数，是一个你只能选择相信的数。这个拆分在这里由手写维护；生成器不被允许去看。
+- **我的雇主，以及我拿薪水在建的生产系统。** 「白天做生产级 Agent 基础设施」已是这一页能给到的全部具体度。那部分工作，占私有数字里更大的一半。
+- **粉丝数、访问计数、奖杯墙、连续打卡火焰、语言占比环。** 全都能用一行嵌入搞定；也全都在度量这个主页，而不是这些工作。本页那些图是为回答具体问题而写的，且每一张都印出生成它的那组数据。
+- **任何我无法以「访客可复现」口径核实的东西。** 若某个论断需要比登出读者更宽的视野，它要么手写并标注日期，要么就不出现。
+- **那些我有账号却没有产出的平台链接。** 在一个谈可核验的页面上，死链比没有链接更糟。
+
+<sub>这些省略并不谦逊。它们只是我能辩护的那些。</sub>
 </details>
 
 <details>
@@ -201,7 +208,7 @@ sequenceDiagram
 </details>
 
 <details>
-<summary><b>同一个动作做了四遍：把内核做成纯函数</b></summary>
+<summary><b>这些仓库共同遵循的规约——纯函数内核与道 / 法 / 术</b></summary>
 
 - **`give-me-a-break`** —— 状态机的 `evaluate` 零时间依赖。时钟由参数传入，于是整套休息/工作/AFK 生命周期都能在虚拟时钟下测试：睡眠、崩溃后快进恢复、休息中途被拔掉的显示器。三个模块，其中一个对 macOS 一无所知。
 - **`hyper-git`** —— `engine/` 里没有一处 `vscode` import。仅这一条约束，就是 403 个单元测试之所以存在的原因：变更列表分组、DAG 泳道布局、Conventional Commits 校验，全都不需要编辑器宿主即可测试。架构说明称之为「Path B」——消费稳定的 `vscode.git` API，其上一切手绘，而不去 fork。
@@ -210,11 +217,6 @@ sequenceDiagram
 - **`negentropy`** —— 默认路径跑在可插拔后端中最便宜的那档上，**完全不需要云凭据**；如果最便宜的配置跑不起来，也就没人会去跑贵的那个。
 
 <sub>说得好听，这叫可测性。说得诚实，这是一个单人维护者为了在自己的代码库里活下来必须做的事：这里没有第二双眼睛，所以设计必须让错误便宜到能被找出来。而那五个空的 AI 接缝，至今仍然是空的——接口是一份计划，不是一个功能。</sub>
-
-</details>
-
-<details>
-<summary><b>这些仓库共同遵循的规约 —— 道 / 法 / 术</b></summary>
 
 [agents.md](https://github.com/ThreeFish-AI/agents.md) 刻意分三层：心法、策略、战术。`./sync.sh --link` 将它软链到 `~/.codex/AGENTS.md` 与 `~/.agents/docs/`，于是本机每一个 Agent 都加载同一份文件——改一行，各处工具的行为一起变。
 
@@ -227,7 +229,6 @@ sequenceDiagram
 需要精确的部分交由子规范承担：结构化表达框架（PREP、金字塔、SCQA、STAR）、含明确 OAuth 红线的浏览器验证协议，以及 IEEE 参考文献规范——这一页的脚注为何是这个样子，答案就在那里。
 
 <sub>一颗星。它是我写过最不受欢迎、却杠杆最大的东西；这两件事并不矛盾。它也只是一份陈述意图的文档，不是强制执行的 linter——本页别处那个 <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> 的 Conventional Commits 比例，就是规约与实践之间被量出来的差距。</sub>
-
 </details>
 
 <details>
@@ -251,20 +252,7 @@ sequenceDiagram
 </details>
 
 <details>
-<summary><b>这一页省略了什么，以及为什么</b></summary>
-
-- **3,640 条私有贡献**（截至 2026-09），对应 5,590 条公开可点击的。它们是真实的工作，且不配上标题——因为一个你打不开的数，是一个你只能选择相信的数。这个拆分在这里由手写维护；生成器不被允许去看。
-- **我的雇主，以及我拿薪水在建的生产系统。** 「白天做生产级 Agent 基础设施」已是这一页能给到的全部具体度。那部分工作，占私有数字里更大的一半。
-- **粉丝数、访问计数、奖杯墙、连续打卡火焰、语言占比环。** 全都能用一行嵌入搞定；也全都在度量这个主页，而不是这些工作。本页那些图是为回答具体问题而写的，且每一张都印出生成它的那组数据。
-- **任何我无法以「访客可复现」口径核实的东西。** 若某个论断需要比登出读者更宽的视野，它要么手写并标注日期，要么就不出现。
-- **那些我有账号却没有产出的平台链接。** 在一个谈可核验的页面上，死链比没有链接更糟。
-
-<sub>这些省略并不谦逊。它们只是我能辩护的那些。</sub>
-
-</details>
-
-<details>
-<summary><b>方法、口径，以及什么情况下这一页是错的</b></summary>
+<summary><b>方法、口径，与全量仓库普查</b></summary>
 
 **口径。** 所有自动刷新的数字都以匿名公开口径采集：登出访客看到的贡献页、GitHub 的 `is:public` 检索、公开 REST 端点。`GITHUB_TOKEN` 只为配额而存在。草稿 release 被排除——对匿名访客不可见、对有推送权限的 token 可见，计入就会让本地运行与 CI 运行不一致。受私有限制的数字（公开/私有拆分）由手写并标注截止日期，生成器从不改动。
 
@@ -277,11 +265,6 @@ sequenceDiagram
 **已知的失真。** 年度图采用平方根标度，以保住 2016 年那一条提交的可见度——代价是它*低估*而非美化近年的增长。低于 2.5 px 的柱按 2.5 px 绘制，所以最短的柱被略微夸大。零值画作基线下方的空槽，因为「没有柱子」和「柱子为零」是两个不同的事实。
 
 <sub>自行复算提交类数字：<code>for r in $(gh api users/ThreeFish-AI/repos --paginate --jq '.[]|select(.fork==false)|.name'); do gh api "/repos/ThreeFish-AI/$r/commits?author=ThreeFish-AI" --paginate --jq '.[].commit.message|split("\n")[0]'; done</code>——注意它不含「十条提交」的源仓库阈值，原始运行会比本页多出几个仓库。由[一个 workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) 每月刷新 · 截至 <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->。以及诚实的边界：它只能自动化「公开可数」的部分——文字、论断，以及「正在做」那一行，都是手写的，可以无声地过期。没有脚本抓得住那个。</sub>
-
-</details>
-
-<details>
-<summary><b>全量仓库普查</b></summary>
 
 | 仓库 | 语言 | 提交 | Release | 星 | 状态 | 对准什么 |
 |---|---|--:|--:|--:|---|---|
@@ -296,7 +279,6 @@ sequenceDiagram
 | [analysis_claude_code](https://github.com/ThreeFish-AI/analysis_claude_code) | — | — | — | 312 | 镜像 | **大部分不是我的作品**——见诚实性说明 |
 
 <sub><!-- DATA:src_repos -->7<!-- /DATA:src_repos --> 个源仓库 · <!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> 条我署名的提交 · <!-- DATA:rel_total -->29<!-- /DATA:rel_total --> 个 release · <!-- DATA:own_stars -->51<!-- /DATA:own_stars --> 颗真正属于我的星，主页显示的是 <!-- DATA:total_stars -->363<!-- /DATA:total_stars --> 颗。两行归档是毕业，不是伤亡。提交数以匿名口径统计我署名的部分；表体数字冻结于首次发布之时——若说明行与表体不一致，以说明行为准。</sub>
-
 </details>
 
 ---

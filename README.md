@@ -124,7 +124,7 @@ It is pinned to exactly one boundary, `working → resting`, and it never blocks
 <sub>An exercise log appears symmetrically at the end of the break; both roll up into native week, month, quarter and year reports. Whether any of this changes behaviour over months, I have not measured — n=1, no baseline, and the literature above is about attention and habit formation in general, not about this app. It is a reasoned design, not a validated one.</sub>
 
 <details>
-<summary><b>Honesty notes</b></summary>
+<summary><b>Honesty notes — what this page leaves out, and why</b></summary>
 
 - `negentropy` is a solo, self-merge repo: the PR is a titled, revertible unit of change, not a review gate. That is what the <!-- DATA:neg_median -->6<!-- /DATA:neg_median -->-minute median measures.
 - [analysis_claude_code](https://github.com/ThreeFish-AI/analysis_claude_code) (<!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> stars) is mostly **not** my work — it mirrors [CrazyBoyM](https://github.com/CrazyBoyM) / ShareAI-Lab's Claude Code source analysis; the foundational commits are theirs. Mine in it: the reading notes.
@@ -132,6 +132,13 @@ It is pinned to exactly one boundary, `working → resting`, and it never blocks
 - The "Now" line under the tagline is the one thing on this page the automation cannot verify; it is hand-maintained and rots faster than everything else.
 - All figures are regenerated monthly from the GitHub API by [one workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) — as of <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->. Known distortions, the yearly chart's square-root scale among them, are registered in the method block below.
 
+- **3,640 private contributions** (as of 2026-09), against 5,590 that are public and clickable. They are real work and they get no headline, because a number you cannot open is a number you have to take on faith. The split is hand-written here; the generator is not allowed to look.
+- **My employer, and the production systems I am paid to build.** "Agentic AI infrastructure at production scale, by day" is as specific as this page gets. That work is the larger half of the private number.
+- **Follower and view counters, trophy walls, streak flames, language-percentage rings.** All available as one-line embeds; all measuring the profile rather than the work. The figures on this page were written to answer specific questions and each one prints the data series that produced it.
+- **Anything I could not verify at the caliber a visitor can reproduce.** Where a claim needed a wider view than a logged-out reader has, it is either hand-written with a date or absent.
+- **Dead links to platforms where I have an account but no output.** A dead link on a page about verifiable claims is worse than no link.
+
+<sub>The omissions are not modest. They are just the ones I can defend.</sub>
 </details>
 
 <details>
@@ -201,7 +208,7 @@ The client is told nothing. That is the whole product: one line of configuration
 </details>
 
 <details>
-<summary><b>The same move, four times: make the core a pure function</b></summary>
+<summary><b>The doctrine these repositories are written under — pure cores and 道 / 法 / 术</b></summary>
 
 - **`give-me-a-break`** — the state machine's `evaluate` has zero time dependency. It takes the clock as an argument, so the entire rest/work/AFK lifecycle is testable against a virtual clock: sleep, crash recovery with fast-forward, a display unplugged mid-break. Three modules, one of which knows nothing about macOS.
 - **`hyper-git`** — `engine/` contains no `vscode` import. That single constraint is why 403 unit tests exist: changelist grouping, DAG swimlane layout, and Conventional Commits validation are all testable without an editor host. The architecture note calls it "Path B" — consume the stable `vscode.git` API and hand-render everything above it, rather than fork.
@@ -210,11 +217,6 @@ The client is told nothing. That is the whole product: one line of configuration
 - **`negentropy`** — the default path runs on the cheapest of its pluggable backends with **no cloud credentials at all**; if the cheapest configuration is not runnable, nobody runs the expensive one either.
 
 <sub>Stated as a virtue, this is testability. Stated honestly, it is what a single maintainer has to do to survive his own codebase: nothing here has a second pair of eyes, so the design has to make the mistakes cheap to find. And the null AI seams are still null — the interfaces are a plan, not a feature.</sub>
-
-</details>
-
-<details>
-<summary><b>The doctrine these repositories are written under — 道 / 法 / 术</b></summary>
 
 [agents.md](https://github.com/ThreeFish-AI/agents.md) is three tiers, deliberately: mindset, strategy, tactics. `./sync.sh --link` symlinks it to `~/.codex/AGENTS.md` and `~/.agents/docs/`, so every agent on the machine loads the same file and editing one line changes how the tools behave everywhere.
 
@@ -227,7 +229,6 @@ The client is told nothing. That is the whole product: one line of configuration
 Sub-specifications carry the parts that need to be exact: a structured-expression framework (PREP, Pyramid, SCQA, STAR), a browser-validation protocol with explicit OAuth red lines, and an IEEE reference specification — which is why the footnotes on this page look the way they do.
 
 <sub>One star. It is the least popular thing I have written and the one with the most leverage; those two facts are not in tension. It is also a document that describes intent, not a linter that enforces it — the <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> Conventional Commits figure elsewhere on this page is the measured gap between doctrine and practice.</sub>
-
 </details>
 
 <details>
@@ -251,20 +252,7 @@ Because notarization costs a developer account I have not bought for a two-star 
 </details>
 
 <details>
-<summary><b>What this page leaves out, and why</b></summary>
-
-- **3,640 private contributions** (as of 2026-09), against 5,590 that are public and clickable. They are real work and they get no headline, because a number you cannot open is a number you have to take on faith. The split is hand-written here; the generator is not allowed to look.
-- **My employer, and the production systems I am paid to build.** "Agentic AI infrastructure at production scale, by day" is as specific as this page gets. That work is the larger half of the private number.
-- **Follower and view counters, trophy walls, streak flames, language-percentage rings.** All available as one-line embeds; all measuring the profile rather than the work. The figures on this page were written to answer specific questions and each one prints the data series that produced it.
-- **Anything I could not verify at the caliber a visitor can reproduce.** Where a claim needed a wider view than a logged-out reader has, it is either hand-written with a date or absent.
-- **Dead links to platforms where I have an account but no output.** A dead link on a page about verifiable claims is worse than no link.
-
-<sub>The omissions are not modest. They are just the ones I can defend.</sub>
-
-</details>
-
-<details>
-<summary><b>Method, caliber, and what would make this page wrong</b></summary>
+<summary><b>Method, caliber, and the full repository census</b></summary>
 
 **Caliber.** Every auto-refreshed number is collected at the anonymous public caliber: the contributions page as a logged-out visitor renders it, GitHub's `is:public` search, and public REST endpoints. `GITHUB_TOKEN` is present for rate limit and nothing else. Draft releases are excluded — invisible anonymously, visible to a push token, so counting them would make a local run and a CI run disagree. Private-limited figures (the public/private split) are hand-written with an as-of date and never touched by the generator.
 
@@ -277,11 +265,6 @@ Because notarization costs a developer account I have not bought for a two-star 
 **Known distortions.** The yearly chart is on a square-root scale so 2016's single commit stays visible — which means it *understates* recent growth rather than flattering it. Bars below 2.5 px are drawn at 2.5 px, so the shortest bars are slightly overstated. Zero values are drawn as open slots below the axis, because a missing bar and a zero bar are different facts.
 
 <sub>Recompute the commit figures yourself: <code>for r in $(gh api users/ThreeFish-AI/repos --paginate --jq '.[]|select(.fork==false)|.name'); do gh api "/repos/ThreeFish-AI/$r/commits?author=ThreeFish-AI" --paginate --jq '.[].commit.message|split("\n")[0]'; done</code> — note this omits the ten-commit source-repository threshold, so a raw run returns slightly more repositories than the page counts. Refreshed monthly by [one workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) · as of <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->. And the honest limit: this only automates what is publicly countable — the prose, the claims, and the Now line are hand-written and can go stale silently. No script catches that.</sub>
-
-</details>
-
-<details>
-<summary><b>Full repository census</b></summary>
 
 | Repository | Language | Commits | Releases | Stars | State | Aimed at |
 |---|---|--:|--:|--:|---|---|
@@ -296,7 +279,6 @@ Because notarization costs a developer account I have not bought for a two-star 
 | [analysis_claude_code](https://github.com/ThreeFish-AI/analysis_claude_code) | — | — | — | 312 | mirror | **mostly not my work** — see honesty notes |
 
 <sub><!-- DATA:src_repos -->7<!-- /DATA:src_repos --> source repositories · <!-- DATA:commits_total -->4,349<!-- /DATA:commits_total --> authored commits · <!-- DATA:rel_total -->29<!-- /DATA:rel_total --> releases · <!-- DATA:own_stars -->51<!-- /DATA:own_stars --> stars actually mine, of <!-- DATA:total_stars -->363<!-- /DATA:total_stars --> shown on the profile. Two archived rows are graduations, not casualties. Commit counts are authored-by-me at anonymous caliber; body cells are frozen as of first publication — if the caption and the rows ever disagree, believe the caption.</sub>
-
 </details>
 
 ---
