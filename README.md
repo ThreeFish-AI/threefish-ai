@@ -74,7 +74,7 @@
 
 <!-- FIG:upstream --><img src="assets/upstream.svg" width="700" alt="Dot ledger of 6 public pull requests to repositories owned by others, 2024-06-26 to 2025-12-06. langgenius/dify#5631, merged, 2024-06-26; langgenius/dify#8921, merged, 2024-09-30; langgenius/dify-plugin-daemon#389, closed unmerged, 2025-07-07; langgenius/dify-cloud-kit#3, merged, 2025-07-08; langgenius/dify#22646, merged, 2025-07-18; DayuanJiang/next-ai-draw-io#124, merged, 2025-12-06. These are 0.3 percent of 1,849 public pull requests; the rest are to my own repositories. Data: GitHub is:public search." /><!-- /FIG:upstream -->
 
-<sub>N = <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs -->, named: <!-- DATA:ext_first -->2024-06-26<!-- /DATA:ext_first --> → <!-- DATA:ext_last -->2025-12-06<!-- /DATA:ext_last -->, <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> merged, one closed unmerged — a fraction of a percent of all public PRs. The ratio is the point.</sub>
+<sub>N = <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs -->, named: <!-- DATA:ext_first -->2024-06-26<!-- /DATA:ext_first --> → <!-- DATA:ext_last -->2025-12-06<!-- /DATA:ext_last -->, <!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> merged, one closed unmerged — a fraction of a percent of all public PRs.</sub>
 
 ---
 
@@ -134,9 +134,9 @@ It is pinned to exactly one boundary, `working → resting`, and it never blocks
 
 - `negentropy` is a solo, self-merge repo: the PR is a titled, revertible unit of change, not a review gate. That is what the <!-- DATA:neg_median -->6<!-- /DATA:neg_median -->-minute median measures.
 - [analysis_claude_code](https://github.com/ThreeFish-AI/analysis_claude_code) (<!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> stars) is mostly **not** my work — it mirrors [CrazyBoyM](https://github.com/CrazyBoyM) / ShareAI-Lab's Claude Code source analysis; the foundational commits are theirs. Mine in it: the reading notes.
-- <!-- DATA:archived_names -->agentic-ai-cognizes, negentropy-perceives<!-- /DATA:archived_names --> (<!-- DATA:archived_n -->2<!-- /DATA:archived_n --> source repos, 1,378 commits between them) are archived — they graduated into the negentropy trunk, perceives as its extraction service and cognizes as `apps/cognizes`. Intended lifecycle, not failure. Frozen by definition: archives don't move.
+- <!-- DATA:archived_names -->agentic-ai-cognizes, negentropy-perceives<!-- /DATA:archived_names --> (<!-- DATA:archived_n -->2<!-- /DATA:archived_n --> source repos) are archived — they graduated into the negentropy trunk; the dedicated block below is that story. Intended lifecycle, not failure: archives don't move.
 - The "Now" line under the tagline is the one thing on this page the automation cannot verify; it is hand-maintained and rots faster than everything else.
-- The yearly figure uses a square-root scale so early years stay visible; it understates recent growth. All figures are regenerated monthly from the GitHub API by [one workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) — as of <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->.
+- All figures are regenerated monthly from the GitHub API by [one workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) — as of <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->. Known distortions, the yearly chart's square-root scale among them, are registered in the method block below.
 
 </details>
 
@@ -177,7 +177,7 @@ Each wing exists because of the column on its right. Perception turns pages and 
 
 Backends are pluggable — in-memory, PostgreSQL, VertexAI, GCS — and the default path needs no cloud credentials at all: `./dev` brings up five containers. Observability is structlog, OpenTelemetry and Langfuse, which is the honest admission that a five-wing system is not debuggable by reading it.
 
-<sub>Two release candidates, no 1.0. The five wings are not equally finished — perception and internalization carry the two archived repositories' worth of history; influence is the thinnest.</sub>
+<sub>The five wings are not equally finished — perception and internalization carry the two archived repositories' worth of history; influence is the thinnest.</sub>
 
 </details>
 
@@ -202,7 +202,7 @@ sequenceDiagram
 
 The client is told nothing. That is the whole product: one line of configuration, and the failure mode changes from *stop working* to *work slower on someone else's model*. Nine vendors are wired — Claude plans, GitHub Copilot, Google Antigravity, Z AI's GLM, MiniMax, Qwen, Xiaomi, Kimi, Doubao — with a per-vendor circuit breaker and quota guard, and a local SQLite-WAL dashboard so the burn is visible before the bill is.
 
-<sub>FastAPI and httpx; no Redis, no message queue. <!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> releases, the latest still alpha-tagged — translation fidelity across three request shapes is the part that keeps not being finished. Chained failover also means a request can succeed on a model you did not choose; the dashboard exists partly so that is auditable.</sub>
+<sub>FastAPI and httpx. <!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> releases, the latest still alpha-tagged — translation fidelity across three request shapes is the part that keeps not being finished. Chained failover also means a request can succeed on a model you did not choose; the dashboard exists partly so that is auditable.</sub>
 
 </details>
 
@@ -213,7 +213,7 @@ The client is told nothing. That is the whole product: one line of configuration
 - **`hyper-git`** — `engine/` contains no `vscode` import. That single constraint is why 403 unit tests exist: changelist grouping, DAG swimlane layout, and Conventional Commits validation are all testable without an editor host. The architecture note calls it "Path B" — consume the stable `vscode.git` API and hand-render everything above it, rather than fork.
 - **`hyper-git`, again** — five AI seams (`ILlmProvider`, `ICommitMessageProvider`, `IPreCommitInspector`, `IChangelistGrouper`, `IConflictResolver`) are wired in as null implementations, modeled on JetBrains' `CheckinHandler` lifecycle. The interfaces ship; the intelligence is deferred to M5. Declaring the seam early is cheap and declaring it late is not.
 - **`coding-proxy`** — the failover chain is policy, not plumbing: circuit breaker state and quota accounting are per-vendor and local, in SQLite-WAL. No Redis, no queue, so a single process is the whole deployment and a restart loses nothing that matters.
-- **`negentropy`** — backends are pluggable across in-memory, PostgreSQL, VertexAI and GCS, and the default path boots with **no cloud credentials at all**. If the cheapest configuration is not runnable, nobody runs the expensive one either.
+- **`negentropy`** — the default path runs on the cheapest of its pluggable backends with **no cloud credentials at all**; if the cheapest configuration is not runnable, nobody runs the expensive one either.
 
 <sub>Stated as a virtue, this is testability. Stated honestly, it is what a single maintainer has to do to survive his own codebase: nothing here has a second pair of eyes, so the design has to make the mistakes cheap to find. And the null AI seams are still null — the interfaces are a plan, not a feature.</sub>
 
@@ -246,7 +246,7 @@ It is real, and it is also inflated by working in small units. Of <!-- DATA:comm
 Because a PR is a titled, revertible unit with a diff attached, and that is worth having whether or not anyone reviews it. It is not a review gate and this page never calls it one. The <!-- DATA:neg_median -->6<!-- /DATA:neg_median -->-minute median measures how long a finished branch waits, not how long anyone looked at it.
 
 **"Your most-starred repository is not yours."**
-Correct, and it is the first thing in the honesty notes. Of <!-- DATA:total_stars -->363<!-- /DATA:total_stars --> stars, <!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> are on a mirror of someone else's Claude Code analysis. The number I would rather be judged on is <!-- DATA:own_stars -->51<!-- /DATA:own_stars -->.
+Correct, and it is the first thing in the honesty notes: of <!-- DATA:total_stars -->363<!-- /DATA:total_stars --> stars, <!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> sit on that mirror. The number I would rather be judged on is <!-- DATA:own_stars -->51<!-- /DATA:own_stars -->.
 
 **"Why is everything bilingual?"**
 Because half of the writing is in Chinese and half of the readers are not, and a machine-translated page would fail the low-entropy-expression rule it claims to follow. Both READMEs are maintained by hand and structurally mirrored; the numbers inside them come from one generator so they cannot disagree.

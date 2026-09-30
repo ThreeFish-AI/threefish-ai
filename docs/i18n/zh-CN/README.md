@@ -74,7 +74,7 @@
 
 <!-- FIG:upstream --><img src="https://raw.githubusercontent.com/ThreeFish-AI/threefish-ai/master/assets/upstream.svg" width="700" alt="提交给他人仓库的公开 PR 点账本，2024-06-26 至 2025-12-06。langgenius/dify#5631，已合并，2024-06-26；langgenius/dify#8921，已合并，2024-09-30；langgenius/dify-plugin-daemon#389，关闭未合并，2025-07-07；langgenius/dify-cloud-kit#3，已合并，2025-07-08；langgenius/dify#22646，已合并，2025-07-18；DayuanJiang/next-ai-draw-io#124，已合并，2025-12-06。它们占 1,849 个公开 PR 的 0.3%；其余都提交给我自己的仓库。数据：GitHub is:public 检索。" /><!-- /FIG:upstream -->
 
-<sub>N = <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs -->，全部具名：<!-- DATA:ext_first -->2024-06-26<!-- /DATA:ext_first --> → <!-- DATA:ext_last -->2025-12-06<!-- /DATA:ext_last -->，<!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> 个已合并、一个关闭未合并——占全部公开 PR 的千分之几。比例本身就是重点。</sub>
+<sub>N = <!-- DATA:ext_prs -->6<!-- /DATA:ext_prs -->，全部具名：<!-- DATA:ext_first -->2024-06-26<!-- /DATA:ext_first --> → <!-- DATA:ext_last -->2025-12-06<!-- /DATA:ext_last -->，<!-- DATA:ext_merged -->5<!-- /DATA:ext_merged --> 个已合并、一个关闭未合并——占全部公开 PR 的千分之几。</sub>
 
 ---
 
@@ -134,9 +134,9 @@ Stubblebine 的间隙日志提供了触发时机与剂量：触发在任务切�
 
 - `negentropy` 是单人自合并仓库：PR 是有标题、可回滚的原子变更单元，不是评审门禁。<!-- DATA:neg_median -->6<!-- /DATA:neg_median --> 分钟中位时长测的就是这件事。
 - [analysis_claude_code](https://github.com/ThreeFish-AI/analysis_claude_code)（<!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> 星）大部分**不是**我的作品——它镜像自 [CrazyBoyM](https://github.com/CrazyBoyM) / ShareAI-Lab 的 Claude Code 源码分析，奠基提交属原作者。属于我的部分：研读笔记。
-- <!-- DATA:archived_names -->agentic-ai-cognizes, negentropy-perceives<!-- /DATA:archived_names -->（<!-- DATA:archived_n -->2<!-- /DATA:archived_n --> 个源仓库，合计 1,378 条提交）已归档——毕业并入 negentropy 主干：perceives 成为它的内容提取服务，cognizes 成为 `apps/cognizes`。这是预期的生命周期，不是失败。且天然冻结：归档不再变动。
+- <!-- DATA:archived_names -->agentic-ai-cognizes, negentropy-perceives<!-- /DATA:archived_names -->（<!-- DATA:archived_n -->2<!-- /DATA:archived_n --> 个源仓库）已归档——毕业并入 negentropy 主干，下面的专节就是这件事。这是预期的生命周期，不是失败：归档不再变动。
 - 标语下那行「正在做」是全页唯一自动化管不到的东西；手工维护，比其他一切腐化得都快。
-- 年度图采用平方根标度以保留早期年份的可见度，因此低估了近年的增长。所有图表由[一个 workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) 每月自 GitHub API 重新生成——截至 <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->。
+- 所有图表由[一个 workflow](https://github.com/ThreeFish-AI/threefish-ai/blob/master/.github/workflows/refresh-profile-data.yml) 每月自 GitHub API 重新生成——截至 <!-- DATA:asof -->2026-09-05<!-- /DATA:asof -->；已知的失真（含年度图的平方根标度）在下方「方法」一节中登记。
 
 </details>
 
@@ -177,7 +177,7 @@ flowchart LR
 
 后端可插拔——内存、PostgreSQL、VertexAI、GCS——默认路径完全不需要云凭据：`./dev` 拉起五个容器。可观测性由 structlog、OpenTelemetry 与 Langfuse 承担，这等于承认：五翼系统不是靠读代码就能调试的。
 
-<sub>两个 rc，尚无 1.0。五翼并不同等完成——感知与内化承接了两个已归档仓库的全部历史，影响是最薄的一片。</sub>
+<sub>五翼并不同等完成——感知与内化承接了两个已归档仓库的全部历史，影响是最薄的一片。</sub>
 
 </details>
 
@@ -202,7 +202,7 @@ sequenceDiagram
 
 客户端什么都不知道。这就是产品的全部：一行配置，把失败模式从「停止工作」改成「用别人的模型慢一点工作」。已接入九家——Claude 套餐、GitHub Copilot、Google Antigravity、Z AI 的 GLM、MiniMax、Qwen、小米、Kimi、豆包——每家独立熔断与配额守卫，另有本地 SQLite-WAL 看板，让消耗在账单之前就可见。
 
-<sub>FastAPI 与 httpx；无 Redis，无消息队列。<!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> 个 release，最新仍带 alpha 标——三种请求形状之间的转译保真度，正是那个一直没做完的部分。链式转移也意味着请求可能在你没选的模型上成功；看板的存在，一部分就是为了让这件事可审计。</sub>
+<sub>FastAPI 与 httpx。<!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> 个 release，最新仍带 alpha 标——三种请求形状之间的转译保真度，正是那个一直没做完的部分。链式转移也意味着请求可能在你没选的模型上成功；看板的存在，一部分就是为了让这件事可审计。</sub>
 
 </details>
 
@@ -213,7 +213,7 @@ sequenceDiagram
 - **`hyper-git`** —— `engine/` 里没有一处 `vscode` import。仅这一条约束，就是 403 个单元测试之所以存在的原因：变更列表分组、DAG 泳道布局、Conventional Commits 校验，全都不需要编辑器宿主即可测试。架构说明称之为「Path B」——消费稳定的 `vscode.git` API，其上一切手绘，而不去 fork。
 - **`hyper-git`，再一次** —— 五个 AI 接缝（`ILlmProvider`、`ICommitMessageProvider`、`IPreCommitInspector`、`IChangelistGrouper`、`IConflictResolver`）以空实现预先接入，形制取自 JetBrains 的 `CheckinHandler` 生命周期。接口先交付，智能延到 M5。早声明接缝很便宜，晚声明就不便宜了。
 - **`coding-proxy`** —— 故障转移链是策略，不是管道：熔断状态与配额记账按厂商分离、且是本地的，落在 SQLite-WAL 里。没有 Redis、没有队列，于是单进程就是整个部署，重启不会丢掉任何要紧的东西。
-- **`negentropy`** —— 后端可在内存、PostgreSQL、VertexAI、GCS 之间替换，而默认路径**完全不需要云凭据**就能起。如果最便宜的配置跑不起来，也就没人会去跑贵的那个。
+- **`negentropy`** —— 默认路径跑在可插拔后端中最便宜的那档上，**完全不需要云凭据**；如果最便宜的配置跑不起来，也就没人会去跑贵的那个。
 
 <sub>说得好听，这叫可测性。说得诚实，这是一个单人维护者为了在自己的代码库里活下来必须做的事：这里没有第二双眼睛，所以设计必须让错误便宜到能被找出来。而那五个空的 AI 接缝，至今仍然是空的——接口是一份计划，不是一个功能。</sub>
 
@@ -246,7 +246,7 @@ sequenceDiagram
 因为 PR 是一个带标题、可回滚、附着 diff 的单元，无论有没有人评审，这件事本身有价值。它不是评审门禁，本页也从不这样称它。<!-- DATA:neg_median -->6<!-- /DATA:neg_median --> 分钟中位数测的是一个做完的分支等了多久，不是有人看了多久。
 
 **「你星最多的仓库不是你的。」**
-没错，而这是诚实性说明里的第一条。<!-- DATA:total_stars -->363<!-- /DATA:total_stars --> 颗星里有 <!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> 颗落在一个镜像他人 Claude Code 分析的仓库上。我更愿意被评判的那个数是 <!-- DATA:own_stars -->51<!-- /DATA:own_stars -->。
+没错，而这是诚实性说明里的第一条：<!-- DATA:total_stars -->363<!-- /DATA:total_stars --> 颗星里有 <!-- DATA:acc_stars -->312<!-- /DATA:acc_stars --> 颗落在那个镜像仓库上。我更愿意被评判的那个数是 <!-- DATA:own_stars -->51<!-- /DATA:own_stars -->。
 
 **「为什么全都要双语？」**
 因为写作有一半是中文，读者有一半不是；而一个机翻的页面，会当场违反它自称遵循的「低熵表达」。两份 README 手工维护、结构互为镜像；里面的数字出自同一个生成器，因此不可能互相矛盾。
