@@ -111,18 +111,6 @@
 
 <sub>Six against <!-- DATA:pub_prs -->1,849<!-- /DATA:pub_prs --> public PRs is the honest ratio: almost all of my public work is in repositories where I am also the reviewer.</sub>
 
-### One input box, three papers
-
-`give-me-a-break` shows a small box before each natural break and asks: what did you just finish, and optionally, what is next. It looks like a punch clock. It is the opposite of one.
-
-Leroy's work on attention residue is the reason it exists at all: when you switch tasks, part of your attention stays on the previous one, and the effect is worst when the task was interrupted or left unfinished.[^leroy] A break is an interruption by definition. So the box is not there to measure the session — it is there to close it: sixty seconds to write down *done, remaining, first step on return*, which is a ready-to-resume plan and, more importantly, permission to stop thinking about it.
-
-Stubblebine's interstitial journaling supplies the trigger and the dose: fire on the task transition rather than on the clock, two to four sentences, sixty to ninety seconds, and stay light — anything heavier is abandoned in the first week.[^interstitial] Fogg supplies the design constraint: at the moment a prompt fires, motivation is low and variable, so the only lever left is ability.[^fogg] Hence every field optional, Enter submits, the box auto-releases on timeout, and there is no minimum length — a minimum length is a proven completion killer.
-
-It is pinned to exactly one boundary, `working → resting`, and it never blocks the break. A rest ritual that can prevent rest is not a rest ritual.
-
-<sub>An exercise log appears symmetrically at the end of the break; both roll up into native week, month, quarter and year reports. Whether any of this changes behaviour over months, I have not measured — n=1, no baseline, and the literature above is about attention and habit formation in general, not about this app. It is a reasoned design, not a validated one.</sub>
-
 <details>
 <summary><b>Honesty notes — what this page leaves out, and why</b></summary>
 
@@ -139,6 +127,30 @@ It is pinned to exactly one boundary, `working → resting`, and it never blocks
 - **Dead links to platforms where I have an account but no output.** A dead link on a page about verifiable claims is worse than no link.
 
 <sub>The omissions are not modest. They are just the ones I can defend.</sub>
+</details>
+
+<details>
+<summary><b>The doctrine these repositories are written under — pure cores and 道 / 法 / 术</b></summary>
+
+- **`give-me-a-break`** — the state machine's `evaluate` has zero time dependency. It takes the clock as an argument, so the entire rest/work/AFK lifecycle is testable against a virtual clock: sleep, crash recovery with fast-forward, a display unplugged mid-break. Three modules, one of which knows nothing about macOS.
+- **`hyper-git`** — `engine/` contains no `vscode` import. That single constraint is why 403 unit tests exist: changelist grouping, DAG swimlane layout, and Conventional Commits validation are all testable without an editor host. The architecture note calls it "Path B" — consume the stable `vscode.git` API and hand-render everything above it, rather than fork.
+- **`hyper-git`, again** — five AI seams (`ILlmProvider`, `ICommitMessageProvider`, `IPreCommitInspector`, `IChangelistGrouper`, `IConflictResolver`) are wired in as null implementations, modeled on JetBrains' `CheckinHandler` lifecycle. The interfaces ship; the intelligence is deferred to M5. Declaring the seam early is cheap and declaring it late is not.
+- **`coding-proxy`** — the failover chain is policy, not plumbing: circuit breaker state and quota accounting are per-vendor and local, in SQLite-WAL. No Redis, no queue, so a single process is the whole deployment and a restart loses nothing that matters.
+- **`negentropy`** — the default path runs on the cheapest of its pluggable backends with **no cloud credentials at all**; if the cheapest configuration is not runnable, nobody runs the expensive one either.
+
+<sub>Stated as a virtue, this is testability. Stated honestly, it is what a single maintainer has to do to survive his own codebase: nothing here has a second pair of eyes, so the design has to make the mistakes cheap to find. And the null AI seams are still null — the interfaces are a plan, not a feature.</sub>
+
+[agents.md](https://github.com/ThreeFish-AI/agents.md) is three tiers, deliberately: mindset, strategy, tactics. `./sync.sh --link` symlinks it to `~/.codex/AGENTS.md` and `~/.agents/docs/`, so every agent on the machine loads the same file and editing one line changes how the tools behave everywhere.
+
+| Tier | | Holds |
+|---|---|---|
+| 道 | mindset | context-driven · minimal intervention · evidence-based · systemic integrity · knowledge crystallization · proactive navigation · low-entropy expression |
+| 法 | strategy | plan first by default · subagent concurrency · verification before done · reuse-driven · boundary management · orthogonal decomposition · single source of truth · hierarchical expression |
+| 术 | tactics | AI-pair pipeline · git, hooks and issue discipline · `uv` + `pnpm` toolchain · database safety rails · documentation and Mermaid norms · UI norms |
+
+Sub-specifications carry the parts that need to be exact: a structured-expression framework (PREP, Pyramid, SCQA, STAR), a browser-validation protocol with explicit OAuth red lines, and an IEEE reference specification — which is why the footnotes on this page look the way they do.
+
+<sub>One star. It is the least popular thing I have written and the one with the most leverage; those two facts are not in tension. It is also a document that describes intent, not a linter that enforces it — the <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> Conventional Commits figure elsewhere on this page is the measured gap between doctrine and practice.</sub>
 </details>
 
 <details>
@@ -208,27 +220,17 @@ The client is told nothing. That is the whole product: one line of configuration
 </details>
 
 <details>
-<summary><b>The doctrine these repositories are written under — pure cores and 道 / 法 / 术</b></summary>
+<summary><b>give-me-a-break — one input box, three papers</b></summary>
 
-- **`give-me-a-break`** — the state machine's `evaluate` has zero time dependency. It takes the clock as an argument, so the entire rest/work/AFK lifecycle is testable against a virtual clock: sleep, crash recovery with fast-forward, a display unplugged mid-break. Three modules, one of which knows nothing about macOS.
-- **`hyper-git`** — `engine/` contains no `vscode` import. That single constraint is why 403 unit tests exist: changelist grouping, DAG swimlane layout, and Conventional Commits validation are all testable without an editor host. The architecture note calls it "Path B" — consume the stable `vscode.git` API and hand-render everything above it, rather than fork.
-- **`hyper-git`, again** — five AI seams (`ILlmProvider`, `ICommitMessageProvider`, `IPreCommitInspector`, `IChangelistGrouper`, `IConflictResolver`) are wired in as null implementations, modeled on JetBrains' `CheckinHandler` lifecycle. The interfaces ship; the intelligence is deferred to M5. Declaring the seam early is cheap and declaring it late is not.
-- **`coding-proxy`** — the failover chain is policy, not plumbing: circuit breaker state and quota accounting are per-vendor and local, in SQLite-WAL. No Redis, no queue, so a single process is the whole deployment and a restart loses nothing that matters.
-- **`negentropy`** — the default path runs on the cheapest of its pluggable backends with **no cloud credentials at all**; if the cheapest configuration is not runnable, nobody runs the expensive one either.
+`give-me-a-break` shows a small box before each natural break and asks: what did you just finish, and optionally, what is next. It looks like a punch clock. It is the opposite of one.
 
-<sub>Stated as a virtue, this is testability. Stated honestly, it is what a single maintainer has to do to survive his own codebase: nothing here has a second pair of eyes, so the design has to make the mistakes cheap to find. And the null AI seams are still null — the interfaces are a plan, not a feature.</sub>
+Leroy's work on attention residue is the reason it exists at all: when you switch tasks, part of your attention stays on the previous one, and the effect is worst when the task was interrupted or left unfinished.[^leroy] A break is an interruption by definition. So the box is not there to measure the session — it is there to close it: sixty seconds to write down *done, remaining, first step on return*, which is a ready-to-resume plan and, more importantly, permission to stop thinking about it.
 
-[agents.md](https://github.com/ThreeFish-AI/agents.md) is three tiers, deliberately: mindset, strategy, tactics. `./sync.sh --link` symlinks it to `~/.codex/AGENTS.md` and `~/.agents/docs/`, so every agent on the machine loads the same file and editing one line changes how the tools behave everywhere.
+Stubblebine's interstitial journaling supplies the trigger and the dose: fire on the task transition rather than on the clock, two to four sentences, sixty to ninety seconds, and stay light — anything heavier is abandoned in the first week.[^interstitial] Fogg supplies the design constraint: at the moment a prompt fires, motivation is low and variable, so the only lever left is ability.[^fogg] Hence every field optional, Enter submits, the box auto-releases on timeout, and there is no minimum length — a minimum length is a proven completion killer.
 
-| Tier | | Holds |
-|---|---|---|
-| 道 | mindset | context-driven · minimal intervention · evidence-based · systemic integrity · knowledge crystallization · proactive navigation · low-entropy expression |
-| 法 | strategy | plan first by default · subagent concurrency · verification before done · reuse-driven · boundary management · orthogonal decomposition · single source of truth · hierarchical expression |
-| 术 | tactics | AI-pair pipeline · git, hooks and issue discipline · `uv` + `pnpm` toolchain · database safety rails · documentation and Mermaid norms · UI norms |
+It is pinned to exactly one boundary, `working → resting`, and it never blocks the break. A rest ritual that can prevent rest is not a rest ritual.
 
-Sub-specifications carry the parts that need to be exact: a structured-expression framework (PREP, Pyramid, SCQA, STAR), a browser-validation protocol with explicit OAuth red lines, and an IEEE reference specification — which is why the footnotes on this page look the way they do.
-
-<sub>One star. It is the least popular thing I have written and the one with the most leverage; those two facts are not in tension. It is also a document that describes intent, not a linter that enforces it — the <!-- DATA:conv_pct -->77.1%<!-- /DATA:conv_pct --> Conventional Commits figure elsewhere on this page is the measured gap between doctrine and practice.</sub>
+<sub>An exercise log appears symmetrically at the end of the break; both roll up into native week, month, quarter and year reports. Whether any of this changes behaviour over months, I have not measured — n=1, no baseline, and the literature above is about attention and habit formation in general, not about this app. It is a reasoned design, not a validated one.</sub>
 </details>
 
 <details>
@@ -292,7 +294,7 @@ A Chinese-language knowledge base on AI infrastructure, agent engineering, and i
 
 Three long-running threads: **Negentropy** — the design and use of the entropy-reduction engine, written alongside the code · **Harness Engineering** — a survey of agent engineering as a discipline · **Sinestesia of Cognition** — 知见通感, the least practical and the most necessary.
 
-<sub>「你我的相识绝非一场零和游戏」 — the site's own line. Written in Chinese; there is no English mirror, and pretending otherwise on an English page would be the wrong kind of tidy.</sub>
+<sub>Written in Chinese; there is no English mirror, and pretending otherwise on an English page would be the wrong kind of tidy.</sub>
 
 ---
 
