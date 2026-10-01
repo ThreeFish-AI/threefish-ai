@@ -22,7 +22,7 @@
 
 <div align="center">
 
-<sub>**When the work happens** · [Growth, year by year](#growth) · [Hour of day](#rhythm) · [Weekday × hour](#punchcard) · [Weekday vs weekend](#surplus) · [Per repository](#ground) · [Cumulative](#accrual) · [Repository lifecycles](#lifecycles) · [Releases in time](#cadence) · [Unbroken days](#streak)</sub>
+<sub>**When the work happens** · [Growth, year by year](#user-content-growth) · [Hour of day](#user-content-rhythm) · [Weekday × hour](#user-content-punchcard) · [Weekday vs weekend](#user-content-surplus) · [Per repository](#user-content-ground) · [Cumulative](#user-content-accrual) · [Repository lifecycles](#user-content-lifecycles) · [Releases in time](#user-content-cadence) · [Unbroken days](#user-content-streak)</sub>
 
 </div>
 
@@ -113,7 +113,7 @@
 
 <div align="center">
 
-<sub>**How it ships** · [How long a PR waits](#latency) · [Commit grammar](#grammar) · [Language shares](#tongues) · [Upstream pull requests](#upstream)</sub>
+<sub>**How it ships** · [How long a PR waits](#user-content-latency) · [Commit grammar](#user-content-grammar) · [Language shares](#user-content-tongues) · [Upstream pull requests](#user-content-upstream)</sub>
 
 </div>
 

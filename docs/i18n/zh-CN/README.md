@@ -22,7 +22,7 @@
 
 <div align="center">
 
-<sub>**工作发生在何时** · [增长，逐年](#growth) · [一日节律](#rhythm) · [星期 × 小时](#punchcard) · [工作日与周末](#surplus) · [按仓库计](#ground) · [累计曲线](#accrual) · [仓库生灭](#lifecycles) · [发布节奏](#cadence) · [连续天数](#streak)</sub>
+<sub>**工作发生在何时** · [增长，逐年](#user-content-growth) · [一日节律](#user-content-rhythm) · [星期 × 小时](#user-content-punchcard) · [工作日与周末](#user-content-surplus) · [按仓库计](#user-content-ground) · [累计曲线](#user-content-accrual) · [仓库生灭](#user-content-lifecycles) · [发布节奏](#user-content-cadence) · [连续天数](#user-content-streak)</sub>
 
 </div>
 
@@ -113,7 +113,7 @@
 
 <div align="center">
 
-<sub>**如何交付** · [一个 PR 等多久](#latency) · [提交语法](#grammar) · [语言占比](#tongues) · [上游 PR](#upstream)</sub>
+<sub>**如何交付** · [一个 PR 等多久](#user-content-latency) · [提交语法](#user-content-grammar) · [语言占比](#user-content-tongues) · [上游 PR](#user-content-upstream)</sub>
 
 </div>
 
