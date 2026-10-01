@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="198" viewBox="0 0 700 198" role="img" aria-label="synthetic aria">
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.bars{fill:none;stroke:#8c959f}.accs{fill:none;stroke:#0969da}.inks{fill:none;stroke:#1f2328}.vals{fill:none;stroke:#57606a}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.bars{stroke:#6e7681}.accs{stroke:#58a6ff}.inks{stroke:#f0f6fc}.vals{stroke:#8b949e}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+  }
+
+  .trc{fill:#0969da;opacity:0;offset-path:path('M42 91.7 L313 42.0 L594 42.0')}
+  @media (prefers-color-scheme:dark){.trc{fill:#58a6ff}}
+  @media (prefers-reduced-motion:no-preference){
+    .trc{animation:trc 2.6s cubic-bezier(.4,0,.2,1) .4s 1 both}
+    @keyframes trc{0%{opacity:0;offset-distance:0%}
+      8%{opacity:.9}88%{opacity:.9}
+      100%{opacity:0;offset-distance:100%}}
+  }
+</style>
+<rect class="bg" width="700" height="198" rx="6"/>
+<line class="rule" x1="42" y1="158" x2="594" y2="158" stroke-width="1"/>
+<line class="rule" x1="453.5" y1="38" x2="453.5" y2="158" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="450.5" y="154" font-size="9" class="lbl tm" transform="rotate(-90 450.5 154)">graduated</text>
+<path class="bars" d="M42 158.0 L313 141.4 L594 141.4" fill="none" stroke-width="1.1"/>
+<path class="bars" d="M42 91.7 L313 58.6 L594 58.6" fill="none" stroke-width="1.1"/>
+<path class="accs" d="M42 91.7 L313 42.0 L594 42.0" fill="none" stroke-width="2"/>
+<text x="598" y="139.4" font-size="9" class="val ts">hyper-git</text>
+<text x="598" y="56.6" font-size="9" class="val ts">negentropy</text>
+<text x="598" y="45.6" font-size="9" class="accv ts">total 35</text>
+<circle class="trc" r="3.2"/>
+<text x="594" y="176" font-size="10" class="lbl tm">2026-03</text>
+<text x="42" y="20" font-size="11" class="lbl ts">cumulative authored commits per repo · monthly · 2026-01-05 → 2026-03-01 · not the eleven years above</text>
+<text x="686" y="192" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+</svg>

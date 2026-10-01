@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="164" viewBox="0 0 700 164" role="img" aria-label="synthetic aria">
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.bars{fill:none;stroke:#8c959f}.accs{fill:none;stroke:#0969da}.inks{fill:none;stroke:#1f2328}.vals{fill:none;stroke:#57606a}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.bars{stroke:#6e7681}.accs{stroke:#58a6ff}.inks{stroke:#f0f6fc}.vals{stroke:#8b949e}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+  }
+
+  .tick{stroke:#8c959f;fill:none;stroke-width:1.4}
+  @media (prefers-color-scheme:dark){.tick{stroke:#6e7681}}
+  .sweep{fill:#0969da;opacity:0}
+  @media (prefers-color-scheme:dark){.sweep{fill:#58a6ff}}
+  @media (prefers-reduced-motion:no-preference){
+    .sweep{animation:sbs 1.8s cubic-bezier(.22,1,.36,1) .5s 1 both}
+    @keyframes sbs{0%{opacity:0;transform:translateX(0)}
+      15%{opacity:.65}75%{opacity:.65;transform:translateX(200px)}
+      100%{opacity:0;transform:translateX(200px)}}
+  }
+</style>
+<rect class="bg" width="700" height="164" rx="6"/>
+<line class="rule" x1="42" y1="122" x2="686" y2="122" stroke-width="1"/>
+<path class="tick" d="M42 122V87 M64 122V72 M86 122V61 M109 122V52 M153 122V87 M175 122V72 M197 122V61 M220 122V52 M264 122V87 M286 122V72 M308 122V61 M331 122V52 M375 122V87 M397 122V72 M420 122V61 M442 122V52 M486 122V87 M508 122V72 M531 122V61 M553 122V52 M597 122V87 M619 122V72 M642 122V61 M664 122V52"/>
+<path class="zero" d="M131 125h22 M242 125h22 M353 125h22 M464 125h22 M575 125h22 M686 125H686"/>
+<line class="accs" x1="242" y1="30" x2="442" y2="30" stroke-width="1.6"/><line class="accs" x1="242" y1="26" x2="242" y2="34" stroke-width="1.6"/><line class="accs" x1="442" y1="26" x2="442" y2="34" stroke-width="1.6"/>
+<text x="342.0" y="44" font-size="10.5" class="accv tm">10 days, 2026-06-10 → 2026-06-19</text>
+<rect class="sweep" x="242" y="48" width="2.2" height="74" rx="1.1"/>
+<text x="42" y="142" font-size="10" class="lbl tm">2026-06</text>
+<text x="42" y="20" font-size="11" class="lbl ts">one tick per day, latest 30 · height ∝ √commits · authored commits in source repos, not the GitHub calendar</text>
+<text x="686" y="158" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+</svg>

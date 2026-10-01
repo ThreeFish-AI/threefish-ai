@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="121" viewBox="0 0 700 121" role="img" aria-label="synthetic aria">
+<style>
+  text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .tm{text-anchor:middle}.te{text-anchor:end}.ts{text-anchor:start}
+  .bg{fill:#ffffff}.ink{fill:#1f2328}.lbl{fill:#6e7781}.val{fill:#57606a}.bar{fill:#8c959f}.acc{fill:#0969da}.accv{fill:#0969da;font-weight:600}.bars{fill:none;stroke:#8c959f}.accs{fill:none;stroke:#0969da}.inks{fill:none;stroke:#1f2328}.vals{fill:none;stroke:#57606a}.zero{fill:none;stroke:#8c959f;stroke-width:1.2}.rule{stroke:#d1d9e0}
+  @media (prefers-color-scheme:dark){
+    .bg{fill:#0d1117}.ink{fill:#f0f6fc}.lbl{fill:#9198a1}.val{fill:#8b949e}.bar{fill:#6e7681}.acc{fill:#58a6ff}.accv{fill:#58a6ff;font-weight:600}.bars{stroke:#6e7681}.accs{stroke:#58a6ff}.inks{stroke:#f0f6fc}.vals{stroke:#8b949e}.zero{stroke:#6e7681}.rule{stroke:#30363d}
+  }
+</style>
+<rect class="bg" width="700" height="121" rx="6"/>
+<line class="rule" x1="42" y1="71" x2="686" y2="71" stroke-width="1"/>
+<line class="rule" x1="42.0" y1="44.0" x2="42.0" y2="71" stroke-width="1" stroke-dasharray="2 3"/>
+<circle class="acc" cx="42.0" cy="40.0" r="3.6"/>
+<text x="49.0" y="43.0" font-size="9.0" class="val ts">langgenius/dify#5631 · merged · 2026-01-09</text>
+<line class="rule" x1="686.0" y1="59.0" x2="686.0" y2="71" stroke-width="1" stroke-dasharray="2 3"/>
+<circle class="zero" cx="686.0" cy="55.0" r="3.6"/>
+<text x="679.0" y="58.0" font-size="9.0" class="lbl te">foo/bar#124 · closed unmerged · 2026-02-01</text>
+
+<text x="42" y="103" font-size="9.5" class="lbl ts">2 external public PRs — 0.4% of 500 public PRs; the rest are my own repositories</text>
+<text x="42" y="20" font-size="11" class="lbl ts">pull requests into code I do not own · hollow = closed unmerged · blue = Dify ecosystem</text>
+<text x="686" y="113" font-size="9.5" class="lbl te">as of 2026-09-05</text>
+</svg>
