@@ -70,6 +70,7 @@ TRUNK = "negentropy"  # the repo the archived ones graduated into; accented thro
 MIN_SOURCE_COMMITS = 10  # "source repository" = non-fork repo with >= N commits authored by USER
 FIRST_YEAR = 2016
 RHYTHM_ORIGIN = 4  # hour axis starts at 04:00 so the night block stays contiguous
+HOUR_ORDER = [(RHYTHM_ORIGIN + k) % 24 for k in range(24)]
 DIFY_OWNER = "langgenius"  # the one upstream ecosystem the READMEs name by hand
 CONVENTIONAL = re.compile(
     r"^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([^)]*\))?(!)?:\s*\S"
@@ -314,6 +315,16 @@ GLYPH_W = {c: w for w, cs in _GLYPHS.items() for c in cs}
 FONT_SLACK = 1.14
 
 
+def parse_iso(s):
+    """GitHub API timestamp (UTC, second precision) as a naive UTC datetime."""
+    return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
+
+
+def parse_iso_local(s):
+    """The same timestamp re-based into the profile's timezone."""
+    return parse_iso(s).replace(tzinfo=timezone.utc).astimezone(TZ)
+
+
 def text_w(s, size):
     """Advance width of `s` in px, over-estimated (see FONT_SLACK). Unknown
     Latin falls back to digit width; CJK and other wide scripts to one full em
@@ -422,15 +433,7 @@ def render_growth(values, years, asof, aria):
                          format(v, ","), dip))
     ticks = "".join('<text x="%.1f" y="142" font-size="10.5" class="lbl tm">%d</text>'
                     % (L + pitch * (i + 0.5), y) for i, y in enumerate(years))
-    sweep_x = R - L
-    motion = ("\n  .sweep{fill:%s;opacity:0}\n"
-              "  @media (prefers-color-scheme:dark){.sweep{fill:%s}}\n"
-              "  @media (prefers-reduced-motion:no-preference){\n"
-              "    .sweep{animation:swg 1.9s cubic-bezier(.22,1,.36,1) .15s 1 both}\n"
-              "    @keyframes swg{0%%{opacity:0;transform:translateX(0)}\n"
-              "      10%%{opacity:.7}80%%{opacity:.7;transform:translateX(%dpx)}\n"
-              "      100%%{opacity:0;transform:translateX(%dpx)}}\n  }\n"
-              ) % (LIGHT["acc"], DARK["acc"], sweep_x, sweep_x)
+    motion = sweep_x_motion(round(R - L), "swg", "1.9s", ".15s", ".7", 10, 80)
     s = "\n".join([
         svg_open(W, H, aria),
         style_sheet(motion),
@@ -472,15 +475,8 @@ def render_rhythm(hours, asof, aria):
     peak_v = hours[peak_h]
     ticks = "".join('<text x="%.1f" y="142" font-size="10.5" class="lbl tm">%02d</text>'
                     % (L + pitch * (i + 0.5), h) for i, h in enumerate(order) if i % 4 == 0)
-    sweep_dx = round(peak_cx - L, 1)
-    motion = ("\n  .sweep{fill:%s;opacity:0}\n"
-              "  @media (prefers-color-scheme:dark){.sweep{fill:%s}}\n"
-              "  @media (prefers-reduced-motion:no-preference){\n"
-              "    .sweep{animation:swr 2.1s cubic-bezier(.22,1,.36,1) .6s 1 both}\n"
-              "    @keyframes swr{0%%{opacity:0;transform:translateX(0)}\n"
-              "      12%%{opacity:.7}68%%{opacity:.7;transform:translateX(%spx)}\n"
-              "      100%%{opacity:0;transform:translateX(%spx)}}\n  }\n"
-              ) % (LIGHT["acc"], DARK["acc"], sweep_dx, sweep_dx)
+    motion = sweep_x_motion(round(peak_cx - L, 1), "swr", "2.1s", ".6s",
+                            ".7", 12, 68)
     s = "\n".join([
         svg_open(W, H, aria),
         style_sheet(motion),
@@ -563,6 +559,20 @@ def sweep_y_motion(dy, kf, x0=42, x1=686, y0=30, dur="1.8s", delay=".3s"):
     return extra, rect
 
 
+def sweep_x_motion(dx, kf, dur, delay, hi, p_lo, p_hi):
+    """One-shot horizontal scan sweep — the translateX twin of sweep_y_motion.
+    Per-figure curve constants stay explicit at the call sites, as tuned."""
+    return ("\n  .sweep{fill:%s;opacity:0}\n"
+            "  @media (prefers-color-scheme:dark){.sweep{fill:%s}}\n"
+            "  @media (prefers-reduced-motion:no-preference){\n"
+            "    .sweep{animation:%s %s cubic-bezier(.22,1,.36,1) %s 1 both}\n"
+            "    @keyframes %s{0%%{opacity:0;transform:translateX(0)}\n"
+            "      %d%%{opacity:%s}%d%%{opacity:%s;transform:translateX(%spx)}\n"
+            "      100%%{opacity:0;transform:translateX(%spx)}}\n  }\n"
+            ) % (LIGHT["acc"], DARK["acc"], kf, dur, delay, kf,
+                 p_lo, hi, p_hi, hi, dx, dx)
+
+
 def month_ticks(domain, L, R, y, step=2):
     """First-of-month x ticks across the shared domain, every `step` months.
 
@@ -603,7 +613,7 @@ def render_punchcard(weekhours, domain, asof, aria):
     TOP, PITCH = 44.0, 17.0
     vmax = max(weekhours.values()) or 1
     peak = max(weekhours, key=lambda k: weekhours[k])
-    order = [(RHYTHM_ORIGIN + k) % 24 for k in range(24)]
+    order = HOUR_ORDER
     pitch = (R - L) / 24
     wk = {0: "Mon", 1: "Tue", 2: "Wed", 3: "Thu", 4: "Fri", 5: "Sat", 6: "Sun"}
     filled, zeros = [], []
@@ -649,7 +659,7 @@ def render_surplus(wd_hour, we_hour, wd_days, we_days, domain, asof, aria):
     W, H = 700, 178
     L, R, BASE = 42.0, 686.0, 138.0
     SPAN, MIN_BAR = 92.0, 2.0
-    order = [(RHYTHM_ORIGIN + k) % 24 for k in range(24)]
+    order = HOUR_ORDER
     pitch = (R - L) / 24
     wd_rate = [wd_hour[h] / wd_days for h in order]
     we_rate = [we_hour[h] / we_days for h in order]
@@ -670,14 +680,7 @@ def render_surplus(wd_hour, we_hour, wd_days, we_days, domain, asof, aria):
 
     wp_i = wd_rate.index(max(wd_rate))
     ep_i = we_rate.index(max(we_rate))
-    motion = ("\n  .sweep{fill:%s;opacity:0}\n"
-              "  @media (prefers-color-scheme:dark){.sweep{fill:%s}}\n"
-              "  @media (prefers-reduced-motion:no-preference){\n"
-              "    .sweep{animation:sws 2s cubic-bezier(.22,1,.36,1) .5s 1 both}\n"
-              "    @keyframes sws{0%%{opacity:0;transform:translateX(0)}\n"
-              "      12%%{opacity:.6}70%%{opacity:.6;transform:translateX(%dpx)}\n"
-              "      100%%{opacity:0;transform:translateX(%dpx)}}\n  }\n"
-              ) % (LIGHT["acc"], DARK["acc"], round(R - L), round(R - L))
+    motion = sweep_x_motion(round(R - L), "sws", "2s", ".5s", ".6", 12, 70)
     ticks = "".join('<text x="%.0f" y="156" font-size="10" class="lbl tm">%02d</text>'
                     % (L + pitch * (i + 0.5), h) for i, h in enumerate(order) if i % 4 == 0)
     return "\n".join([
@@ -841,7 +844,7 @@ def render_cadence(rel_lists, domain, asof, aria):
         rels = sorted(rels, key=lambda r: r["published_at"])
         body.append('<line class="rule" x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke-width="1"/>' % (L, y, R, y))
         for j, r in enumerate(rels):
-            dt = datetime.strptime(r["published_at"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+            dt = parse_iso(r["published_at"]).replace(tzinfo=timezone.utc)
             cx = x_date(dt.date(), domain, L, R)
             dy = (j % 3 - 1) * 5
             if r["prerelease"]:
@@ -854,13 +857,13 @@ def render_cadence(rel_lists, domain, asof, aria):
         # other, so the end label is only drawn when it clears the start one.
         FS = 8.5
         first, last = rels[0], rels[-1]
-        fx = x_date(datetime.strptime(first["published_at"], "%Y-%m-%dT%H:%M:%SZ")
+        fx = x_date(parse_iso(first["published_at"])
                     .replace(tzinfo=timezone.utc).date(), domain, L, R)
         fx = clamp_start(fx + 3, first["tag_name"], FS)
         body.append('<text x="%.1f" y="%.1f" font-size="%s" class="lbl ts">%s</text>'
                     % (fx, y + 15, FS, first["tag_name"]))
         if last is not first:
-            lx = x_date(datetime.strptime(last["published_at"], "%Y-%m-%dT%H:%M:%SZ")
+            lx = x_date(parse_iso(last["published_at"])
                         .replace(tzinfo=timezone.utc).date(), domain, L, R) - 3
             if lx - text_w(last["tag_name"], FS) > fx + text_w(first["tag_name"], FS) + 4:
                 body.append('<text x="%.1f" y="%.1f" font-size="%s" class="lbl te">%s</text>'
@@ -919,17 +922,11 @@ def render_streak(day_counts, run, dom, asof, aria):
     if run0 is not None:
         runs.append("M%d %dH%d" % (run0, BASE + 3, round(R)))
     bx0, bx1 = round(x_date(run[0], dom, L, R)), round(x_date(run[1], dom, L, R))
-    motion = ("\n  .tick{stroke:%s;fill:none;stroke-width:1.4}\n"
-              "  @media (prefers-color-scheme:dark){.tick{stroke:%s}}\n"
-              "  .sweep{fill:%s;opacity:0}\n"
-              "  @media (prefers-color-scheme:dark){.sweep{fill:%s}}\n"
-              "  @media (prefers-reduced-motion:no-preference){\n"
-              "    .sweep{animation:sbs 1.8s cubic-bezier(.22,1,.36,1) .5s 1 both}\n"
-              "    @keyframes sbs{0%%{opacity:0;transform:translateX(0)}\n"
-              "      15%%{opacity:.65}75%%{opacity:.65;transform:translateX(%dpx)}\n"
-              "      100%%{opacity:0;transform:translateX(%dpx)}}\n  }\n"
-              ) % (LIGHT["bar"], DARK["bar"], LIGHT["acc"], DARK["acc"],
-                   max(bx1 - bx0, 2), max(bx1 - bx0, 2))
+    ticks_css = ("\n  .tick{stroke:%s;fill:none;stroke-width:1.4}\n"
+                 "  @media (prefers-color-scheme:dark){.tick{stroke:%s}}"
+                 ) % (LIGHT["bar"], DARK["bar"])
+    motion = ticks_css + sweep_x_motion(max(bx1 - bx0, 2), "sbs", "1.8s",
+                                        ".5s", ".65", 15, 75)
     return "\n".join([
         svg_open(W, H, aria),
         style_sheet(motion),
@@ -1141,15 +1138,15 @@ def render_upstream(items, pub_prs, asof, aria):
     # by the ext_prs <= 10 guard, so the figure simply grows a row instead.
     BASE = TOP + (len(rows) - 1) * PITCH + 16
     H = int(BASE + 50)
-    d0 = datetime.strptime(rows[0]["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
-    d1 = datetime.strptime(rows[-1]["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
+    d0 = parse_iso(rows[0]["created_at"]).date()
+    d1 = parse_iso(rows[-1]["created_at"]).date()
     if d1 == d0:  # single PR (or several on one day): give the axis some span
         d0 -= timedelta(days=15)
         d1 += timedelta(days=15)
     dom = (d0, d1)
     body = []
     for i, it in enumerate(rows):
-        dt = datetime.strptime(it["created_at"], "%Y-%m-%dT%H:%M:%SZ").date()
+        dt = parse_iso(it["created_at"]).date()
         x = x_date(dt, dom, L, R)
         y = TOP + i * PITCH
         slug = it["repository_url"].split("/repos/")[1]
@@ -1340,7 +1337,7 @@ def growth_shape(values, years):
 def zero_runs(hours):
     """Contiguous runs of true-zero hours along the 04→03 axis, as [(lo, hi)]."""
     runs, run = [], []
-    for h in [(RHYTHM_ORIGIN + k) % 24 for k in range(24)]:
+    for h in HOUR_ORDER:
         if hours[h] == 0:
             run.append(h)
         elif run:
@@ -1376,7 +1373,7 @@ def growth_alt(f, values, years):
 
 
 def rhythm_alt(f, hours):
-    order = [(RHYTHM_ORIGIN + k) % 24 for k in range(24)]
+    order = HOUR_ORDER
     seq = ", ".join(str(hours[h]) for h in order)
     total = sum(hours.values())
     ph = max(hours, key=lambda h: hours[h])
@@ -1459,7 +1456,7 @@ def punchcard_alt(f, weekhours, domain, wknd, wd_days, we_days):
 
 
 def surplus_alt(f, wd_hour, we_hour, wd_days, we_days, domain):
-    order = [(RHYTHM_ORIGIN + k) % 24 for k in range(24)]
+    order = HOUR_ORDER
     wd_seq = ", ".join("%.1f" % (wd_hour[h] / wd_days) for h in order)
     we_seq = ", ".join("%.1f" % (we_hour[h] / we_days) for h in order)
     wd_peak_h = max(range(24), key=lambda h: wd_hour[h])
@@ -1726,9 +1723,7 @@ def refresh():
     conv = 0
     for c in all_commits:
         a = c["commit"]["author"]
-        dt = datetime.strptime(a["date"], "%Y-%m-%dT%H:%M:%SZ").replace(
-            tzinfo=timezone.utc
-        ).astimezone(TZ)
+        dt = parse_iso_local(a["date"])
         hours[dt.hour] += 1
         weekhours[(dt.weekday(), dt.hour)] += 1
         day_counts[dt.date()] += 1
@@ -1738,20 +1733,29 @@ def refresh():
             conv += 1
             types[m.group(1)] += 1
 
+    def windowed_run(dom):
+        """Longest streak + activity counts INSIDE the rug's rolling window, so the
+        figure's bracket and its alt text can never disagree with its own axis.
+        Same counting semantics as the all-time loop above: the first active day
+        is itself a run of length 1."""
+        wd_days = [d for d in sorted(day_counts) if dom[0] <= d <= dom[1]]
+        if not wd_days:
+            die("no authored commits inside the rug window — streak figure undefined")
+        best, b_start, b_end, run = 1, wd_days[0], wd_days[0], 1
+        for prev, cur in zip(wd_days, wd_days[1:]):
+            run = run + 1 if (cur - prev).days == 1 else 1
+            if run > best:
+                best, b_end = run, cur
+                b_start = cur - timedelta(days=run - 1)
+        return len(wd_days), best, (b_start, b_end)
+
+
+    # One counting implementation for both records: the all-time streak is the
+    # windowed run over the full domain (windowed_run dies cleanly on an empty
+    # window where the old hand-rolled loop would IndexError).
     sorted_days = sorted(day_counts)
-    streak = best = 1
-    run_start = run_end = sorted_days[0]
-    best_start = best_end = sorted_days[0]
-    for prev, cur in zip(sorted_days, sorted_days[1:]):
-        if (cur - prev).days == 1:
-            streak += 1
-            run_end = cur
-        else:
-            streak = 1
-            run_start = cur
-        if streak > best:
-            best, best_start, best_end = streak, run_start, run_end
-    streak = best
+    _, streak, (best_start, best_end) = windowed_run(
+        (sorted_days[0], sorted_days[-1]))
 
     # The shared x-domain for every time-axis figure (accrual, lifecycles, cadence,
     # streak): three stacked figures with three silently different ranges is a
@@ -1782,8 +1786,8 @@ def refresh():
     pr_unmerged = pr_closed - neg_pr
     lifetimes = []
     for p in merged:
-        created = datetime.strptime(p["created_at"], "%Y-%m-%dT%H:%M:%SZ")
-        merged_at = datetime.strptime(p["merged_at"], "%Y-%m-%dT%H:%M:%SZ")
+        created = parse_iso(p["created_at"])
+        merged_at = parse_iso(p["merged_at"])
         lifetimes.append((merged_at - created).total_seconds() / 60)
     lifetimes_sorted = sorted(lifetimes)
     neg_median = statistics.median(lifetimes)
@@ -1931,20 +1935,19 @@ def refresh():
     monthly = Counter()
     for name, lst in repo_commits.items():
         for c in lst:
-            dt = datetime.strptime(c["commit"]["author"]["date"], "%Y-%m-%dT%H:%M:%SZ").replace(
-                tzinfo=timezone.utc).astimezone(TZ)
+            dt = parse_iso_local(c["commit"]["author"]["date"])
             monthly[(name, dt.date().replace(day=1))] += 1
     # Graduation events for the accrual figure: pushed_at of the archived repos is
     # the closest public proxy (GitHub exposes no archive timestamp); the renderer
     # labels the axis "last push", never "archived on".
     grad_events = [
-        (datetime.strptime(r["pushed_at"], "%Y-%m-%dT%H:%M:%SZ").date(), r["name"])
+        (parse_iso(r["pushed_at"]).date(), r["name"])
         for r in repos if r["archived"] and r["name"] in repo_commits
     ]
     spans = [
         (r["name"],
-         datetime.strptime(r["created_at"], "%Y-%m-%dT%H:%M:%SZ").date(),
-         datetime.strptime(r["pushed_at"], "%Y-%m-%dT%H:%M:%SZ").date(),
+         parse_iso(r["created_at"]).date(),
+         parse_iso(r["pushed_at"]).date(),
          r["archived"])
         for r in repos if r["name"] in repo_commits
     ]
@@ -1969,23 +1972,6 @@ def refresh():
         "hour_i": LAT_EDGES.index(60),
         "lat_max": human_duration(lat_max_min),
     }
-
-
-    def windowed_run(dom):
-        """Longest streak + activity counts INSIDE the rug's rolling window, so the
-        figure's bracket and its alt text can never disagree with its own axis.
-        Same counting semantics as the all-time loop above: the first active day
-        is itself a run of length 1."""
-        wd_days = [d for d in sorted(day_counts) if dom[0] <= d <= dom[1]]
-        if not wd_days:
-            die("no authored commits inside the rug window — streak figure undefined")
-        best, b_start, b_end, run = 1, wd_days[0], wd_days[0], 1
-        for prev, cur in zip(wd_days, wd_days[1:]):
-            run = run + 1 if (cur - prev).days == 1 else 1
-            if run > best:
-                best, b_end = run, cur
-                b_start = cur - timedelta(days=run - 1)
-        return len(wd_days), best, (b_start, b_end)
 
 
     rug_dom = (DOMAIN[1] - timedelta(days=RUG_DAYS - 1), DOMAIN[1])
