@@ -1008,7 +1008,7 @@ def render_latency(buckets, ecdf, stats, asof, aria):
         "</svg>", ""])
 
 
-def render_grammar(types_sorted, nonconf, total, types_under_one_pct, asof, aria):
+def render_grammar(types_sorted, nonconf, total, under_one_pct_note, asof, aria):
     """100-cell waffle: makes "77 of 100" countable. Types under one percent
     earn no cell and are folded into the footer instead of stealing one. Height
     is derived from content: the last waffle row and the last legend row both
@@ -1060,7 +1060,7 @@ def render_grammar(types_sorted, nonconf, total, types_under_one_pct, asof, aria
         '<text x="%.0f" y="20" font-size="11" class="lbl ts">commit subjects by Conventional Commits type · one cell = one percent of %s</text>'
         % (42, format(total, ",")),
         '<text x="%.0f" y="34" font-size="9.5" class="lbl ts">open cells do not parse as Conventional Commits · %s</text>'
-        % (42, types_under_one_pct),
+        % (42, under_one_pct_note),
         '<text x="%.0f" y="%.0f" font-size="9.5" class="lbl te">as of %s</text>' % (686, H - 8, asof),
         "</svg>", ""])
 
@@ -2167,7 +2167,7 @@ def main():
             if m:
                 nums = re.findall(r"\d[\d,]*", m.group(1))
                 if nums and int(nums[0].replace(",", "")) > out["values"][-1]:
-                    die(f"current-year total decreased ({nums[0]} -> {out["values"][-1]}) — "
+                    die(f"current-year total decreased ({nums[0]} -> {out['values'][-1]}) — "
                         "parse likely broken")
         alts = {k: a[f] for k, a in out["alts"].items()}
         once = substitute(text, f, out["facts"], alts)
