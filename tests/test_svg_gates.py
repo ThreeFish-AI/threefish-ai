@@ -6,6 +6,7 @@ assert_svg_sane); crafted mutants lock each gate's refusal behavior; synthetic
 inputs lock renderer output byte-for-byte (see tests/golden/)."""
 import datetime
 import pathlib
+from collections import Counter
 import unittest
 
 from tests._bps import NS, ROOT
@@ -99,44 +100,96 @@ class TestGateRefusals(unittest.TestCase):
 
 
 class TestRendererGoldenMaster(unittest.TestCase):
-    """Synthetic inputs, byte-exact expectations: any structural change that
-    alters rendering output by a pixel fails here. Goldens are regenerated
-    ONLY by a reviewed, deliberate act (see lab progress notes)."""
+    """Synthetic inputs, byte-exact expectations for ALL 13 renderers: any
+    structural change that alters rendering output by a byte fails here.
+    Goldens are regenerated ONLY by a reviewed, deliberate act (the lab's
+    gen_golden*.py scripts verify determinism and gate-cleanliness first)."""
 
-    GROWTH_VALUES = [1, 0, 0, 13, 129, 198, 676, 589, 1181, 3193, 9313]
-    GROWTH_YEARS = list(range(2016, 2027))
     ASOF = "2026-09-05"
+    ARIA = "synthetic aria"
+    D = datetime.date
+    DOMAIN = (D(2026, 1, 5), D(2026, 3, 1))
 
-    STREAK_DOM = (datetime.date(2026, 6, 1), datetime.date(2026, 6, 30))
-    STREAK_RUN = (datetime.date(2026, 6, 10), datetime.date(2026, 6, 19))
-    STREAK_DAYS = {datetime.date(2026, 6, d): (d % 5) for d in range(1, 31)}
+    def _cases(self):
+        R, D, ASOF, ARIA = NS, self.D, self.ASOF, self.ARIA
+        return {
+            "growth": lambda: R["render_growth"](
+                [1, 0, 0, 13, 129, 198, 676, 589, 1181, 3193, 9313],
+                list(range(2016, 2027)), ASOF, ARIA),
+            "rhythm": lambda: R["render_rhythm"](
+                Counter({18: 400, 10: 200}), ASOF, ARIA),
+            "ground": lambda: R["render_ground"](
+                {"negentropy": 40, "coding-proxy": 12, "hyper-git": 7},
+                {"coding-proxy": 3, "hyper-git": 1}, ASOF, ARIA),
+            "punchcard": lambda: R["render_punchcard"](
+                Counter({(0, 22): 30, (6, 21): 25, (3, 10): 12, (5, 23): 8}),
+                self.DOMAIN, ASOF, ARIA),
+            "surplus": lambda: R["render_surplus"](
+                Counter({22: 60, 10: 30}), Counter({22: 80, 11: 20}),
+                40, 12, self.DOMAIN, ASOF, ARIA),
+            "accrual": lambda: R["render_accrual"](
+                Counter({("negentropy", D(2026, 1, 1)): 20,
+                         ("negentropy", D(2026, 2, 1)): 10,
+                         ("hyper-git", D(2026, 2, 1)): 5}),
+                [(D(2026, 2, 15), "hyper-git")], self.DOMAIN, ASOF, ARIA),
+            "lifecycles": lambda: R["render_lifecycles"](
+                [("negentropy", D(2026, 1, 1), D(2026, 3, 1), False),
+                 ("old-wing", D(2025, 6, 1), D(2026, 2, 1), True)],
+                (D(2025, 6, 1), D(2026, 3, 1)), ASOF, ARIA),
+            "cadence": lambda: R["render_cadence"](
+                {"coding-proxy": [
+                    {"tag_name": "v0.1.0", "published_at": "2026-01-20T10:00:00Z",
+                     "prerelease": False},
+                    {"tag_name": "v0.2.0", "published_at": "2026-02-14T09:30:00Z",
+                     "prerelease": True}],
+                 "negentropy": [
+                     {"tag_name": "v0.0.1", "published_at": "2026-02-01T08:00:00Z",
+                      "prerelease": False}]},
+                self.DOMAIN, ASOF, ARIA),
+            "streak": lambda: R["render_streak"](
+                {D(2026, 6, d): (d % 5) for d in range(1, 31)},
+                (D(2026, 6, 10), D(2026, 6, 19)),
+                (D(2026, 6, 1), D(2026, 6, 30)), ASOF, ARIA),
+            "latency": lambda: R["render_latency"](
+                [("<1m", 5), ("1-2", 2), ("2-5", 3), ("5-15", 4), ("15-60m", 3),
+                 ("1-4h", 2), ("4-24h", 1), (">24h", 0)],
+                [27.8, 38.9, 55.6, 77.8, 94.4, 100.0, 100.0, 100.0],
+                {"n": 20, "unmerged": 2, "med": "6 min", "p90": "2.8 h",
+                 "med_i": 3, "hour_i": 4, "lat_max": "11.9 d"}, ASOF, ARIA),
+            "grammar": lambda: R["render_grammar"](
+                [("fix", 827), ("docs", 725), ("feat", 697), ("test", 6)],
+                996, 4349, 19.0, ASOF, ARIA),
+            "tongues": lambda: R["render_tongues"](
+                Counter({"HTML": 50000, "Python": 20000, "TypeScript": 8000}),
+                Counter({"Python": 20000, "TypeScript": 8000, "HTML": 500}),
+                "threefish-ai.github.io", [], ASOF, ARIA),
+            "upstream": lambda: R["render_upstream"](
+                [{"html_url": "https://github.com/langgenius/dify/pull/1",
+                  "repository_url": "https://api.github.com/repos/langgenius/dify",
+                  "state": "closed",
+                  "pull_request": {"merged_at": "2026-01-10T00:00:00Z"},
+                  "number": 5631, "created_at": "2026-01-09T00:00:00Z"},
+                 {"html_url": "https://github.com/foo/bar/pull/2",
+                  "repository_url": "https://api.github.com/repos/foo/bar",
+                  "state": "closed",
+                  "pull_request": {"merged_at": None},
+                  "number": 124, "created_at": "2026-02-01T00:00:00Z"}],
+                500, ASOF, ARIA),
+        }
 
-    GRAMMAR_TYPES = [("fix", 827), ("docs", 725), ("feat", 697), ("test", 6)]
+    def test_all_renderers_match_goldens(self):
+        for name, render in self._cases().items():
+            with self.subTest(figure=name):
+                actual = render()
+                assert_svg_sane(actual, name)  # goldens must be gate-clean
+                expected = (GOLDEN / f"{name}_synthetic.svg").read_text(
+                    encoding="utf-8")
+                self.assertEqual(actual, expected)
 
-    def _golden(self, name, render):
-        actual = render()
-        assert_svg_sane(actual, name)  # goldens must themselves be gate-clean
-        expected = (GOLDEN / f"{name}.svg").read_text(encoding="utf-8")
-        self.assertEqual(actual, expected)
-
-    def test_growth(self):
-        self._golden(
-            "growth_synthetic",
-            lambda: NS["render_growth"](self.GROWTH_VALUES, self.GROWTH_YEARS,
-                                        self.ASOF, "synthetic aria"))
-
-    def test_streak(self):
-        self._golden(
-            "streak_synthetic",
-            lambda: NS["render_streak"](self.STREAK_DAYS, self.STREAK_RUN,
-                                        self.STREAK_DOM, self.ASOF,
-                                        "synthetic aria"))
-
-    def test_grammar(self):
-        self._golden(
-            "grammar_synthetic",
-            lambda: NS["render_grammar"](self.GRAMMAR_TYPES, 996, 4349, 19.0,
-                                         self.ASOF, "synthetic aria"))
+    def test_golden_files_are_exactly_thirteen(self):
+        self.assertEqual(
+            sorted(p.name for p in GOLDEN.glob("*.svg")),
+            [f"{k}_synthetic.svg" for k in sorted(self._cases())])
 
 
 if __name__ == "__main__":
