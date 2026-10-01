@@ -396,7 +396,6 @@ def render_growth(values, years, asof, aria):
     # pixels of height above baseline) while every non-zero bar is >= MIN_BAR
     # above it — "nothing" can never render taller than "something".
     ZERO_Y = BASE + 2
-    assert ZERO_Y > BASE
     n = len(values)
     pitch = (R - L) / n
     bw = round(pitch * 0.52, 1)
@@ -451,8 +450,7 @@ def render_rhythm(hours, asof, aria):
     W, H = 700, 168
     L, R, BASE = 42.0, 686.0, 126.0
     SPAN, MIN_BAR, ZSLOT, ORIGIN = 80.0, 2.5, 4.0, RHYTHM_ORIGIN
-    ZERO_Y = BASE + 2
-    assert ZERO_Y > BASE                          # zero slots strictly below the axis
+    ZERO_Y = BASE + 2                            # zero slots strictly below the axis
     order = [(ORIGIN + k) % 24 for k in range(24)]  # axis 04→03: night block contiguous
     pitch = (R - L) / 24
     bw = round(pitch * 0.6, 1)
@@ -1026,7 +1024,7 @@ def render_grammar(types_sorted, nonconf, total, sub1pct, asof, aria):
     xi = yi = 0
     used = 0
 
-    def emit(n, cls):
+    def emit(n):
         nonlocal xi, yi, used
         d = []
         for _ in range(n):
@@ -1040,7 +1038,7 @@ def render_grammar(types_sorted, nonconf, total, sub1pct, asof, aria):
         return d
 
     for rank, (name, c) in enumerate(types_sorted):
-        d = emit(round(c / total * 100), "acc" if rank == 0 else "bar")
+        d = emit(round(c / total * 100))
         if d:
             cells.append('<path class="%s" d="%s"/>' % ("acc" if rank == 0 else "bar", " ".join(d)))
         legend.append('<text x="%.0f" y="%.0f" font-size="10" class="%s ts">%s %d</text>'
@@ -1048,7 +1046,7 @@ def render_grammar(types_sorted, nonconf, total, sub1pct, asof, aria):
     # The non-conforming block takes every cell the types did not — exactly
     # 100 cells are drawn, so "one cell = one percent" stays literally true.
     filled = used  # snapshot: the open cells below drive the cursor to 100
-    zc = emit(100 - used, "zero")
+    zc = emit(100 - used)
     mo, ring = landing_motion("ring", "grr",
                               X0 + (filled % 10 - 0.5) * P, Y0 + (filled // 10) * P + 5,
                               "1.5s", ".7s")
@@ -1835,7 +1833,6 @@ def refresh():
     ext_prs = ext["total_count"]
     ext_items = ext["items"]
     ext_merged = sum(1 for it in ext_items if it["pull_request"]["merged_at"])
-    ext_owners = {it["repository_url"].split("/repos/")[1].split("/")[0] for it in ext_items}
     ext_dify = sum(
         1 for it in ext_items
         if it["pull_request"]["merged_at"]
@@ -1856,8 +1853,6 @@ def refresh():
     if ext_merged > ext_prs or ext_dify > ext_merged:
         die(f"ledger arithmetic broken: {ext_dify} dify <= {ext_merged} merged <= "
             f"{ext_prs} total violated, refusing")
-    if own_stars != total_stars - acc_stars:
-        die("star split arithmetic broken")
     if len(years) != len(values) or any(v < 0 for v in values):
         die("year series malformed")
     if set(rel_counts) != set(repo_commits):
