@@ -5,7 +5,7 @@ Mechanism (characterization only — no copies, no mocks): parse the module's
 real source on every run and exec only (a) imports, (b) every function def,
 (c) module constants on a name allowlist. Nodes are selected by NAME, not line
 number, so the loader survives refactors that move code within the file; the
-collection section (~L251-496) and orchestration (~L1919+) are simply never
+collection (inside refresh()) and orchestration (main()) are simply never
 executed. If the module later grows an import-safe layout, tests may switch to
 a plain import — assertions must not change either way (see Gate 1)."""
 import ast

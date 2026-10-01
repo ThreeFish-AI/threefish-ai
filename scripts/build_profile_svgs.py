@@ -399,7 +399,7 @@ def render_growth(values, years, asof, aria):
     """`aria` is passed in, not computed here: under <img> the SVG's internal
     aria-label is ignored and the README's alt attribute is the only
     screen-reader channel, so both languages' alt text is derived once by the
-    *_alt builders / ALTS table) and this function is merely one of its consumers."""
+    *_alt builders / ALTS table and this function is merely one of its consumers."""
     W, H = 700, 168
     L, R, BASE = 42.0, 686.0, 126.0
     SPAN, MIN_BAR, ZSLOT = 88.0, 2.5, 4.0       # plot height / bar floor / zero-slot h
@@ -454,7 +454,7 @@ def render_rhythm(hours, asof, aria):
     L, R, BASE = 42.0, 686.0, 126.0
     SPAN, MIN_BAR, ZSLOT, ORIGIN = 80.0, 2.5, 4.0, RHYTHM_ORIGIN
     ZERO_Y = BASE + 2                            # zero slots strictly below the axis
-    order = [(ORIGIN + k) % 24 for k in range(24)]  # axis 04→03: night block contiguous
+    order = HOUR_ORDER  # axis 04→03: night block contiguous
     pitch = (R - L) / 24
     bw = round(pitch * 0.6, 1)
     cmax = max(hours.values()) or 1
@@ -1736,8 +1736,7 @@ def refresh():
     def windowed_run(dom):
         """Longest streak + activity counts INSIDE the rug's rolling window, so the
         figure's bracket and its alt text can never disagree with its own axis.
-        Same counting semantics as the all-time loop above: the first active day
-        is itself a run of length 1."""
+        The first active day is itself a run of length 1."""
         wd_days = [d for d in sorted(day_counts) if dom[0] <= d <= dom[1]]
         if not wd_days:
             die("no authored commits inside the rug window — streak figure undefined")
