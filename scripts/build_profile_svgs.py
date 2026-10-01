@@ -259,12 +259,12 @@ def anon_contribution_counts(url, expect_year=None):
         url, headers={"User-Agent": "threefish-profile-refresh"}
     )
     with urllib.request.urlopen(req, timeout=60, context=SSL_CTX) as r:
-        html = r.read().decode("utf-8", "replace")
+        page = r.read().decode("utf-8", "replace")
     days = [
         int(x.replace(",", ""))
-        for x in re.findall(r">([\d,]+) contributions? on ", html)
+        for x in re.findall(r">([\d,]+) contributions? on ", page)
     ]
-    m = re.search(r"<h2[^>]*>([\d,]+) contributions in (\d{4})", html)
+    m = re.search(r"<h2[^>]*>([\d,]+) contributions in (\d{4})", page)
     if m and expect_year and int(m.group(2)) == expect_year:
         h2_total = int(m.group(1).replace(",", ""))
         if sum(days) != h2_total:
@@ -387,8 +387,8 @@ def svg_open(w, h, aria):
 def render_growth(values, years, asof, aria):
     """`aria` is passed in, not computed here: under <img> the SVG's internal
     aria-label is ignored and the README's alt attribute is the only
-    screen-reader channel, so both languages' alt text is derived once (see
-    figure_alt) and this function is merely one of its consumers."""
+    screen-reader channel, so both languages' alt text is derived once by the
+    *_alt builders / ALTS table) and this function is merely one of its consumers."""
     W, H = 700, 168
     L, R, BASE = 42.0, 686.0, 126.0
     SPAN, MIN_BAR, ZSLOT = 88.0, 2.5, 4.0       # plot height / bar floor / zero-slot h
@@ -496,7 +496,7 @@ def render_rhythm(hours, asof, aria):
     return s
 
 
-def render_ground(repo_commits, rel, asof, aria):
+def render_ground(repo_commits, rel_counts, asof, aria):
     W, H = 700, 224
     X_NAME, X_BAR, X_REL, MAXW = 150.0, 160.0, 660.0, 420.0
     rows = sorted(repo_commits.items(), key=lambda kv: -kv[1])
@@ -511,14 +511,14 @@ def render_ground(repo_commits, rel, asof, aria):
         body.append('<text x="%.0f" y="%.0f" font-size="11.5" class="lbl te">%s</text>' % (X_NAME, y + 9, name))
         body.append('<rect class="%s" x="%.0f" y="%.0f" width="%.1f" height="11" rx="2"/>' % ("acc" if focus else "bar", X_BAR, y, w))
         body.append('<text x="%.1f" y="%.0f" font-size="11.5" class="%s ts">%s</text>' % (X_BAR + w + 8, y + 9, "accv" if focus else "val", format(v, ",")))
-        body.append('<text x="%.0f" y="%.0f" font-size="11.5" class="val te">%d</text>' % (X_REL, y + 9, rel.get(name, 0)))
+        body.append('<text x="%.0f" y="%.0f" font-size="11.5" class="val te">%d</text>' % (X_REL, y + 9, rel_counts.get(name, 0)))
         i += 1
     head = "\n".join([
         '<text x="%.0f" y="20" font-size="10.5" class="lbl te">repository</text>' % X_NAME,
         '<text x="%.0f" y="20" font-size="10.5" class="lbl ts">commits</text>' % X_BAR,
         '<text x="%.0f" y="20" font-size="10.5" class="lbl te">releases</text>' % X_REL,
         '<line class="rule" x1="42" y1="27" x2="686" y2="27" stroke-width="1"/>'])
-    rel_total = sum(rel.values())
+    rel_total = sum(rel_counts.values())
     footer = ('<text x="%.0f" y="212" font-size="11" class="lbl ts">%s commits · %d '
               'releases · %d source repositories · %s %.1f%%</text>'
               % (X_BAR, format(total, ","), rel_total, len(repo_commits), rows[0][0], top_share))
@@ -617,7 +617,7 @@ def render_punchcard(weekhours, domain, asof, aria):
             elif (wd, h) != peak:  # the peak cell draws as the accented square
                 s = max(round(math.sqrt(v / vmax) * 13, 1), 2.2)
                 filled.append("M%.1f %.1fh%.1fv%.1fh-%.1fz" % (cx - s / 2, cy - s / 2, s, s, s))
-    pc, pr = landing_motion("ring", "pcr",
+    mo, ring = landing_motion("ring", "pcr",
                             L + pitch * (order.index(peak[1]) + 0.5),
                             TOP + 4 + peak[0] * PITCH + PITCH / 2 - 2, "1.7s", ".5s")
     s = max(round(math.sqrt(weekhours[peak] / vmax) * 13, 1), 2.2)
@@ -629,12 +629,12 @@ def render_punchcard(weekhours, domain, asof, aria):
                    % (L - 6, TOP + 4 + wd * PITCH + PITCH / 2, wk[wd]) for wd in range(7))
     return "\n".join([
         svg_open(W, H, aria),
-        style_sheet(pc),
+        style_sheet(mo),
         '<rect class="bg" width="%d" height="%d" rx="6"/>' % (W, H),
         '<path class="bar" d="%s"/>' % " ".join(filled),
         '<path class="zero" d="%s"/>' % " ".join(zeros),
         '<rect class="acc" x="%.1f" y="%.1f" width="%.1f" height="%.1f" rx="1"/>' % (cx - s / 2, cy - s / 2, s, s),
-        pr,
+        ring,
         rows, ticks,
         '<text x="%.0f" y="20" font-size="11" class="lbl ts">commits by weekday × hour · cell area ∝ count · axis 04→03 · %s → %s</text>'
         % (L, domain[0], domain[1]),
@@ -1011,7 +1011,7 @@ def render_latency(buckets, ecdf, stats, asof, aria):
         "</svg>", ""])
 
 
-def render_grammar(types_sorted, nonconf, total, sub1pct, asof, aria):
+def render_grammar(types_sorted, nonconf, total, types_under_one_pct, asof, aria):
     """100-cell waffle: makes "77 of 100" countable. Types under one percent
     earn no cell and are folded into the footer instead of stealing one. Height
     is derived from content: the last waffle row and the last legend row both
@@ -1063,7 +1063,7 @@ def render_grammar(types_sorted, nonconf, total, sub1pct, asof, aria):
         '<text x="%.0f" y="20" font-size="11" class="lbl ts">commit subjects by Conventional Commits type · one cell = one percent of %s</text>'
         % (42, format(total, ",")),
         '<text x="%.0f" y="34" font-size="9.5" class="lbl ts">open cells do not parse as Conventional Commits · %s</text>'
-        % (42, sub1pct),
+        % (42, types_under_one_pct),
         '<text x="%.0f" y="%.0f" font-size="9.5" class="lbl te">as of %s</text>' % (686, H - 8, asof),
         "</svg>", ""])
 
@@ -1074,16 +1074,16 @@ def render_tongues(lang_all, lang_src, gen_site, zero_repos, asof, aria):
     one named repo and it says Python. Both conditions, not a silent pick."""
     W, H = 700, 196
     XL, XR = 210.0, 470.0
-    ta = sum(lang_all.values()) or 1
-    ts = sum(lang_src.values()) or 1
+    total_all = sum(lang_all.values()) or 1
+    total_src = sum(lang_src.values()) or 1
     names = sorted(set(lang_all) | set(lang_src),
                    key=lambda n: -lang_src.get(n, 0))[:7]
     if "HTML" not in names and lang_all.get("HTML"):
         names.append("HTML")
     TOP, STEP, SPAN = 44.0, 19.0, 116.0
-    na = {n: lang_all.get(n, 0) / ta for n in names}
-    ns = {n: lang_src.get(n, 0) / ts for n in names}
-    ymax = max(list(na.values()) + list(ns.values())) or 1
+    share_all = {n: lang_all.get(n, 0) / total_all for n in names}
+    share_src = {n: lang_src.get(n, 0) / total_src for n in names}
+    ymax = max(list(share_all.values()) + list(share_src.values())) or 1
 
     def y_of(p):
         return TOP + SPAN - p / ymax * SPAN
@@ -1091,15 +1091,15 @@ def render_tongues(lang_all, lang_src, gen_site, zero_repos, asof, aria):
     body = []
     left, right = [], []
     for n in names:
-        y1, y2 = y_of(na[n]), y_of(ns[n])
-        acc = n == max(ns, key=ns.get)
+        y1, y2 = y_of(share_all[n]), y_of(share_src[n])
+        acc = n == max(share_src, key=share_src.get)
         body.append('<line class="%s" x1="%.0f" y1="%.1f" x2="%.0f" y2="%.1f" stroke-width="1.6"/>'
                     % ("accs" if acc else "bars", XL, y1, XR, y2))
         dot = "acc" if acc else "bar"
         body.append('<circle class="%s" cx="%.0f" cy="%.1f" r="2.4"/><circle class="%s" cx="%.0f" cy="%.1f" r="2.4"/>'
                     % (dot, XL, y1, dot, XR, y2))
-        left.append((y1 + 3, "%s %.1f%%" % (n, na[n] * 100), "lbl"))
-        right.append((y2 + 3, "%s %.1f%%" % (n, ns[n] * 100),
+        left.append((y1 + 3, "%s %.1f%%" % (n, share_all[n] * 100), "lbl"))
+        right.append((y2 + 3, "%s %.1f%%" % (n, share_src[n] * 100),
                       "accv" if acc else "val"))
     # Both rankings have a long tail that converges on ~0%, so several labels
     # land within a couple of pixels of each other and print as one blob. The
@@ -1110,8 +1110,8 @@ def render_tongues(lang_all, lang_src, gen_site, zero_repos, asof, aria):
     for ly, txt, cls in spread_labels(right, TOP + SPAN + 5):
         body.append('<text x="%.0f" y="%.1f" font-size="10" class="%s ts">%s</text>'
                     % (XR + 8, ly, cls, txt))
-    others_a = 1 - sum(na.values())
-    others_s = 1 - sum(ns.values())
+    others_a = 1 - sum(share_all.values())
+    others_s = 1 - sum(share_src.values())
     return "\n".join([
         svg_open(W, H, aria),
         style_sheet(),
@@ -1349,7 +1349,7 @@ def zero_runs(hours):
     return runs + ([(run[0], run[-1])] if run else [])
 
 
-def _join(parts, sep, last):
+def oxford_join(parts, sep, last):
     if len(parts) < 2:
         return "".join(parts)
     return sep.join(parts[:-1]) + last + parts[-1]
@@ -1362,7 +1362,7 @@ def growth_alt(f, values, years):
     if f == EN:
         zc = ("" if not z else
               " %s %s exactly zero, drawn as %s below the axis." % (
-                  _join(z, ", ", " and "), "is" if len(z) == 1 else "are",
+                  oxford_join(z, ", ", " and "), "is" if len(z) == 1 else "are",
                   "an open slot" if len(z) == 1 else "open slots"))
         dc = "".join(" %d (%s) is lower than %d (%s)." % (y, format(v, ","), py, format(pv, ","))
                      for y, v, py, pv in sh["dips"])
@@ -1385,7 +1385,7 @@ def rhythm_alt(f, hours):
     last = (RHYTHM_ORIGIN + 23) % 24
     if f == EN:
         zc = ("" if not runs else " %s exactly zero, drawn as open slots below the axis." % (
-            _join(["%02d:00 to %02d:59" % r for r in runs], ", ", " and ") +
+            oxford_join(["%02d:00 to %02d:59" % r for r in runs], ", ", " and ") +
             (" is" if len(runs) == 1 and runs[0][0] == runs[0][1] else " are")))
         return ("Histogram of %s open-source commits by hour of day, Asia/Shanghai, axis "
                 "running %02d:00 through %02d:00 so the night block stays contiguous. Values "
@@ -1411,7 +1411,7 @@ def ground_alt(f, counts, rel, archived):
     rel_rows = [(n, c) for n, c in sorted(rel.items(), key=lambda kv: -kv[1]) if c]
     if f == EN:
         arc = ("" if not archived else " %s %s archived — %s graduated into the negentropy trunk."
-               % (_join(archived, ", ", " and "), "is" if len(archived) == 1 else "are",
+               % (oxford_join(archived, ", ", " and "), "is" if len(archived) == 1 else "are",
                   "it" if len(archived) == 1 else "they"))
         return ("Horizontal bar chart, commits per source repository, sorted: %s. Total %s "
                 "commits and %d releases across %d source repositories; %s is %.1f percent of "
@@ -1462,8 +1462,8 @@ def surplus_alt(f, wd_hour, we_hour, wd_days, we_days, domain):
     order = [(RHYTHM_ORIGIN + k) % 24 for k in range(24)]
     wd_seq = ", ".join("%.1f" % (wd_hour[h] / wd_days) for h in order)
     we_seq = ", ".join("%.1f" % (we_hour[h] / we_days) for h in order)
-    wp = max(range(24), key=lambda h: wd_hour[h])
-    ep = max(range(24), key=lambda h: we_hour[h])
+    wd_peak_h = max(range(24), key=lambda h: wd_hour[h])
+    we_peak_h = max(range(24), key=lambda h: we_hour[h])
     if f == EN:
         return ("Two step curves on one hour-of-day axis running 04:00 to 03:00, "
                 "Asia/Shanghai, %s to %s, normalised to commits per day of that kind so "
@@ -1471,13 +1471,13 @@ def surplus_alt(f, wd_hour, we_hour, wd_days, we_days, domain):
                 "04:00: %s. Weekend rate: %s. Weekday peak %02d:00 at %.1f per day; "
                 "weekend peak %02d:00 at %.1f. Data: GitHub."
                 % (domain[0], domain[1], wd_days, we_days, wd_seq, we_seq,
-                   wp, wd_hour[wp] / wd_days, ep, we_hour[ep] / we_days))
+                   wd_peak_h, wd_hour[wd_peak_h] / wd_days, we_peak_h, we_hour[we_peak_h] / we_days))
     return ("同一小时轴（04:00 至 03:00，Asia/Shanghai，%s 至 %s）上的两条阶梯曲线，"
             "按「该类日」归一为日均提交，使 %d 个工作日与 %d 个周末日可比。工作日自 04:00 起"
             "逐小时速率：%s。周末：%s。工作日峰值 %02d:00（日均 %.1f 条）；周末峰值 %02d:00"
             "（日均 %.1f 条）。数据：GitHub。"
             % (domain[0], domain[1], wd_days, we_days, wd_seq, we_seq,
-               wp, wd_hour[wp] / wd_days, ep, we_hour[ep] / we_days))
+               wd_peak_h, wd_hour[wd_peak_h] / wd_days, we_peak_h, we_hour[we_peak_h] / we_days))
 
 
 def accrual_alt(f, monthly, domain, events, final_total):
@@ -1494,7 +1494,7 @@ def accrual_alt(f, monthly, domain, events, final_total):
         ev_txt = " ".join(
             "On %s %s flatten%s and the trunk keeps rising: %s graduated into the "
             "negentropy trunk that day." % (
-                d, _join(nms, ", ", " and "), "" if len(nms) > 1 else "s",
+                d, oxford_join(nms, ", ", " and "), "" if len(nms) > 1 else "s",
                 "they" if len(nms) > 1 else "it")
             for d, nms in by_date.items())
         return ("Cumulative authored commits per source repository at monthly resolution, "
@@ -1721,7 +1721,7 @@ def refresh():
     hours = Counter()
     weekhours = Counter()   # (weekday 0=Mon, hour) -> n
     day_counts = Counter()  # date -> n
-    lang_of_commit = []     # commit dates for the shared time-domain
+    commit_dates = []     # commit dates for the shared time-domain
     types = Counter()       # Conventional Commits type -> n
     conv = 0
     for c in all_commits:
@@ -1732,7 +1732,7 @@ def refresh():
         hours[dt.hour] += 1
         weekhours[(dt.weekday(), dt.hour)] += 1
         day_counts[dt.date()] += 1
-        lang_of_commit.append(dt.date())
+        commit_dates.append(dt.date())
         m = CONVENTIONAL.match(c["commit"]["message"].split("\n")[0])
         if m:
             conv += 1
@@ -1756,7 +1756,7 @@ def refresh():
     # The shared x-domain for every time-axis figure (accrual, lifecycles, cadence,
     # streak): three stacked figures with three silently different ranges is a
     # worse honesty failure than any single figure's caveat.
-    DOMAIN = (min(lang_of_commit), max(lang_of_commit))
+    DOMAIN = (min(commit_dates), max(commit_dates))
     WIN_DAYS = (DOMAIN[1] - DOMAIN[0]).days + 1
 
     # Pipeline-closure guard: every authored commit must land in exactly one hour
@@ -2075,12 +2075,12 @@ def refresh():
             f"{sorted(set(facts) - set(FACT_KEYS))} — refusing")
 
     ground_counts = {k: len(v) for k, v in repo_commits.items()}
-    sub1pct = [n for n, c in types_sorted if c / commits_total < 0.01]
+    types_under_one_pct = [n for n, c in types_sorted if c / commits_total < 0.01]
     # In-frame text is English-only: one SVG serves both READMEs (the zh file
     # references the same assets by absolute URL). Per-language phrasing lives in
     # the alt text, which is derived per README.
-    sub1_txt = ("%d types under one percent each: %s — folded here, not drawn"
-                % (len(sub1pct), ", ".join(sub1pct))) if sub1pct else "no types under one percent"
+    under_one_pct_note = ("%d types under one percent each: %s — folded here, not drawn"
+                % (len(types_under_one_pct), ", ".join(types_under_one_pct))) if types_under_one_pct else "no types under one percent"
     ALTS = {
         "growth": {f: growth_alt(f, values, years) for f in README_FILES},
         "rhythm": {f: rhythm_alt(f, hours) for f in README_FILES},
@@ -2123,7 +2123,7 @@ def refresh():
         FIG_SPEC["latency"][0]: render_latency(lat_buckets, ecdf_points(), lat_stats, asof,
                                                ALTS["latency"][EN]),
         FIG_SPEC["grammar"][0]: render_grammar(types_sorted, commits_total - conv, commits_total,
-                                               sub1_txt, asof,
+                                               under_one_pct_note, asof,
                                                ALTS["grammar"][EN]),
         FIG_SPEC["tongues"][0]: render_tongues(lang_all, lang_src, GEN_SITE, zero_byte_repos,
                                                asof, ALTS["tongues"][EN]),
