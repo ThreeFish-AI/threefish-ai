@@ -1655,6 +1655,41 @@ def upstream_alt(f, items, pub_prs):
                ledger, format(pub_prs, ","), len(rows) / pub_prs * 100))
 
 
+def cadence_alt(f, rel_lists, domain, trunk_commits, rel_total):
+    lanes = sorted(((n, sorted(v, key=lambda r: r["published_at"]))
+                    for n, v in rel_lists.items() if v),
+                   key=lambda kv: (-len(kv[1]), kv[0]))
+    # The trunk sentence carries two numbers that MOVE — negentropy is the
+    # active repo, so a literal here would have the alt contradict the
+    # neg_commits marker rendered beside it within a month.
+    trunk_rels = len(rel_lists.get(TRUNK, ()))
+    if f == EN:
+        rows = "; ".join(
+            "%s: %d releases, %s on %s through %s on %s%s" % (
+                n, len(v), v[0]["tag_name"], v[0]["published_at"][:10],
+                v[-1]["tag_name"], v[-1]["published_at"][:10],
+                "" if not all(r["prerelease"] for r in v) else ", all pre-releases")
+            for n, v in lanes)
+        return ("Dot timeline of %d public releases across %d repositories on one shared "
+                "date axis, %s to %s. %s. Hollow dots are pre-releases. %s shows only its "
+                "%d release candidates against %s commits because it is a deployed "
+                "service, not a distributed package — its shipping unit is the merged "
+                "pull request, not the tag. Data: GitHub."
+                % (rel_total, len(lanes), domain[0], domain[1], rows,
+                   TRUNK, trunk_rels, format(trunk_commits, ",")))
+    rows = "；".join(
+        "%s %d 个 release，%s（%s）至 %s（%s）%s" % (
+            n, len(v), v[0]["tag_name"], v[0]["published_at"][:10],
+            v[-1]["tag_name"], v[-1]["published_at"][:10],
+            "" if not all(r["prerelease"] for r in v) else "，全部为预发布")
+        for n, v in lanes)
+    return ("各仓库公开 release 的点式时间线（共用日期轴，%s 至 %s）。%s。空心点为预发布。"
+            "%s 在 %s 条提交面前只有 %d 个 rc，因为它是部署型服务而非分发包——"
+            "它的交付单元是已合并 PR，不是 tag。数据：GitHub。"
+            % (domain[0], domain[1], rows,
+               TRUNK, format(trunk_commits, ","), trunk_rels))
+
+
 LAT_EDGES = [1, 2, 5, 15, 60, 240, 1440, float("inf")]
 LAT_LABELS = ["<1m", "1-2", "2-5", "5-15", "15-60m", "1-4h", "4-24h", ">24h"]
 
@@ -1862,41 +1897,6 @@ def refresh():
         die(f"release roster {sorted(rel_counts)} != source roster "
             f"{sorted(repo_commits)} — a repo's releases would render as 0, refusing")
 
-    def cadence_alt(f, rel_lists, domain, trunk_commits):
-        lanes = sorted(((n, sorted(v, key=lambda r: r["published_at"]))
-                        for n, v in rel_lists.items() if v),
-                       key=lambda kv: (-len(kv[1]), kv[0]))
-        # The trunk sentence carries two numbers that MOVE — negentropy is the
-        # active repo, so a literal here would have the alt contradict the
-        # neg_commits marker rendered beside it within a month.
-        trunk_rels = len(rel_lists.get(TRUNK, ()))
-        if f == EN:
-            rows = "; ".join(
-                "%s: %d releases, %s on %s through %s on %s%s" % (
-                    n, len(v), v[0]["tag_name"], v[0]["published_at"][:10],
-                    v[-1]["tag_name"], v[-1]["published_at"][:10],
-                    "" if not all(r["prerelease"] for r in v) else ", all pre-releases")
-                for n, v in lanes)
-            return ("Dot timeline of %d public releases across %d repositories on one shared "
-                    "date axis, %s to %s. %s. Hollow dots are pre-releases. %s shows only its "
-                    "%d release candidates against %s commits because it is a deployed "
-                    "service, not a distributed package — its shipping unit is the merged "
-                    "pull request, not the tag. Data: GitHub."
-                    % (rel_total, len(lanes), domain[0], domain[1], rows,
-                       TRUNK, trunk_rels, format(trunk_commits, ",")))
-        rows = "；".join(
-            "%s %d 个 release，%s（%s）至 %s（%s）%s" % (
-                n, len(v), v[0]["tag_name"], v[0]["published_at"][:10],
-                v[-1]["tag_name"], v[-1]["published_at"][:10],
-                "" if not all(r["prerelease"] for r in v) else "，全部为预发布")
-            for n, v in lanes)
-        return ("各仓库公开 release 的点式时间线（共用日期轴，%s 至 %s）。%s。空心点为预发布。"
-                "%s 在 %s 条提交面前只有 %d 个 rc，因为它是部署型服务而非分发包——"
-                "它的交付单元是已合并 PR，不是 tag。数据：GitHub。"
-                % (domain[0], domain[1], rows,
-                   TRUNK, format(trunk_commits, ","), trunk_rels))
-
-
     # ------------------------------------------------- figure derivations ----
     # Degenerate-but-reachable shapes die cleanly here instead of raising a bare
     # traceback further down; the write-nothing contract holds either way.
@@ -2078,7 +2078,8 @@ def refresh():
         "accrual": {f: accrual_alt(f, monthly, DOMAIN, grad_events, commits_total)
                     for f in README_FILES},
         "lifecycles": {f: lifecycles_alt(f, spans, DOMAIN) for f in README_FILES},
-        "cadence": {f: cadence_alt(f, rel_lists, DOMAIN, len(repo_commits.get(TRUNK, ())))
+        "cadence": {f: cadence_alt(f, rel_lists, DOMAIN,
+                                   len(repo_commits.get(TRUNK, ())), rel_total)
                     for f in README_FILES},
         "streak": {f: streak_alt(f, rug_act, RUG_DAYS - rug_act, rug_run, rug_dom, RUG_DAYS)
                    for f in README_FILES},
