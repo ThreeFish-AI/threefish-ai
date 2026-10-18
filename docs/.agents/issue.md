@@ -3,7 +3,7 @@
 | ID | 标题 | 状态 | 完成时间 | 详情 |
 |---|---|---|---|---|
 | I-001 | 九厂商清单双层手写漂移：单侧修复未除根，结构性收敛为卡片单一事实源 | ✅ | 2026-10-18 | [详情](#I-001) |
-| I-002 | 语义级镜像漂移与锚点死链无机器门：lint 仅护 marker 级 | 🔄 | — | [详情](#I-002) |
+| I-002 | 语义级镜像漂移与锚点死链无机器门：lint 仅护 marker 级 | ✅ | 2026-10-18 | [详情](#I-002) |
 
 <a id="I-001"></a>
 ## I-001：九厂商清单双层手写漂移
@@ -25,8 +25,8 @@
 
 **表因根因**：PR #8 建立 tests 时按最小护栏取舍；锚点前缀是 GitHub 渲染侧行为，仓库内工具不感知。
 
-**处理方式**（2026-10-18）：本次重构以 lab 级 gate 脚本护航（锚点三方一致 + marker 行号镜像 + 骨架行号镜像 + 行数相等）；编辑契约沉淀至 [knowledge-map.md](knowledge-map.md#双语镜像编辑契约卡)。
+**处理方式**（2026-10-18，两步闭环）：第一步重构时以 lab 级 gate 脚本护航（锚点三方一致 + marker 行号镜像 + 骨架行号镜像 + 行数相等），编辑契约沉淀至 [knowledge-map.md](knowledge-map.md#双语镜像编辑契约卡)；第二步将检查上收为 [`tests/test_readme_structure.py`](../../tests/test_readme_structure.py)（零依赖纯正则，35 用例之一），并在 `refresh-profile-data.yml` lint job 中接入 `python -m unittest discover tests`，全套护栏由本地自觉变 PR 强制门。
 
-**后续防范 / 根治路径**：将 gate 脚本检查上收为 `tests/test_readme_structure.py`（零依赖纯正则），并在 `refresh-profile-data.yml` lint job 中补跑 `python -m unittest discover tests`——两项均为小改 PR，待单独实施。
+**后续防范**：改任一 README 后跑 knowledge-map 契约卡第 6 条两条命令（与 CI 同款）；新增结构元素（details/锚点/表格）时行级镜像约束由测试自动拦截。
 
 **注意事项**：本地 Markdown 预览不加 `user-content-` 前缀，导航链接在本地必显死链——这是设计使然，以 GitHub 渲染为准。
