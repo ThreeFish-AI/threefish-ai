@@ -9,6 +9,7 @@ on:
       - "docs/i18n/zh-CN/README.md"
       - "scripts/build_profile_svgs.py"
       - "assets/**"
+      - "tests/**"
   workflow_dispatch:
 
 permissions:
