@@ -31,6 +31,12 @@ jobs:
       - name: Marker and parity lint
         run: python scripts/build_profile_svgs.py --lint
 
+      # The characterization suite is zero-dependency and sub-second: make the
+      # contract tests, README structure guards and SVG golden masters as
+      # mandatory as the lint instead of local-only.
+      - name: Contract and structure tests
+        run: python -m unittest discover tests
+
   refresh:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
