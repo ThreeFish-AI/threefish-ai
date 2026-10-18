@@ -212,7 +212,7 @@
 - **`give-me-a-break`** — the state machine's `evaluate` has zero time dependency. It takes the clock as an argument, so the entire rest/work/AFK lifecycle is testable against a virtual clock: sleep, crash recovery with fast-forward, a display unplugged mid-break. Three modules, one of which knows nothing about macOS.
 - **`hyper-git`** — `engine/` contains no `vscode` import. That single constraint is why 403 unit tests exist: changelist grouping, DAG swimlane layout, and Conventional Commits validation are all testable without an editor host. The architecture note calls it "Path B" — consume the stable `vscode.git` API and hand-render everything above it, rather than fork.
 - **`hyper-git`, again** — five AI seams (`ILlmProvider`, `ICommitMessageProvider`, `IPreCommitInspector`, `IChangelistGrouper`, `IConflictResolver`) are wired in as null implementations, modeled on JetBrains' `CheckinHandler` lifecycle. The interfaces ship; the intelligence is deferred to M5. Declaring the seam early is cheap and declaring it late is not.
-- **`coding-proxy`** — the failover chain is policy, not plumbing: circuit breaker state and quota accounting are per-vendor and local, in SQLite-WAL. No Redis, no queue, so a single process is the whole deployment and a restart loses nothing that matters.
+- **`coding-proxy`** — the failover chain is policy, not plumbing: circuit breaker state and quota accounting are per-vendor and local, in SQLite-WAL — so a single process is the whole deployment, and a restart loses nothing that matters.
 - **`negentropy`** — the default path runs on the cheapest of its pluggable backends with **no cloud credentials at all**; if the cheapest configuration is not runnable, nobody runs the expensive one either.
 
 <sub>Stated as a virtue, this is testability. Stated honestly, it is what a single maintainer has to do to survive his own codebase: nothing here has a second pair of eyes, so the design has to make the mistakes cheap to find. And the null AI seams are still null — the interfaces are a plan, not a feature.</sub>
@@ -290,7 +290,7 @@ sequenceDiagram
   P-->>C: SSE stream, in Anthropic's shape
 ```
 
-The client is told nothing. That is the whole product: one line of configuration, and the failure mode changes from *stop working* to *work slower on someone else's model*. Nine vendors are wired — Claude plans, GitHub Copilot, Google Antigravity, Z AI's GLM, MiniMax, Qwen, Xiaomi, Kimi, Doubao — with a per-vendor circuit breaker and quota guard, and a local SQLite-WAL dashboard so the burn is visible before the bill is.
+The client is told nothing. That is the whole product: one line of configuration, and the failure mode changes from *stop working* to *work slower on someone else's model*. Each of the nine vendors named on the card above gets its own circuit breaker and quota guard, and a local SQLite-WAL dashboard makes the burn visible before the bill is.
 
 <sub>FastAPI and httpx. <!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> releases, the latest still alpha-tagged — translation fidelity across three request shapes is the part that keeps not being finished. Chained failover also means a request can succeed on a model you did not choose; the dashboard exists partly so that is auditable.</sub>
 
