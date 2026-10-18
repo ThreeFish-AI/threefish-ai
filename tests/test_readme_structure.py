@@ -1,4 +1,4 @@
-"""Machine guards for the README contracts that --lint cannot see (Section B2).
+"""Machine guards for the README contracts that --lint cannot see.
 
 The marker stream, its parity and the assets closure are audited by
 scripts/build_profile_svgs.py --lint on every PR. Three load-bearing surfaces
@@ -6,8 +6,9 @@ used to rest on human discipline only; these tests lock them:
 
 1. Anchor triple-consistency — every <summary><a name="X"> anchor, every
    #user-content-X link in the two cluster-nav <sub> rows, and every FIG key
-   must be the same set, anchors in FIG-cluster order. A broken link here
-   fails silently on GitHub (the user-content- prefix is renderer-side).
+   must be the same set in the same order (nav links read across the two
+   rows follow the FIG cluster order). A broken link here fails silently on
+   GitHub (the user-content- prefix is renderer-side).
 2. Bilingual line-mirror — the two READMEs must carry their markers and their
    structural skeleton (details/summary/anchors/tables/code fences) at
    identical line numbers, and stay the same length. Prose may differ; the
@@ -36,14 +37,14 @@ def _lines(rel):
 
 
 class TestAnchorTripleConsistency(unittest.TestCase):
-    def test_anchors_fig_keys_and_nav_links_are_one_set_per_file(self):
+    def test_anchors_fig_keys_and_nav_links_match_in_order_per_file(self):
         for rel in (EN, ZH):
             lines = _lines(rel)
             figs = [m.group(1) for l in lines for m in FIG_OPEN.finditer(l)]
             anchors = [m.group(1) for l in lines for m in ANCHOR.finditer(l)]
-            navs = sorted(m.group(1) for l in lines for m in NAV.finditer(l))
+            navs = [m.group(1) for l in lines for m in NAV.finditer(l)]
             self.assertEqual(figs, anchors, f"{rel}: anchor order != FIG order")
-            self.assertEqual(sorted(anchors), navs, f"{rel}: nav links != anchors")
+            self.assertEqual(figs, navs, f"{rel}: nav link order != FIG order")
 
 
 class TestBilingualLineMirror(unittest.TestCase):
