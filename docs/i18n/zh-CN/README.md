@@ -212,7 +212,7 @@
 - **`give-me-a-break`** —— 状态机的 `evaluate` 零时间依赖。时钟由参数传入，于是整套休息/工作/AFK 生命周期都能在虚拟时钟下测试：睡眠、崩溃后快进恢复、休息中途被拔掉的显示器。三个模块，其中一个对 macOS 一无所知。
 - **`hyper-git`** —— `engine/` 里没有一处 `vscode` import。仅这一条约束，就是 403 个单元测试之所以存在的原因：变更列表分组、DAG 泳道布局、Conventional Commits 校验，全都不需要编辑器宿主即可测试。架构说明称之为「Path B」——消费稳定的 `vscode.git` API，其上一切手绘，而不去 fork。
 - **`hyper-git`，再一次** —— 五个 AI 接缝（`ILlmProvider`、`ICommitMessageProvider`、`IPreCommitInspector`、`IChangelistGrouper`、`IConflictResolver`）以空实现预先接入，形制取自 JetBrains 的 `CheckinHandler` 生命周期。接口先交付，智能延到 M5。早声明接缝很便宜，晚声明就不便宜了。
-- **`coding-proxy`** —— 故障转移链是策略，不是管道：熔断状态与配额记账按厂商分离、且是本地的，落在 SQLite-WAL 里。没有 Redis、没有队列，于是单进程就是整个部署，重启不会丢掉任何要紧的东西。
+- **`coding-proxy`** —— 故障转移链是策略，不是管道：熔断状态与配额记账按厂商分离、且是本地的，落在 SQLite-WAL 里——于是单进程就是整个部署，重启不会丢掉任何要紧的东西。
 - **`negentropy`** —— 默认路径跑在可插拔后端中最便宜的那档上，**完全不需要云凭据**；如果最便宜的配置跑不起来，也就没人会去跑贵的那个。
 
 <sub>说得好听，这叫可测性。说得诚实，这是一个单人维护者为了在自己的代码库里活下来必须做的事：这里没有第二双眼睛，所以设计必须让错误便宜到能被找出来。而那五个空的 AI 接缝，至今仍然是空的——接口是一份计划，不是一个功能。</sub>
@@ -290,7 +290,7 @@ sequenceDiagram
   P-->>C: SSE 流，仍是 Anthropic 的形状
 ```
 
-客户端什么都不知道。这就是产品的全部：一行配置，把失败模式从「停止工作」改成「用别人的模型慢一点工作」。已接入九家——Claude 套餐、GitHub Copilot、Google Antigravity、Z AI 的 GLM、MiniMax、Qwen、小米、Kimi、豆包——每家独立熔断与配额守卫，另有本地 SQLite-WAL 看板，让消耗在账单之前就可见。
+客户端什么都不知道。这就是产品的全部：一行配置，把失败模式从「停止工作」改成「用别人的模型慢一点工作」。上方卡片点名的九家厂商，每家独立熔断与配额守卫，另有本地 SQLite-WAL 看板，让消耗在账单之前就可见。
 
 <sub>FastAPI 与 httpx。<!-- DATA:rel_cp -->12<!-- /DATA:rel_cp --> 个 release，最新仍带 alpha 标——三种请求形状之间的转译保真度，正是那个一直没做完的部分。链式转移也意味着请求可能在你没选的模型上成功；看板的存在，一部分就是为了让这件事可审计。</sub>
 
